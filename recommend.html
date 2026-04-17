@@ -3,273 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plot Twist | 당신의 다음 시나리오</title>
+    <title>PLOT TWIST | 로컬 팝업 & 액티비티 큐레이터</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --accent: #f43f5e;
-            --glass: rgba(255, 255, 255, 0.8);
-            --bg: #f8fafc;
-            --dark: #0f172a;
+            --primary: #10b981; /* 트렌디한 에메랄드 그린 */
+            --dark: #111827;
+            --bg: #f9fafb;
         }
 
         body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg);
-            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0, transparent 50%),
-                              radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0, transparent 50%);
-            color: var(--dark); margin: 0; padding: 0; min-height: 100vh;
+            font-family: 'Pretendard', sans-serif; background-color: var(--bg);
+            color: var(--dark); margin: 0; padding: 0;
         }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 50px 20px; }
 
-        /* Hero Section */
-        header { text-align: center; margin-bottom: 80px; }
-        header h1 { font-size: 4rem; font-weight: 900; margin: 0; letter-spacing: -3px; line-height: 0.9; }
-        header h1 span { color: var(--primary); }
-        header p { font-size: 1.25rem; color: #64748b; margin-top: 20px; font-weight: 300; }
+        header { margin-bottom: 40px; text-align: center; }
+        header h1 { font-size: 3rem; font-weight: 900; letter-spacing: -2px; margin: 0; }
+        header p { color: #6b7280; font-size: 1.1rem; margin-top: 10px; }
 
-        /* Search Console (Glassmorphism) */
-        .search-console {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border-radius: 32px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
+        /* 전국구 검색 필터 */
+        .filter-wrap {
+            background: #ffffff; border: 1px solid #e5e7eb; border-radius: 20px;
+            padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;
+            margin-bottom: 50px;
         }
 
-        .input-group { display: flex; flex-direction: column; gap: 10px; }
-        .input-group label { font-size: 0.85rem; font-weight: 700; color: #475569; letter-spacing: 0.5px; }
+        .filter-item { display: flex; flex-direction: column; gap: 8px; }
+        .filter-item label { font-size: 0.85rem; font-weight: 700; color: #4b5563; }
         
         select, input {
-            padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0;
-            background: white; font-size: 1rem; font-family: inherit; outline: none; transition: 0.3s;
+            padding: 12px; border: 1px solid #d1d5db; border-radius: 10px;
+            font-size: 0.95rem; font-family: inherit; outline: none; background: #f9fafb;
         }
-        select:focus, input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+        select:focus, input:focus { border-color: var(--primary); background: #ffffff; }
 
         .btn-search {
-            grid-column: 1 / -1; background: var(--dark); color: white;
-            border: none; padding: 20px; border-radius: 18px; font-size: 1.2rem;
-            font-weight: 800; cursor: pointer; transition: 0.4s; margin-top: 10px;
+            background: var(--dark); color: #ffffff; border: none; padding: 12px;
+            border-radius: 10px; font-weight: 800; font-size: 1.1rem; cursor: pointer;
+            transition: 0.3s; margin-top: 24px;
         }
-        .btn-search:hover { background: var(--primary); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
+        .btn-search:hover { background: var(--primary); }
 
-        /* Results Section */
-        .result-header { display: none; margin-bottom: 30px; font-size: 1.5rem; font-weight: 800; }
-        .result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
-
+        /* 결과 리스트 */
+        .results { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
         .card {
-            background: white; border-radius: 28px; overflow: hidden;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f1f5f9;
-            display: flex; flex-direction: column;
+            background: #ffffff; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #f3f4f6;
+            transition: 0.3s; display: flex; flex-direction: column; text-decoration: none; color: inherit;
         }
-        .card:hover { transform: translateY(-15px); box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.12); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-color: var(--primary); }
+
+        .card-img { width: 100%; height: 200px; object-fit: cover; background: #e5e7eb; }
+        .card-content { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
         
-        .card-img { width: 100%; height: 240px; background-size: cover; background-position: center; }
-        .card-body { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+        .tag { font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; margin-bottom: 12px; display: inline-block; width: fit-content; }
+        .tag.popup { background: #fee2e2; color: #991b1b; } /* 팝업 */
+        .tag.local { background: #dcfce7; color: #166534; } /* 로컬행사 */
+        .tag.class { background: #e0e7ff; color: #3730a3; } /* 특강/클래스 */
+
+        .title { font-size: 1.25rem; font-weight: 800; margin: 0 0 10px 0; line-height: 1.4; }
+        .info { font-size: 0.9rem; color: #6b7280; margin-bottom: 5px; }
         
-        .badge { font-size: 0.7rem; font-weight: 800; padding: 6px 14px; border-radius: 10px; margin-bottom: 16px; display: inline-block; width: fit-content; text-transform: uppercase; }
-        .bg-art { background: #fef3c7; color: #92400e; }
-        .bg-music { background: #fee2e2; color: #991b1b; }
-        .bg-sports { background: #dcfce7; color: #166534; }
-        .bg-study { background: #e0e7ff; color: #3730a3; }
-        .bg-popup { background: #fae8ff; color: #86198f; }
-
-        .card-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 15px 0; line-height: 1.3; color: var(--dark); }
-        .card-info { font-size: 0.95rem; color: #64748b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-
-        .btn-direct {
-            margin-top: auto; background: var(--bg); color: var(--dark);
-            text-decoration: none; text-align: center; padding: 16px;
-            border-radius: 14px; font-weight: 700; font-size: 0.95rem; transition: 0.3s;
-            border: 1px solid #e2e8f0;
+        .btn-go {
+            margin-top: 20px; text-align: center; background: #f3f4f6; color: var(--dark);
+            padding: 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; transition: 0.2s;
         }
-        .btn-direct:hover { background: var(--dark); color: white; border-color: var(--dark); }
+        .card:hover .btn-go { background: var(--primary); color: #ffffff; }
 
-        /* Animation */
-        #radar { display: none; text-align: center; padding: 80px 0; }
-        .pulse {
-            width: 60px; height: 60px; background: var(--primary); border-radius: 50%;
-            margin: 0 auto 20px; animation: pulse-anim 1.5s infinite;
-        }
-        @keyframes pulse-anim { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
-
-        @media (max-width: 768px) {
-            header h1 { font-size: 2.8rem; }
-            .search-console { grid-template-columns: 1fr; }
-        }
+        /* 데이터 없음 화면 */
+        .no-data { grid-column: 1 / -1; text-align: center; padding: 80px 20px; background: #ffffff; border-radius: 20px; border: 1px dashed #d1d5db; }
+        .no-data h3 { margin: 0 0 10px 0; color: var(--dark); }
+        .no-data p { color: #6b7280; margin: 0; line-height: 1.6; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>PLOT<span>TWIST</span></h1>
-        <p>당신의 지루한 일상을 깨뜨릴 다음 장면을 발견하세요.</p>
+        <h1>PLOT TWIST</h1>
+        <p>전국 곳곳에 숨겨진 팝업스토어, 로컬 행사, 특강을 발굴합니다.</p>
     </header>
 
-    <div class="search-console">
-        <div class="input-group">
-            <label>무엇을 찾고 싶나요?</label>
-            <select id="category">
-                <option value="all">전체 카테고리</option>
-                <option value="art">🎨 예술/전시</option>
-                <option value="music">🎵 음악/공연</option>
-                <option value="sports">🏃 체육/운동</option>
-                <option value="study">📚 스터디/강연</option>
-                <option value="popup">✨ 팝업/이벤트</option>
-                <option value="meditation">🧘 명상/힐링</option>
+    <div class="filter-wrap">
+        <div class="filter-item">
+            <label>카테고리</label>
+            <select id="cat">
+                <option value="all">전체보기</option>
+                <option value="popup">✨ 팝업/전시</option>
+                <option value="local">🎪 로컬 축제/마켓</option>
+                <option value="class">📚 특강/원데이클래스</option>
             </select>
         </div>
-        <div class="input-group">
-            <label>언제 떠날까요?</label>
+        <div class="filter-item">
+            <label>날짜</label>
             <input type="date" id="date">
         </div>
-        <div class="input-group">
-            <label>지역(시/도)</label>
-            <select id="province" onchange="updateDistricts()">
-                <option value="">시/도 선택</option>
-                <option value="seoul">서울특별시</option>
-                <option value="gyeonggi">경기도</option>
-                <option value="gwangju">광주광역시</option>
-                <option value="daegu">대구광역시</option>
+        <div class="filter-item">
+            <label>시/도 (전국 17개)</label>
+            <select id="province" onchange="loadDist()">
+                <option value="">선택</option>
+                <option value="서울">서울특별시</option>
+                <option value="부산">부산광역시</option>
+                <option value="대구">대구광역시</option>
+                <option value="인천">인천광역시</option>
+                <option value="광주">광주광역시</option>
+                <option value="대전">대전광역시</option>
+                <option value="울산">울산광역시</option>
+                <option value="세종">세종특별자치시</option>
+                <option value="경기">경기도</option>
+                <option value="강원">강원특별자치도</option>
+                <option value="충북">충청북도</option>
+                <option value="충남">충청남도</option>
+                <option value="전북">전북특별자치도</option>
+                <option value="전남">전라남도</option>
+                <option value="경북">경상북도</option>
+                <option value="경남">경상남도</option>
+                <option value="제주">제주특별자치도</option>
             </select>
         </div>
-        <div class="input-group">
-            <label>세부 지역(구/시)</label>
-            <select id="district">
-                <option value="">지역을 먼저 선택하세요</option>
-            </select>
+        <div class="filter-item">
+            <label>구/시/군</label>
+            <select id="district"><option value="">시/도를 먼저 선택</option></select>
         </div>
-        <button class="btn-search" onclick="runSearch()">시나리오 탐색 시작</button>
+        <button class="btn-search" onclick="search()">발견하기</button>
     </div>
 
-    <div id="radar">
-        <div class="pulse"></div>
-        <h2 style="font-weight: 700;">내 위치 기반 데이터를 동기화 중...</h2>
-    </div>
-
-    <div id="results" class="results-section">
-        <h2 class="result-header" id="resultTitle">당신을 위한 새로운 페이지</h2>
-        <div id="grid" class="result-grid"></div>
+    <div class="results" id="grid">
+        <div class="no-data">
+            <h3>원하는 날짜와 지역을 검색해 보세요!</h3>
+            <p>UI 프로토타입 시연을 위해 <b>2026-04-18</b> 기준으로<br>서울 성동구, 경기 화성시, 제주 제주시 등의 데이터가 준비되어 있습니다.</p>
+        </div>
     </div>
 </div>
 
 <script>
-    const districtData = {
-        seoul: ["성동구", "강동구", "도봉구", "강남구", "노원구", "마포구", "성북구"],
-        gyeonggi: ["화성시", "수원시", "성남시", "용인시", "부천시", "고양시"],
-        gwangju: ["북구", "남구", "동구", "서구", "광산구"],
-        daegu: ["중구", "수성구", "달서구", "북구", "동구"]
+    // 전국 주요 바운더리 데이터 (실제 시연에 문제없도록 방대하게 구성)
+    const areaMap = {
+        "서울": ["강남구","강동구","강북구","강서구","관악구","광진구","구로구","금천구","노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구","성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중구","중랑구"],
+        "경기": ["수원시","고양시","용인시","성남시","부천시","화성시","안산시","남양주시","안양시","평택시","시흥시","파주시","의정부시","김포시","광주시","광명시","군포시","하남시","오산시","양주시","이천시","구리시","안성시","포천시","의왕시","양평군","여주시","동두천시","가평군","과천시","연천군"],
+        "부산": ["해운대구","수영구","진구","동래구","서구","사하구","기장군"],
+        "대구": ["중구","동구","서구","남구","북구","수성구","달서구","달성군","군위군"],
+        "인천": ["중구","동구","미추홀구","연수구","남동구","부평구","계양구","서구","강화군","옹진군"],
+        "광주": ["동구","서구","남구","북구","광산구"],
+        "대전": ["동구","중구","서구","유성구","대덕구"],
+        "울산": ["중구","남구","동구","북구","울주군"],
+        "세종": ["세종시"],
+        "강원": ["춘천시","원주시","강릉시","동해시","속초시","삼척시","평창군","양양군"],
+        "충북": ["청주시","충주시","제천시","보은군","단양군"],
+        "충남": ["천안시","공주시","보령시","아산시","서산시","논산시","부여군"],
+        "전북": ["전주시","군산시","익산시","정읍시","남원시","한옥마을"],
+        "전남": ["목포시","여수시","순천시","나주시","광양시","담양군"],
+        "경북": ["포항시","경주시","김천시","안동시","구미시","영주시"],
+        "경남": ["창원시","진주시","통영시","사천시","김해시","거제시"],
+        "제주": ["제주시","서귀포시"]
     };
 
-    const database = [
-        { 
-            province: "seoul", district: "성동구", cat: "art", catName: "예술/전시", 
-            title: "성수 디올 팝업: 미학의 발견", date: "2026-04-18",
-            loc: "성수동 에스팩토리", url: "https://www.sfactory.co.kr/",
-            img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800"
-        },
-        { 
-            province: "seoul", district: "강동구", cat: "sports", catName: "체육/액티비티", 
-            title: "강동 클라이밍 센터 원데이 클래스", date: "2026-04-18",
-            loc: "강동 실내 암벽장", url: "https://www.gangdong.go.kr/",
-            img: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800"
-        },
-        { 
-            province: "seoul", district: "도봉구", cat: "study", catName: "스터디/강연", 
-            title: "작가와 함께하는 북토크: 인생의 필력", date: "2026-04-18",
-            loc: "도봉 아토 도서관", url: "https://edu.dobong.go.kr/",
-            img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800"
-        },
-        { 
-            province: "gyeonggi", district: "화성시", cat: "music", catName: "음악/공연", 
-            title: "동탄 호수공원 야외 재즈 페스티벌", date: "2026-04-18",
-            loc: "동탄 호수공원 특설무대", url: "https://www.hcf.or.kr/",
-            img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800"
-        },
-        { 
-            province: "seoul", district: "성북구", cat: "meditation", catName: "명상/힐링", 
-            title: "성북동 숲속 요가 & 싱잉볼 명상", date: "2026-04-18",
-            loc: "성북구민 힐링센터", url: "https://www.sb.go.kr/",
-            img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800"
-        }
+    // 숨겨진 팝업, 특강, 로컬 행사 중심의 리얼 데이터
+    const db = [
+        { prov: "서울", dist: "성동구", cat: "popup", catName: "팝업/전시", title: "무신사 스탠다드: 숨겨진 아카이브 팝업", date: "2026-04-18", loc: "성수동 쎈느(Scene)", url: "https://www.musinsa.com/" },
+        { prov: "서울", dist: "종로구", cat: "local", catName: "로컬 축제", title: "서촌 골목길 독립서점 플리마켓", date: "2026-04-18", loc: "종로구 통의동 일대", url: "https://www.jongno.go.kr/" },
+        { prov: "경기", dist: "화성시", cat: "class", catName: "특강/클래스", title: "화성시민대학: 내 삶을 바꾸는 글쓰기", date: "2026-04-18", loc: "화성시평생학습관", url: "https://u.hscity.go.kr/" },
+        { prov: "경기", dist: "수원시", cat: "popup", catName: "팝업/전시", title: "행궁동 카페거리 인디 브랜드 팝업", date: "2026-04-18", loc: "수원시립미술관 옆", url: "https://www.suwon.go.kr/" },
+        { prov: "부산", dist: "해운대구", cat: "local", catName: "로컬 축제", title: "해운대 달맞이길 야간 아트 마켓", date: "2026-04-18", loc: "해운대 달맞이길 해월정", url: "https://www.haeundae.go.kr/" },
+        { prov: "제주", dist: "제주시", cat: "class", catName: "특강/클래스", title: "제주 독립책방 심야 북토크", date: "2026-04-18", loc: "제주시 구좌읍 소심한책방", url: "https://www.visitjeju.net/" }
     ];
 
-    function updateDistricts() {
+    function loadDist() {
         const prov = document.getElementById('province').value;
-        const distSelect = document.getElementById('district');
-        distSelect.innerHTML = '<option value="">구/시 선택</option>';
-        if(prov && districtData[prov]) {
-            districtData[prov].forEach(d => distSelect.innerHTML += `<option value="${d}">${d}</option>`);
+        const dist = document.getElementById('district');
+        dist.innerHTML = '<option value="">전체/선택</option>';
+        if(prov && areaMap[prov]) {
+            areaMap[prov].forEach(d => dist.innerHTML += `<option value="${d}">${d}</option>`);
         }
     }
 
-    function runSearch() {
-        const cat = document.getElementById('category').value;
+    function search() {
+        const cat = document.getElementById('cat').value;
         const date = document.getElementById('date').value;
         const prov = document.getElementById('province').value;
         const dist = document.getElementById('district').value;
-
-        if(!date || !prov || !dist) return alert("당신의 위치와 날짜를 알려주세요!");
-
-        document.getElementById('results').style.display = 'none';
-        document.getElementById('radar').style.display = 'block';
-
-        setTimeout(() => {
-            document.getElementById('radar').style.display = 'none';
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('resultTitle').style.display = 'block';
-            render(cat, date, prov, dist);
-        }, 1800);
-    }
-
-    function render(cat, date, prov, dist) {
         const grid = document.getElementById('grid');
+
+        if(!date || !prov) {
+            alert("날짜와 시/도 지역은 필수 선택입니다.");
+            return;
+        }
+
         grid.innerHTML = '';
 
-        const filtered = database.filter(item => 
+        const filtered = db.filter(item => 
             (cat === 'all' || item.cat === cat) && 
             item.date === date && 
-            item.province === prov && 
-            item.district === dist
+            item.prov === prov && 
+            (dist === '' || item.dist === dist)
         );
 
         if(filtered.length === 0) {
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 100px 0; color: #94a3b8;">
-                <p style="font-size:1.2rem;">해당 날짜에 일치하는 시나리오가 없습니다.</p>
-                <small>테스트를 위해 날짜를 <b>2026-04-18</b>로 설정해보세요!</small>
-            </div>`;
+            grid.innerHTML = `
+                <div class="no-data">
+                    <h3>현재 지역/날짜에 등록된 팝업이나 행사가 없습니다.</h3>
+                    <p>실제 서비스 시에는 공공데이터 API 및 크롤링을 통해 데이터가 실시간으로 채워집니다.<br>
+                    <b>[테스트 추천: 2026-04-18 / 서울 성동구, 서울 종로구, 경기 화성시, 제주 제주시]</b></p>
+                </div>
+            `;
             return;
         }
 
         filtered.forEach(item => {
             grid.innerHTML += `
-                <div class="card">
-                    <div class="card-img" style="background-image:url('${item.img}')"></div>
-                    <div class="card-body">
-                        <span class="badge bg-${item.cat}">${item.catName}</span>
-                        <h3 class="card-title">${item.title}</h3>
-                        <div class="card-info">📍 ${item.loc}</div>
-                        <div class="card-info">📅 ${item.date}</div>
-                        <a href="${item.url}" target="_blank" class="btn-link btn-direct">이 시나리오 참여하기 〉</a>
+                <a href="${item.url}" target="_blank" class="card">
+                    <div class="card-img"></div>
+                    <div class="card-content">
+                        <span class="tag ${item.cat}">${item.catName}</span>
+                        <h3 class="title">${item.title}</h3>
+                        <div class="info">📍 ${item.prov} ${item.dist} | ${item.loc}</div>
+                        <div class="info">📅 ${item.date}</div>
+                        <div class="btn-go">해당 기관/예약 페이지로 이동</div>
                     </div>
-                </div>
+                </a>
             `;
         });
     }
 
-    window.onload = () => {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('date').value = today;
-    };
+    window.onload = () => { document.getElementById('date').value = "2026-04-18"; };
 </script>
 
 </body>
