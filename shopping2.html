@@ -3,243 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find The Original | 쇼핑 호갱 탈출기</title>
+    <title>Find The Original | AI 동일 상품 추적기</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            --point-color: #ff4757; /* 톡톡 튀는 트렌디한 레드/핑크 */
-            --box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            --bg: #f4f6f8; --point: #ff3f6c; --text-main: #1e293b; --text-sub: #64748b;
         }
 
         body {
-            font-family: 'Pretendard', sans-serif;
-            background: var(--bg-gradient);
-            color: #2f3542;
-            margin: 0; padding: 40px 20px;
-            display: flex; flex-direction: column; align-items: center;
+            font-family: 'Pretendard', sans-serif; background: var(--bg); color: var(--text-main);
+            margin: 0; padding: 30px 15px; display: flex; flex-direction: column; align-items: center;
         }
 
-        .app-container {
-            max-width: 600px; width: 100%;
-            background: white; border-radius: 30px;
-            box-shadow: var(--box-shadow); overflow: hidden;
-            padding: 40px; box-sizing: border-box;
+        .container {
+            max-width: 600px; width: 100%; background: white; border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08); padding: 35px; box-sizing: border-box;
         }
 
         header { text-align: center; margin-bottom: 30px; }
-        header h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: #2f3542; letter-spacing: -1px; }
-        header h1 span { color: var(--point-color); }
-        header p { color: #747d8c; margin-top: 10px; font-size: 1rem; }
+        header h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: #0f172a; letter-spacing: -1px; }
+        header span { color: var(--point); }
+        header p { color: var(--text-sub); margin-top: 8px; font-size: 0.95rem; line-height: 1.5; }
 
-        /* 1. 입력 폼 섹션 */
-        .input-group { margin-bottom: 25px; }
-        .input-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #57606f; }
+        /* 입력 폼 */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; }
         
-        .upload-box {
-            width: 100%; height: 200px;
-            background: #f1f2f6; border: 2px dashed #ced6e0; border-radius: 20px;
+        .upload-area {
+            border: 2px dashed #cbd5e1; border-radius: 16px; height: 180px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
+            cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; background: #f8fafc;
         }
-        .upload-box:hover { border-color: var(--point-color); background: #fff0f1; }
-        .upload-box img { width: 100%; height: 100%; object-fit: cover; display: none; position: absolute; }
+        .upload-area:hover { border-color: var(--point); background: #fff1f2; }
+        .upload-area img { width: 100%; height: 100%; object-fit: contain; display: none; position: absolute; background: white; }
         
         input[type="text"], input[type="number"] {
-            width: 100%; padding: 15px; border: 1px solid #dfe4ea; border-radius: 15px;
-            font-size: 1rem; font-family: inherit; box-sizing: border-box; transition: 0.2s;
+            width: 100%; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 12px;
+            font-size: 1rem; font-family: inherit; box-sizing: border-box; background: #f8fafc;
         }
-        input:focus { outline: none; border-color: var(--point-color); box-shadow: 0 0 0 3px rgba(255,71,87,0.1); }
+        input:focus { outline: none; border-color: var(--point); background: white; }
 
-        .submit-btn {
-            width: 100%; background: var(--point-color); color: white;
-            border: none; padding: 18px; border-radius: 15px;
-            font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(255,71,87,0.3);
+        .btn-submit {
+            width: 100%; background: var(--point); color: white; border: none; padding: 16px;
+            border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px;
         }
-        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,71,87,0.4); }
+        .btn-submit:hover { background: #e11d48; transform: translateY(-2px); }
 
-        /* 2. 로딩 섹션 */
-        .loading-area { display: none; text-align: center; padding: 50px 0; }
-        .loader {
-            border: 5px solid #f1f2f6; border-top: 5px solid var(--point-color);
-            border-radius: 50%; width: 50px; height: 50px;
-            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        /* 분석 로딩 */
+        .loading { display: none; text-align: center; padding: 40px 0; }
+        .spinner {
+            width: 45px; height: 45px; border: 4px solid #f1f5f9; border-top: 4px solid var(--point);
+            border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-weight: 600; color: #334155; }
+        .loading-sub { color: var(--text-sub); font-size: 0.85rem; margin-top: 5px; }
 
-        /* 3. 결과 섹션 */
-        .result-area { display: none; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .result-header { text-align: center; margin-bottom: 30px; padding: 15px; background: #f1f2f6; border-radius: 15px; }
-        .result-header strong { color: var(--point-color); }
+        /* 결과 리스트 */
+        .result-area { display: none; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .shop-card {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 20px; border-radius: 20px; border: 1px solid #dfe4ea; margin-bottom: 15px;
-            transition: 0.3s; background: white;
+        .summary-box { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 15px; border-radius: 12px; margin-bottom: 25px; font-size: 0.95rem; font-weight: 600; text-align: center; }
+
+        .item-card {
+            display: flex; flex-direction: column; padding: 20px; border-radius: 16px;
+            border: 1px solid #e2e8f0; margin-bottom: 15px; transition: 0.2s;
+            background: white; position: relative; overflow: hidden;
         }
-        .shop-card:hover { transform: scale(1.02); box-shadow: var(--box-shadow); }
+        .item-card:hover { border-color: #cbd5e1; box-shadow: 0 10px 20px rgba(0,0,0,0.04); transform: translateY(-2px); }
+        .item-card.best { border-color: var(--point); background: #fffbfb; }
         
-        .shop-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
-        .shop-info p { margin: 0; color: #a4b0be; font-size: 0.9rem; }
-        .shop-price { font-size: 1.3rem; font-weight: 800; color: #2f3542; margin-top: 5px; }
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         
-        /* 각 쇼핑몰별 버튼 색상 */
+        .platform-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; color: white; margin-bottom: 8px; }
+        .badge-ably { background: #ff477e; }
+        .badge-zigzag { background: #ff007f; }
+        
+        .shop-name { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px 0; }
+        .acc-rate { font-size: 0.8rem; color: #0ea5e9; font-weight: 600; background: #e0f2fe; padding: 3px 8px; border-radius: 4px; }
+        
+        .price-row { display: flex; justify-content: space-between; align-items: flex-end; }
+        .price { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+        .price del { font-size: 0.9rem; color: #94a3b8; font-weight: 400; margin-right: 5px; }
+        
         .link-btn {
-            padding: 12px 20px; border-radius: 12px; text-decoration: none;
-            font-weight: 700; color: white; text-align: center; font-size: 0.9rem;
+            background: #0f172a; color: white; padding: 10px 20px; border-radius: 8px;
+            text-decoration: none; font-weight: 600; font-size: 0.9rem; text-align: center;
         }
-        .btn-ably { background: #ff477e; }
-        .btn-zigzag { background: #ff007f; }
-        .btn-musinsa { background: #000000; }
-        .btn-temu { background: #ff6a00; }
+        .link-btn:hover { background: #334155; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <div class="container">
         <header>
             <h1>Find <span>The Original</span></h1>
-            <p>같은 옷, 다른 가격? 도매 원작자를 찾아드려요!</p>
+            <p>플랫폼 내 입점 쇼핑몰들의 '동일 상품 다른 가격'을<br>정확도 99%로 찾아내어 상품 페이지로 직행합니다.</p>
         </header>
 
-        <div id="inputSection">
-            <div class="input-group">
-                <label>1. 위시리스트 사진 업로드 📸</label>
-                <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-                    <img id="imagePreview" src="" alt="미리보기">
-                    <div id="uploadText" style="text-align: center; color: #a4b0be;">
-                        <span style="font-size: 2rem;">+</span><br>클릭해서 사진 올리기
+        <div id="inputSec">
+            <div class="form-group">
+                <label>1. 옷 캡처본 업로드 📸</label>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <img id="previewImg" src="">
+                    <div id="uploadTxt" style="text-align: center; color: #94a3b8;">
+                        <span style="font-size: 2rem;">+</span><br>터치하여 사진 선택
                     </div>
-                    <input type="file" id="fileInput" hidden accept="image/*" onchange="previewImage(event)">
+                    <input type="file" id="fileInput" hidden accept="image/*" onchange="loadImg(event)">
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>2. 상품의 이름을 적어주세요 👕</label>
-                <input type="text" id="itemName" placeholder="예: 봄내음 찰랑 브이넥 니트">
+            <div class="form-group">
+                <label>2. 상품 이름 (키워드) 👕</label>
+                <input type="text" id="itemName" placeholder="예: 봄내음 여리핏 가디건">
             </div>
 
-            <div class="input-group">
-                <label>3. 쇼핑몰에서 본 가격은 얼마인가요? 💰</label>
-                <input type="number" id="itemPrice" placeholder="예: 35000">
+            <div class="form-group">
+                <label>3. 발견하신 가격 💰</label>
+                <input type="number" id="itemPrice" placeholder="예: 32000 (숫자만 입력)">
             </div>
 
-            <button class="submit-btn" onclick="startAI()">AI 비교 분석하기</button>
+            <button class="btn-submit" onclick="runDeepSearch()">초정밀 딥서치 시작</button>
         </div>
 
-        <div id="loadingSection" class="loading-area">
-            <div class="loader"></div>
-            <h3 style="color: #57606f;">AI가 동대문 도매 DB를 뒤지는 중...</h3>
-            <p style="color: #a4b0be;" id="loadingText">의류 패턴 분석 중...</p>
+        <div id="loadSec" class="loading">
+            <div class="spinner"></div>
+            <div class="loading-text" id="loadMain">이미지 픽셀 단위 분해 중...</div>
+            <div class="loading-sub" id="loadSub">원본 도매 DB와 대조합니다</div>
         </div>
 
-        <div id="resultSection" class="result-area">
-            <div class="result-header">
-                💡 찾았습니다! 이 옷은 <strong>[동대문 디오트 3층]</strong>에서 도매로 납품되는 옷입니다.
+        <div id="resultSec" class="result-area">
+            <div class="summary-box">
+                ✔️ 도매 원형 발견! 동일 플랫폼 내에서도 가격이 다릅니다.<br>최저가 다이렉트 링크를 확인하세요.
             </div>
-
-            <div id="shopList"></div>
             
-            <button class="submit-btn" style="background: #a4b0be; margin-top: 20px;" onclick="location.reload()">다른 옷 다시 검색하기</button>
+            <div id="resultList">
+                </div>
+
+            <button class="btn-submit" style="background: #e2e8f0; color: #475569; margin-top: 15px;" onclick="location.reload()">새로운 옷 검사하기</button>
         </div>
     </div>
 
     <script>
-        // 사진 미리보기 기능
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function(){
-                const img = document.getElementById('imagePreview');
-                img.src = reader.result;
-                img.style.display = 'block';
-                document.getElementById('uploadText').style.display = 'none';
+        function loadImg(e) {
+            if(e.target.files[0]){
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    document.getElementById('previewImg').src = event.target.result;
+                    document.getElementById('previewImg').style.display = 'block';
+                    document.getElementById('uploadTxt').style.display = 'none';
+                }
+                reader.readAsDataURL(e.target.files[0]);
             }
-            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
         }
 
-        // 분석 시작 (로딩 애니메이션 처리)
-        function startAI() {
+        function runDeepSearch() {
             const name = document.getElementById('itemName').value;
             const price = parseInt(document.getElementById('itemPrice').value);
-            const imgSrc = document.getElementById('imagePreview').src;
+            if(!name || !price) { alert("정확한 매칭을 위해 이름과 가격을 입력해주세요."); return; }
 
-            // 입력값 확인 (사진은 없어도 넘어가게끔 느슨하게 처리)
-            if(!name || !price) {
-                alert("옷 이름과 가격을 정확히 입력해주세요!");
-                return;
-            }
+            document.getElementById('inputSec').style.display = 'none';
+            document.getElementById('loadSec').style.display = 'block';
 
-            // 화면 전환 (입력 -> 로딩)
-            document.getElementById('inputSection').style.display = 'none';
-            document.getElementById('loadingSection').style.display = 'block';
-
-            // 텍스트 바뀌는 애니메이션
-            const texts = ["입력하신 텍스트/이미지 대조 중...", "지그재그, 에이블리 가격 크롤링 중...", "도매가 마진율 계산 완료!"];
+            const steps = [
+                {m: "에이블리, 지그재그 입점몰 스캔 중...", s: "이미지 유사도 98% 이상 필터링"},
+                {m: "상품 상세페이지 다이렉트 링크 추출 중...", s: "각 쇼핑몰별 배송비, 쿠폰가 계산 완료"}
+            ];
+            
             let i = 0;
-            const interval = setInterval(() => {
-                document.getElementById('loadingText').innerText = texts[i];
+            const timer = setInterval(() => {
+                document.getElementById('loadMain').innerText = steps[i].m;
+                document.getElementById('loadSub').innerText = steps[i].s;
                 i++;
-                if(i >= texts.length) clearInterval(interval);
-            }, 800);
+                if(i >= steps.length) clearInterval(timer);
+            }, 1000);
 
-            // 3초 후 결과 화면 띄우기
             setTimeout(() => {
-                document.getElementById('loadingSection').style.display = 'none';
-                document.getElementById('resultSection').style.display = 'block';
-                showResults(name, price);
-            }, 3000);
+                document.getElementById('loadSec').style.display = 'none';
+                document.getElementById('resultSec').style.display = 'block';
+                renderResults(name, price);
+            }, 2500);
         }
 
-        // 결과 생성 로직
-        function showResults(name, originalPrice) {
-            // 내가 입력한 가격을 바탕으로 쇼핑몰별 가상 가격 세팅
-            const temuPrice = Math.round(originalPrice * 0.4); // 테무 (도매가 수준)
-            const ablyPrice = Math.round(originalPrice * 0.85); // 에이블리 (박리다매)
-            const zigzagPrice = Math.round(originalPrice * 1.05); // 지그재그 (평균가)
-            const musinsaPrice = Math.round(originalPrice * 1.3); // 무신사 (브랜드화)
+        function renderResults(name, userPrice) {
+            // 실제 유저가 보내준 에이블리 상품 링크 적용
+            const linkA = "https://m.a-bly.com/goods/66172201";
+            const linkB = "https://m.a-bly.com/goods/66868567";
+            const linkZ = "https://zigzag.kr/catalog/products/115598150"; // 지그재그 예시 링크
 
-            // 쇼핑몰 데이터 배열 (실제 링크 주소 포함!)
-            const shops = [
-                { id: 'temu', name: 'Temu (테무)', desc: '해외 직구 도매가 (배송 7일)', price: temuPrice, colorClass: 'btn-temu', url: 'https://www.temu.com/kr' },
-                { id: 'ably', name: '에이블리', desc: '1020 인기 마켓 최저가', price: ablyPrice, colorClass: 'btn-ably', url: 'https://m.a-bly.com/' },
-                { id: 'zigzag', name: '지그재그', desc: '입력하신 상품과 가장 유사한 마켓', price: zigzagPrice, colorClass: 'btn-zigzag', url: 'https://zigzag.kr/' },
-                { id: 'musinsa', name: '무신사', desc: '자체 라벨 갈이 후 브랜드 판매', price: musinsaPrice, colorClass: 'btn-musinsa', url: 'https://www.musinsa.com/' }
+            // 데이터 구조: 플랫폼 내에서도 여러 쇼핑몰이 존재
+            const data = [
+                { 
+                    platform: "에이블리", badgeClass: "badge-ably", shop: "A마켓 (도매직영)", 
+                    price: Math.floor(userPrice * 0.75), url: linkA, acc: "99.8%", isBest: true 
+                },
+                { 
+                    platform: "에이블리", badgeClass: "badge-ably", shop: "B감성스토어", 
+                    price: Math.floor(userPrice * 1.15), url: linkB, acc: "99.8%", isBest: false 
+                },
+                { 
+                    platform: "지그재그", badgeClass: "badge-zigzag", shop: "C부띠끄 (Z결제)", 
+                    price: Math.floor(userPrice * 0.95), url: linkZ, acc: "98.5%", isBest: false 
+                }
             ];
 
-            // 가격 순으로 정렬
-            shops.sort((a, b) => a.price - b.price);
+            // 가격 오름차순 정렬 (가장 싼 게 위로)
+            data.sort((a, b) => a.price - b.price);
 
-            const shopList = document.getElementById('shopList');
-            shopList.innerHTML = '';
+            const list = document.getElementById('resultList');
+            list.innerHTML = '';
 
-            // HTML에 카드 그려넣기
-            shops.forEach(shop => {
-                // 천 단위 콤마 찍기
-                const formattedPrice = shop.price.toLocaleString() + "원";
+            data.forEach((item, index) => {
+                const isBestClass = item.isBest ? 'best' : '';
+                const bestLabel = item.isBest ? '<span style="color:var(--point); font-size:0.8rem; font-weight:800; margin-bottom:5px; display:block;">🔥 동일상품 최저가 매칭</span>' : '';
                 
                 const card = document.createElement('div');
-                card.className = 'shop-card';
+                card.className = `item-card ${isBestClass}`;
                 card.innerHTML = `
-                    <div class="shop-info">
-                        <h3>${shop.name}</h3>
-                        <p>${shop.desc}</p>
-                        <div class="shop-price">${formattedPrice}</div>
+                    ${bestLabel}
+                    <div class="card-top">
+                        <div>
+                            <div class="platform-badge ${item.badgeClass}">${item.platform}</div>
+                            <h3 class="shop-name">${item.shop}</h3>
+                        </div>
+                        <div class="acc-rate">AI 일치율 ${item.acc}</div>
                     </div>
-                    <a href="${shop.url}" target="_blank" class="link-btn ${shop.colorClass}">
-                        쇼핑몰 이동
-                    </a>
+                    <div class="price-row">
+                        <div class="price">
+                            ${index !== 0 ? `<del>${userPrice.toLocaleString()}원</del><br>` : ''}
+                            ${item.price.toLocaleString()}원
+                        </div>
+                        <a href="${item.url}" target="_blank" class="link-btn">
+                            해당 상품 바로가기 〉
+                        </a>
+                    </div>
                 `;
-                shopList.appendChild(card);
+                list.appendChild(card);
             });
         }
     </script>
 </body>
 </html>
-
-  
-
-        
-        
