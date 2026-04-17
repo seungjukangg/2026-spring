@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시공간(時空間) | 로컬 액티비티 큐레이터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1; /* 인디고 블루 */
+            --accent: #10b981;  /* 에메랄드 그린 */
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .container { max-width: 1000px; width: 100%; padding: 40px 20px; box-sizing: border-box; }
+
+        header { text-align: center; margin-bottom: 50px; }
+        header h1 { font-size: 2.5rem; font-weight: 800; margin: 0; color: var(--primary); letter-spacing: -1.5px; }
+        header p { font-size: 1.1rem; color: var(--text-sub); margin-top: 10px; }
+
+        /* 1. 필터 섹션 */
+        .filter-panel {
+            background: var(--card); border-radius: 24px; padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 40px;
+        }
+
+        .filter-group { display: flex; flex-direction: column; gap: 8px; }
+        .filter-group label { font-weight: 700; font-size: 0.9rem; color: var(--text-main); }
+        .filter-group input, .filter-group select {
+            padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px;
+            font-size: 1rem; outline: none; transition: 0.2s; background: #fdfdfd;
+        }
+        .filter-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+
+        .search-btn {
+            grid-column: 1 / -1; background: var(--primary); color: white;
+            border: none; padding: 16px; border-radius: 12px; font-weight: 700;
+            font-size: 1.1rem; cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .search-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 15px rgba(99, 102, 241, 0.3); }
+
+        /* 2. 탐색 레이더 애니메이션 */
+        .radar-section { display: none; text-align: center; padding: 60px 0; }
+        .radar {
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 2px solid var(--primary); position: relative; margin: 0 auto 30px;
+            animation: pulse 1.5s infinite;
+        }
+        .radar::after {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 10px; height: 10px; background: var(--primary);
+            border-radius: 50%; transform: translate(-50%, -50%);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* 3. 결과 리스트 */
+        .result-section { display: none; width: 100%; animation: slideUp 0.6s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        
+        .activity-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            border: 1px solid #e2e8f0; transition: 0.3s; display: flex; flex-direction: column;
+        }
+        .activity-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        .card-img { width: 100%; height: 180px; background: #eee; object-fit: cover; }
+        .card-content { padding: 20px; flex-grow: 1; }
+        
+        .cat-tag {
+            display: inline-block; padding: 4px 10px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 12px;
+        }
+        .tag-intel { background: #e0e7ff; color: #4338ca; }
+        .tag-active { background: #d1fae5; color: #065f46; }
+        .tag-culture { background: #fef3c7; color: #92400e; }
+
+        .act-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 10px 0; }
+        .info-row { display: flex; align-items: center; gap: 8px; color: var(--text-sub); font-size: 0.9rem; margin-bottom: 6px; }
+        
+        .btn-join {
+            margin-top: 15px; width: 100%; padding: 12px; border-radius: 10px;
+            background: var(--text-main); color: white; text-decoration: none;
+            text-align: center; font-weight: 600; font-size: 0.9rem; transition: 0.2s;
+        }
+        .btn-join:hover { background: var(--primary); }
+
+        @media (max-width: 600px) { .filter-panel { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>시공간 (時空間)</h1>
+            <p>당신의 소중한 시간과 장소에 딱 맞는 활동을 찾아보세요.</p>
+        </header>
+
+        <div class="filter-panel">
+            <div class="filter-group">
+                <label>어떤 활동을 원하세요?</label>
+                <select id="catSelect">
+                    <option value="all">전체보기</option>
+                    <option value="intel">지적 탐구 (강연/스터디)</option>
+                    <option value="active">액티비티 (운동/야외)</option>
+                    <option value="culture">문화생활 (전시/팝업)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>언제 하실 건가요?</label>
+                <input type="date" id="dateInput">
+            </div>
+            <div class="filter-group">
+                <label>몇 시부터 시작할까요?</label>
+                <input type="time" id="timeInput">
+            </div>
+            <div class="filter-group">
+                <label>어디서 찾을까요? (반경)</label>
+                <select id="radiusSelect">
+                    <option value="5">집 근처 (5km)</option>
+                    <option value="15">동네 탐험 (15km)</option>
+                    <option value="50">주말 나들이 (50km)</option>
+                </select>
+            </div>
+            <button class="search-btn" onclick="startDiscovery()">맞춤 활동 탐색하기</button>
+        </div>
+
+        <div class="radar-section" id="radarSection">
+            <div class="radar"></div>
+            <h3>입력하신 시간에 참여 가능한 활동을 분석 중...</h3>
+            <p id="searchStatus">내 거주지 주변의 보물 같은 정보를 모으고 있습니다.</p>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <h2 style="margin-bottom: 25px;">검색 결과 <span id="resCount" style="color: var(--primary);">0</span>건</h2>
+            <div class="result-grid" id="resultGrid">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // 가상 데이터 세트 (로컬 액티비티)
+        const mockData = [
+            {
+                id: 1, cat: 'intel', catName: '지적 탐구', tagClass: 'tag-intel',
+                title: '화성시 인문학 특강: 심리학의 이해',
+                date: '2026-04-18', time: '14:00', location: '봉담도서관 강당', radius: 5,
+                img: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400'
+            },
+            {
+                id: 2, cat: 'active', catName: '액티비티', tagClass: 'tag-active',
+                title: '동탄 호수공원 야간 러닝 크루',
+                date: '2026-04-18', time: '19:30', location: '동탄호수공원 매점 앞', radius: 10,
+                img: 'https://images.unsplash.com/photo-1532444458054-01a7dd3e9fca?w=400'
+            },
+            {
+                id: 3, cat: 'culture', catName: '문화생활', tagClass: 'tag-culture',
+                title: '성수동 팝업스토어: 미니멀 라이프 전시',
+                date: '2026-04-19', time: '11:00', location: '서울 성수동 XYZ 빌딩', radius: 40,
+                img: 'https://images.unsplash.com/photo-1554188248-986adbb73be4?w=400'
+            },
+            {
+                id: 4, cat: 'intel', catName: '지적 탐구', tagClass: 'tag-intel',
+                title: '퇴근 후 글쓰기 스터디 (수필 편)',
+                date: '2026-04-20', time: '19:00', location: '병점역 근처 카페 소란', radius: 3,
+                img: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400'
+            },
+            {
+                id: 5, cat: 'culture', catName: '문화생활', tagClass: 'tag-culture',
+                title: '갤러리 화성: 지역 신진 작가 초대전',
+                date: '2026-04-18', time: '10:00', location: '화성 시립 미술관', radius: 8,
+                img: 'https://images.unsplash.com/photo-1518998053574-53ee753cf68b?w=400'
+            }
+        ];
+
+        function startDiscovery() {
+            const cat = document.getElementById('catSelect').value;
+            const date = document.getElementById('dateInput').value;
+            const radius = parseInt(document.getElementById('radiusSelect').value);
+
+            if(!date) { alert("날짜를 선택해주세요!"); return; }
+
+            // 화면 연출
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('radarSection').style.display = 'block';
+            
+            // 2.5초 뒤 결과 도출 (분석하는 척)
+            setTimeout(() => {
+                document.getElementById('radarSection').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'block';
+                filterData(cat, date, radius);
+            }, 2500);
+        }
+
+        function filterData(cat, date, radius) {
+            const filtered = mockData.filter(item => {
+                const catMatch = (cat === 'all' || item.cat === cat);
+                const dateMatch = (item.date === date);
+                const radiusMatch = (item.radius <= radius);
+                return catMatch && dateMatch && radiusMatch;
+            });
+
+            const grid = document.getElementById('resultGrid');
+            const count = document.getElementById('resCount');
+            grid.innerHTML = '';
+            count.innerText = filtered.length;
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1; padding:100px; color:#94a3b8;">해당 조건에 맞는 활동이 없습니다. 다른 날짜나 더 넓은 반경을 선택해보세요!</div>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                grid.innerHTML += `
+                    <div class="activity-card">
+                        <img src="${item.img}" class="card-img" alt="활동 이미지">
+                        <div class="card-content">
+                            <span class="cat-tag ${item.tagClass}">${item.catName}</span>
+                            <h3 class="act-title">${item.title}</h3>
+                            <div class="info-row">📍 ${item.location}</div>
+                            <div class="info-row">⏰ ${item.time} 시작</div>
+                            <div class="info-row">📏 내 위치에서 약 ${item.radius}km</div>
+                            <a href="#" class="btn-join">상세보기 및 신청</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 초기 날짜 세팅 (오늘 날짜)
+        window.onload = () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateInput').value = today;
+        };
+    </script>
+</body>
+</html>
