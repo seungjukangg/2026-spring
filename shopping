@@ -2,180 +2,77 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find The Original : AI 의류 원단/도매 추적기</title>
+    <title>Find The Original | AI 의류 추적기</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        /* 기본 스타일 세팅 (깔끔한 쇼핑몰/스타트업 느낌) */
-        :root {
-            --primary-color: #6c5ce7;
-            --bg-color: #fdfbfb;
-            --text-color: #2d3436;
-        }
-
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        .container { max-width: 800px; width: 100%; padding: 40px 20px; text-align: center; }
-
-        header h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--primary-color); }
-        header p { color: #636e72; margin-bottom: 40px; font-size: 1.1rem; }
-
-        /* 업로드 섹션 */
-        .upload-box {
-            border: 2px dashed #b2bec3; border-radius: 15px; padding: 50px 20px;
-            background-color: white; cursor: pointer; transition: 0.3s;
-            margin-bottom: 30px; position: relative;
-        }
-        .upload-box:hover { border-color: var(--primary-color); background-color: #f3f0ff; }
-        .upload-box input[type="file"] { display: none; }
-        
-        .upload-btn {
-            background-color: var(--primary-color); color: white;
-            padding: 12px 30px; border-radius: 30px; font-weight: bold;
-            display: inline-block; margin-top: 15px;
-        }
-
-        /* 분석 중 애니메이션 (AI 느낌) */
-        .loading-sec { display: none; margin: 40px 0; }
-        .spinner {
-            width: 50px; height: 50px; border: 5px solid #dfe6e9;
-            border-top: 5px solid var(--primary-color); border-radius: 50%;
-            animation: spin 1s linear infinite; margin: 0 auto 20px;
-        }
+        :root { --primary: #6c5ce7; --bg: #f9f9f9; --text: #2d3436; }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 800px; width: 100%; padding: 50px 20px; text-align: center; }
+        .upload-area { border: 3px dashed #dfe6e9; background: white; padding: 60px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; margin-bottom: 30px; }
+        .upload-area:hover { border-color: var(--primary); background: #f3f0ff; }
+        .btn { background: var(--primary); color: white; padding: 15px 40px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; font-size: 1rem; }
+        .loading { display: none; margin: 30px 0; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #eee; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .ai-log { font-family: monospace; color: #6c5ce7; font-size: 0.9rem; margin-top: 10px; }
-
-        /* 결과 화면 (동일 상품 비교) */
-        .result-sec { display: none; text-align: left; animation: fadeIn 0.8s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .original-tag {
-            background: #ffeaa7; color: #d35400; display: inline-block;
-            padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-bottom: 20px;
-        }
-
-        /* 상품 카드 리스트 */
-        .product-list { display: flex; flex-direction: column; gap: 15px; }
-        .product-card {
-            display: flex; justify-content: space-between; align-items: center;
-            background: white; padding: 20px; border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid transparent;
-        }
-        /* 최저가 강조 */
-        .best-price { border-left-color: #00b894; transform: scale(1.02); }
-        .best-price .price { color: #00b894; font-weight: bold; font-size: 1.3rem; }
-        
-        .shop-name { font-size: 0.9rem; color: #636e72; }
-        .product-name { font-size: 1.1rem; font-weight: bold; margin: 5px 0; }
-        .price { font-size: 1.2rem; }
-        .buy-btn {
-            background: var(--text-color); color: white; padding: 8px 20px;
-            border: none; border-radius: 5px; cursor: pointer;
-        }
-        .buy-btn:hover { background: #000; }
-        
-        #preview-img { max-width: 200px; max-height: 200px; border-radius: 10px; display: none; margin: 0 auto 20px; }
+        .result { display: none; text-align: left; }
+        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .best { border: 2px solid #00b894; }
+        .price { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+        #preview { max-width: 250px; border-radius: 10px; display: none; margin: 0 auto 20px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <header>
+    <div class="container">
         <h1>Find The Original</h1>
-        <p>호갱 탈출 프로젝트: 쇼핑몰 감성 텍스트를 벗겨내고 '진짜 같은 옷'을 찾아드립니다.</p>
-    </header>
+        <p>AI가 위시리스트 사진 속 '진짜 도매 상품'과 최저가를 찾아냅니다.</p>
 
-    <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()">
-        <img id="preview-img" src="" alt="업로드 이미지 미리보기">
-        <div id="upload-text">
-            <h3 style="margin:0;">위시리스트의 옷 캡처 사진을 올려주세요</h3>
-            <p style="color:#b2bec3;">(클릭하여 파일 선택)</p>
-            <span class="upload-btn">AI 이미지 분석 시작</span>
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <img id="preview" src="">
+            <div id="instruction">
+                <p>옷 사진을 여기에 업로드하세요</p>
+                <button class="btn">이미지 분석 시작</button>
+            </div>
+            <input type="file" id="fileInput" hidden accept="image/*" onchange="analyze(event)">
         </div>
-        <input type="file" id="fileInput" accept="image/*" onchange="startAIAnalysis(event)">
-    </div>
 
-    <div class="loading-sec" id="loadingSec">
-        <div class="spinner"></div>
-        <h3>AI가 원단, 패턴, 실루엣을 분석 중입니다...</h3>
-        <div class="ai-log" id="aiLog">이미지 특징점(Feature Point) 추출 완료...</div>
-    </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="status">이미지 특징점 추출 중...</p>
+        </div>
 
-    <div class="result-sec" id="resultSec">
-        <div class="original-tag">💡 분석 결과: 동대문 도매상 '신평화 C동 2층' 동일 생산 라인 상품입니다.</div>
-        
-        <div class="product-list">
-            <div class="product-card best-price">
-                <div>
-                    <div class="shop-name">무명스토어 (최저가 마진율)</div>
-                    <div class="product-name">라운드 베이직 가디건</div>
-                    <div class="price">19,800원 <span style="font-size:0.8rem; color:#b2bec3;">(무료배송)</span></div>
-                </div>
-                <button class="buy-btn">이동</button>
+        <div class="result" id="result">
+            <h3 style="color:#d35400;">💡 분석 결과: [동대문 APM Luxe 3층] 동일 제조사 상품입니다.</h3>
+            <div class="card best">
+                <div><strong>A 쇼핑몰 (최저가)</strong><br><small>베이직 오버핏 셔츠</small></div>
+                <div class="price">24,500원</div>
             </div>
-
-            <div class="product-card">
-                <div>
-                    <div class="shop-name">감성살롱 (인스타 유명 쇼핑몰)</div>
-                    <div class="product-name">여리여리 모먼트 니트 가디건</div>
-                    <div class="price">28,500원 <span style="font-size:0.8rem; color:#b2bec3;">(배송비 3,000원)</span></div>
-                </div>
-                <button class="buy-btn">이동</button>
-            </div>
-
-            <div class="product-card">
-                <div>
-                    <div class="shop-name">프리미엄 H 부띠끄</div>
-                    <div class="product-name">[단독진행] 프렌치 무드 캐시미어 터치 가디건</div>
-                    <div class="price">45,000원 <span style="font-size:0.8rem; color:#b2bec3;">(무료배송)</span></div>
-                </div>
-                <button class="buy-btn">이동</button>
+            <div class="card">
+                <div><strong>B 쇼핑몰 (인스타 마켓)</strong><br><small>여리여리 무드 린넨 블라우스</small></div>
+                <div class="price">48,000원</div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // AI 분석 시뮬레이션 로직
-    function startAIAnalysis(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        // 1. 이미지 미리보기 띄우기
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('preview-img').src = e.target.result;
-            document.getElementById('preview-img').style.display = 'block';
-            document.getElementById('upload-text').style.display = 'none';
+    <script>
+        function analyze(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('preview').style.display = 'block';
+                document.getElementById('instruction').style.display = 'none';
+                document.getElementById('loading').style.display = 'block';
+                
+                const status = document.getElementById('status');
+                setTimeout(() => status.innerText = "도매상 DB 매칭 중...", 1000);
+                setTimeout(() => status.innerText = "유사 상품 가격 비교 중...", 2000);
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('result').style.display = 'block';
+                }, 3000);
+            };
+            reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(file);
-
-        // 2. 화면 전환 (업로드 완료 -> 로딩 중)
-        document.getElementById('uploadBox').style.pointerEvents = 'none';
-        document.getElementById('resultSec').style.display = 'none';
-        document.getElementById('loadingSec').style.display = 'block';
-
-        const aiLog = document.getElementById('aiLog');
-        
-        // 3. AI 분석 로그 텍스트 변경 애니메이션
-        setTimeout(() => aiLog.innerText = "넥라인 픽셀 유사도 검사 중...", 1000);
-        setTimeout(() => aiLog.innerText = "동대문 도매 DB와 매칭 중...", 2000);
-        setTimeout(() => aiLog.innerText = "쇼핑몰별 가격 크롤링 및 배송비 연산 완료!", 3000);
-
-        // 4. 결과 화면 노출
-        setTimeout(() => {
-            document.getElementById('loadingSec').style.display = 'none';
-            document.getElementById('resultSec').style.display = 'block';
-        }, 3500);
-    }
-</script>
-
+    </script>
 </body>
 </html>
