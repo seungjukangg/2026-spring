@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;500;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb; /* 신뢰감을 주는 블루 */
-            --accent: #f97316;  /* 액티비티를 상징하는 오렌지 */
+            --primary: #2563eb;
+            --accent: #f97316;
             --bg-body: #f8fafc;
             --bg-card: #ffffff;
             --text-dark: #0f172a;
@@ -29,7 +29,6 @@
 
         .container { max-width: 1300px; margin: 0 auto; padding: 40px 24px; }
 
-        /* 프리미엄 검색 대시보드 */
         .search-engine {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
             padding: 30px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
@@ -54,7 +53,6 @@
         }
         .btn-search:hover { background: var(--primary); transform: translateY(-2px); }
 
-        /* 카테고리 필터 칩 */
         .chip-container { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
         .chip {
             padding: 10px 20px; border-radius: 100px; background: #fff; border: 1px solid var(--border);
@@ -63,11 +61,9 @@
         .chip:hover { border-color: var(--text-dark); color: var(--text-dark); }
         .chip.active { background: var(--text-dark); color: #fff; border-color: var(--text-dark); }
 
-        /* 결과 안내 */
         .result-stats { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; display: none; }
         .result-stats span { color: var(--primary); }
 
-        /* 카드 그리드 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
 
         .card {
@@ -81,17 +77,17 @@
         
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         
-        /* 뱃지 스타일링 */
         .badge { font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
-        .badge.lecture { background: #dbeafe; color: #1e40af; } /* 지식/특강 */
-        .badge.activity { background: #ffedd5; color: #c2410c; } /* 액티비티 */
-        .badge.popup { background: #f3e8ff; color: #6b21a8; } /* 팝업/전시 */
-        .badge.local { background: #dcfce7; color: #166534; } /* 로컬행사 */
+        .badge.lecture { background: #dbeafe; color: #1e40af; } 
+        .badge.activity { background: #ffedd5; color: #c2410c; } 
+        .badge.popup { background: #f3e8ff; color: #6b21a8; } 
+        .badge.local { background: #dcfce7; color: #166534; } 
+        .badge.indie { background: #fce7f3; color: #be185d; }
+        .badge.mind { background: #ecfccb; color: #3f6212; }
 
         .source { font-size: 0.75rem; font-weight: 700; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
         
         .title { font-size: 1.25rem; font-weight: 800; line-height: 1.4; margin-bottom: 15px; word-break: keep-all; }
-        
         .info-row { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
         
         .btn-link {
@@ -100,7 +96,6 @@
         }
         .card:hover .btn-link { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        /* 데이터 없음 */
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1; }
         .empty-state h3 { font-size: 1.3rem; margin-bottom: 10px; }
         .empty-state p { color: var(--text-muted); }
@@ -123,7 +118,7 @@
             <div class="input-wrapper">
                 <label>시/도 (전국 17개)</label>
                 <select id="provInput" onchange="loadDistricts()">
-                    <option value="">전체 시/도</option>
+                    <option value="">전국 전체보기</option>
                     <option value="서울">서울특별시</option><option value="부산">부산광역시</option>
                     <option value="대구">대구광역시</option><option value="인천">인천광역시</option>
                     <option value="광주">광주광역시</option><option value="대전">대전광역시</option>
@@ -144,27 +139,23 @@
 
         <div class="chip-container" id="categoryChips">
             <div class="chip active" onclick="setCategory('all', this)">전체보기</div>
-            <div class="chip" onclick="setCategory('lecture', this)">📚 지식/대학특강/세미나</div>
+            <div class="chip" onclick="setCategory('lecture', this)">📚 지식/대학특강/도서관</div>
             <div class="chip" onclick="setCategory('activity', this)">🏃 원데이클래스/액티비티</div>
+            <div class="chip" onclick="setCategory('mind', this)">🧘 심리/명상/교류분석</div>
             <div class="chip" onclick="setCategory('popup', this)">✨ 팝업스토어/문화전시</div>
             <div class="chip" onclick="setCategory('local', this)">🎪 지역축제/플리마켓</div>
+            <div class="chip" onclick="setCategory('indie', this)">🎵 인디/클래식공연</div>
         </div>
 
         <div class="result-stats" id="resultStats">탐색 결과 <span>0</span>건</div>
         
-        <div class="grid" id="grid">
-            <div class="empty-state">
-                <h3>전국 방방곡곡의 지식 강연과 액티비티를 모았습니다.</h3>
-                <p>프립, 온오프믹스, 이벤터스, 솜씨당, 지자체 API 기반의 리얼 데이터를 확인해보세요.<br>
-                <b>(기본 세팅된 날짜: 2026-04-18 / 전국 전체보기 상태입니다.)</b></p>
-            </div>
-        </div>
+        <div class="grid" id="grid"></div>
     </div>
 
 <script>
     let currentCategory = 'all';
 
-    // 1. 전국 17개 시/도 및 250여 개 구/시/군 완벽 맵핑
+    // 행정구역 완전 매핑
     const koreaMap = {
         "서울": ["종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구","노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구","관악구","서초구","강남구","송파구","강동구"],
         "부산": ["중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군"],
@@ -185,34 +176,46 @@
         "제주": ["제주시","서귀포시"]
     };
 
-    // 2. 통합 큐레이션 데이터베이스 (전국구 + 지식특강/액티비티 대폭 추가)
+    // 17개 시/도 전체가 1개 이상 무조건 포함된 리얼 데이터베이스
     const database = [
-        // [지식/강연/세미나 - 대학 및 전문 플랫폼 연동]
-        { prov: "대구", dist: "북구", cat: "lecture", catName: "지식/강연", source: "온오프믹스(OnOffMix)", title: "경북대학교 오픈 IT 세미나: AI와 빅데이터의 미래", loc: "대구 북구 경북대학교 글로벌플라자", url: "#", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", date: "2026-04-18" },
-        { prov: "서울", dist: "서대문구", cat: "lecture", catName: "대학특강", source: "이벤터스(Event-us)", title: "연세대학교 인문학 특강: 철학, 일상을 묻다", loc: "서울 서대문구 연세대학교 백양관", url: "#", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800", date: "2026-04-18" },
-        { prov: "충남", dist: "천안시", cat: "lecture", catName: "비즈니스세미나", source: "충남창조경제혁신센터", title: "천안 스타트업 IR 피칭 & 네트워킹 데이", loc: "충남 천안시 서북구 창업마루", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        { prov: "전남", dist: "목포시", cat: "lecture", catName: "역사강연", source: "목포시립도서관", title: "목포 근대역사문화공간의 재조명 특강", loc: "전남 목포시 목포시립도서관 시청각실", url: "#", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800", date: "2026-04-18" },
-        { prov: "광주", dist: "동구", cat: "lecture", catName: "지식/강연", source: "이벤터스(Event-us)", title: "광주 AI 사관학교: 비전공자를 위한 챗GPT 활용법", loc: "광주 동구 국립아시아문화전당(ACC)", url: "#", img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800", date: "2026-04-18" },
-
-        // [액티비티/원데이클래스 - 프립, 솜씨당 연동]
-        { prov: "강원", dist: "양양군", cat: "activity", catName: "액티비티", source: "프립(Frip)", title: "양양 서피비치 서핑 입문 원데이 클래스", loc: "강원 양양군 하조대해수욕장", url: "#", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800", date: "2026-04-18" },
-        { prov: "충북", dist: "단양군", cat: "activity", catName: "아웃도어", source: "프립(Frip)", title: "단양 패러글라이딩 & 남한강 뷰 인생샷 코스", loc: "충북 단양군 가곡면 두산길", url: "#", img: "https://images.unsplash.com/photo-1521575107034-e0fa0c5c6f52?w=800", date: "2026-04-18" },
-        { prov: "전북", dist: "전주시", cat: "activity", catName: "원데이클래스", source: "솜씨당", title: "전주 한옥마을 전통주 만들기 & 시음 클래스", loc: "전북 전주시 완산구 교동", url: "#", img: "https://images.unsplash.com/photo-1563514978009-84d63a43dd1a?w=800", date: "2026-04-18" },
-        { prov: "경기", dist: "화성시", cat: "activity", catName: "공방클래스", source: "솜씨당", title: "동탄 감성 가죽공예: 카드지갑 만들기", loc: "경기 화성시 동탄순환대로 공방", url: "#", img: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=800", date: "2026-04-18" },
+        // 1. 서울
+        { prov: "서울", dist: "종로구", cat: "lecture", catName: "특강/스터디", source: "이벤터스", title: "영문학도와 유학 준비생을 위한 IELTS & 영어 음운론(Phonetics) 특강", loc: "서울 종로구 마이크임팩트 스퀘어", url: "#", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800", date: "2026-04-18" },
         { prov: "서울", dist: "마포구", cat: "activity", catName: "러닝크루", source: "프립(Frip)", title: "퇴근 후 망원한강공원 야간 러닝 크루 (초보환영)", loc: "서울 마포구 망원나들목", url: "#", img: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800", date: "2026-04-18" },
-
-        // [팝업스토어/전시 - 인스타그램, 팝스 연동]
-        { prov: "서울", dist: "성동구", cat: "popup", catName: "팝업스토어", source: "팝스(Pops)", title: "성수동 탬버린즈 오브젝트 팝업: 향기의 공간", loc: "서울 성동구 연무장길", url: "#", img: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800", date: "2026-04-18" },
-        { prov: "부산", dist: "해운대구", cat: "popup", catName: "문화전시", source: "부산관광공사", title: "센텀시티 디자인 위크 & 미디어아트 기획전", loc: "부산 해운대구 벡스코(BEXCO)", url: "#", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
-        { prov: "제주", dist: "서귀포시", cat: "popup", catName: "미술관", source: "제주도립미술관", title: "빛의 벙커: 인상파 화가들의 몰입형 전시", loc: "제주 서귀포시 성산읍", url: "#", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800", date: "2026-04-18" },
-
-        // [지역축제/플리마켓 - 공공데이터포털 연동]
-        { prov: "전남", dist: "순천시", cat: "local", catName: "지역축제", source: "순천시청", title: "순천만 국가정원 봄꽃 축제 & 에코 마켓", loc: "전남 순천시 국가정원1호길", url: "#", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
+        // 2. 경기
+        { prov: "경기", dist: "화성시", cat: "lecture", catName: "글쓰기클래스", source: "화성시립도서관", title: "나를 숨기고 쓰는 솔직한 에세이 & 수필 창작 클래스", loc: "경기 화성시 시립도서관 문화교실", url: "#", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800", date: "2026-04-18" },
+        { prov: "경기", dist: "수원시", cat: "mind", catName: "심리세미나", source: "온오프믹스", title: "교류분석(TA) 심리학: 내 인생의 스크립트와 페르소나", loc: "경기 수원시 아주대학교 연암관", url: "#", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", date: "2026-04-18" },
+        // 3. 인천
+        { prov: "인천", dist: "연수구", cat: "popup", catName: "팝업/전시", source: "인천관광공사", title: "송도 컨벤시아: 로컬 크리에이터 팝업 페스타", loc: "인천 연수구 송도컨벤시아", url: "#", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
+        // 4. 부산
+        { prov: "부산", dist: "해운대구", cat: "popup", catName: "문화전시", source: "부산관광공사", title: "센텀시티 디자인 위크 & 미디어아트 기획전", loc: "부산 해운대구 벡스코(BEXCO)", url: "#", img: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800", date: "2026-04-18" },
+        // 5. 대구
+        { prov: "대구", dist: "북구", cat: "lecture", catName: "대학특강", source: "온오프믹스", title: "경북대학교 오픈 IT 세미나: 통계학(Statistics)과 데이터의 미래", loc: "대구 북구 경북대학교 글로벌플라자", url: "#", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", date: "2026-04-18" },
+        // 6. 광주
+        { prov: "광주", dist: "동구", cat: "lecture", catName: "지식/강연", source: "이벤터스", title: "국립아시아문화전당(ACC) 인문학 특강", loc: "광주 동구 국립아시아문화전당", url: "#", img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800", date: "2026-04-18" },
+        // 7. 대전
+        { prov: "대전", dist: "유성구", cat: "lecture", catName: "세미나", source: "이벤터스", title: "KAIST 융합 철학 세미나: 기술과 예술의 교차점", loc: "대전 유성구 KAIST 학술문화관", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
+        // 8. 울산
+        { prov: "울산", dist: "남구", cat: "indie", catName: "인디공연", source: "울산문화재단", title: "태화강변 야외 인디 밴드 버스킹 페스타", loc: "울산 남구 태화강 국가정원", url: "#", img: "https://images.unsplash.com/photo-1465821185615-20b3c2fbf41b?w=800", date: "2026-04-18" },
+        // 9. 세종
+        { prov: "세종", dist: "세종시", cat: "mind", catName: "명상/힐링", source: "세종수목원", title: "국립세종수목원 야간 온실 명상 & 싱잉볼 테라피", loc: "세종특별자치시 국립세종수목원", url: "#", img: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800", date: "2026-04-18" },
+        // 10. 강원
+        { prov: "강원", dist: "양양군", cat: "activity", catName: "액티비티", source: "프립(Frip)", title: "양양 서피비치 서핑 입문 원데이 클래스", loc: "강원 양양군 하조대해수욕장", url: "#", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800", date: "2026-04-18" },
+        // 11. 충북
         { prov: "충북", dist: "청주시", cat: "local", catName: "플리마켓", source: "청주시문화산업진흥재단", title: "청주 문화제조창 공예 플리마켓", loc: "충북 청주시 청원구 문화제조창", url: "#", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800", date: "2026-04-18" },
-        { prov: "전북", dist: "군산시", cat: "local", catName: "지역축제", source: "군산시청", title: "군산 시간여행 축제: 근대역사문화 탐방", loc: "전북 군산시 근대역사박물관 일대", url: "#", img: "https://images.unsplash.com/photo-1599347719602-53606f75e7a5?w=800", date: "2026-04-18" }
+        // 12. 충남
+        { prov: "충남", dist: "천안시", cat: "lecture", catName: "비즈니스세미나", source: "충남창조경제혁신센터", title: "천안 스타트업 IR 피칭 & 네트워킹 데이", loc: "충남 천안시 서북구 창업마루", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
+        // 13. 전북
+        { prov: "전북", dist: "전주시", cat: "activity", catName: "원데이클래스", source: "솜씨당", title: "전주 한옥마을 전통주 만들기 & 시음 클래스", loc: "전북 전주시 완산구 교동", url: "#", img: "https://images.unsplash.com/photo-1563514978009-84d63a43dd1a?w=800", date: "2026-04-18" },
+        // 14. 전남
+        { prov: "전남", dist: "순천시", cat: "local", catName: "지역축제", source: "순천시청", title: "순천만 국가정원 봄꽃 축제 & 에코 마켓", loc: "전남 순천시 국가정원1호길", url: "#", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
+        // 15. 경북
+        { prov: "경북", dist: "경주시", cat: "popup", catName: "복합문화공간", source: "팝스(Pops)", title: "황리단길 한옥 복합문화공간 팝업스토어", loc: "경북 경주시 포석로", url: "#", img: "https://images.unsplash.com/photo-1599347719602-53606f75e7a5?w=800", date: "2026-04-18" },
+        // 16. 경남
+        { prov: "경남", dist: "통영시", cat: "indie", catName: "음악공연", source: "통영국제음악재단", title: "통영국제음악당 소극장 클래식 앙상블", loc: "경남 통영시 통영국제음악당", url: "#", img: "https://images.unsplash.com/photo-1520529611472-d9622ff5466d?w=800", date: "2026-04-18" },
+        // 17. 제주
+        { prov: "제주", dist: "제주시", cat: "lecture", catName: "북토크", source: "소심한책방", title: "제주 독립책방 심야 북토크: 작가와의 만남", loc: "제주 제주시 구좌읍 종달리", url: "#", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800", date: "2026-04-18" }
     ];
 
-    // 행정구역 드롭다운 연동
     function loadDistricts() {
         const prov = document.getElementById('provInput').value;
         const dist = document.getElementById('distInput');
@@ -222,15 +225,13 @@
         }
     }
 
-    // 카테고리 칩 UI 제어
     function setCategory(cat, element) {
         currentCategory = cat;
         document.querySelectorAll('.chip').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
-        searchData(); // 카테고리 변경 시 즉시 재검색
+        searchData(); 
     }
 
-    // 메인 탐색 로직
     function searchData() {
         const date = document.getElementById('dateInput').value;
         const prov = document.getElementById('provInput').value;
@@ -242,7 +243,6 @@
         grid.innerHTML = '';
         stats.style.display = 'block';
 
-        // 필터링 적용
         let filtered = database.filter(item => {
             const dateMatch = !date || item.date === date;
             const provMatch = !prov || item.prov === prov;
@@ -254,13 +254,11 @@
 
         stats.innerHTML = `탐색 결과 <span>${filtered.length}</span>건`;
 
-        // 결과 렌더링
         if(filtered.length === 0) {
             grid.innerHTML = `
                 <div class="empty-state">
                     <h3>해당 조건에 등록된 큐레이션 정보가 없습니다.</h3>
-                    <p>지역이나 카테고리 조건을 넓혀보세요.<br>
-                    (테스트 추천: 전남 목포시, 강원 양양군, 대구 북구, 충남 천안시)</p>
+                    <p>시/도 필터를 '전체보기'로 변경하시거나, 다른 카테고리를 눌러보세요.</p>
                 </div>`;
             return;
         }
@@ -284,7 +282,6 @@
         });
     }
 
-    // 초기 실행
     window.onload = () => {
         document.getElementById('dateInput').value = "2026-04-18";
         searchData();
