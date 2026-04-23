@@ -109,6 +109,46 @@
         <h1>PLOT<span>TWIST</span></h1>
     </div>
 
+    <div class="search-engine">
+            <div class="input-wrapper">
+                <label>관심 카테고리</label>
+                <select id="catInput">
+                    <option value="all">전체 프로그램 탐색</option>
+                    <option value="lecture">📚 지식/대학특강/도서관</option>
+                    <option value="activity">🏃 원데이클래스/액티비티</option>
+                    <option value="mind">🧘 심리/명상/교류분석(TA)</option>
+                    <option value="popup">✨ 팝업스토어/문화전시</option>
+                    <option value="local">🎪 지역축제/플리마켓</option>
+                    <option value="indie">🎵 인디/클래식공연</option>
+                </select>
+            </div>
+            
+            <div class="input-wrapper">
+                <label>날짜 선택</label>
+                <input type="date" id="dateInput">
+            </div>
+            <div class="input-wrapper">
+                <label>시/도 (전국 17개)</label>
+                <select id="provInput" onchange="loadDistricts()">
+                    <option value="">전국 전체보기</option>
+                    <option value="서울">서울특별시</option><option value="부산">부산광역시</option>
+                    <option value="대구">대구광역시</option><option value="인천">인천광역시</option>
+                    <option value="광주">광주광역시</option><option value="대전">대전광역시</option>
+                    <option value="울산">울산광역시</option><option value="세종">세종특별자치시</option>
+                    <option value="경기">경기도</option><option value="강원">강원특별자치도</option>
+                    <option value="충북">충청북도</option><option value="충남">충청남도</option>
+                    <option value="전북">전북특별자치도</option><option value="전남">전라남도</option>
+                    <option value="경북">경상북도</option><option value="경남">경상남도</option>
+                    <option value="제주">제주특별자치도</option>
+                </select>
+            </div>
+            <div class="input-wrapper">
+                <label>세부 지역 (시/구/군)</label>
+                <select id="distInput"><option value="">시/도를 먼저 선택하세요</option></select>
+            </div>
+            <button class="btn-search" onclick="searchData()">조건에 맞는 프로그램 탐색</button>
+        </div>
+
     <div class="container">
         <div class="search-engine">
             <div class="input-wrapper">
