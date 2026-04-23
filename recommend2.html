@@ -32,7 +32,7 @@
         .search-engine {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
             padding: 30px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;
             margin-bottom: 50px;
         }
 
@@ -109,14 +109,15 @@
         <h1>PLOT<span>TWIST</span></h1>
     </div>
 
-    <div class="search-engine">
+    <div class="container">
+        <div class="search-engine">
             <div class="input-wrapper">
                 <label>관심 카테고리</label>
-                <select id="catInput">
+                <select id="catInput" onchange="syncFromDropdown()">
                     <option value="all">전체 프로그램 탐색</option>
                     <option value="lecture">📚 지식/대학특강/도서관</option>
                     <option value="activity">🏃 원데이클래스/액티비티</option>
-                    <option value="mind">🧘 심리/명상/교류분석(TA)</option>
+                    <option value="mind">🧘 심리/명상/교류분석</option>
                     <option value="popup">✨ 팝업스토어/문화전시</option>
                     <option value="local">🎪 지역축제/플리마켓</option>
                     <option value="indie">🎵 인디/클래식공연</option>
@@ -127,6 +128,7 @@
                 <label>날짜 선택</label>
                 <input type="date" id="dateInput">
             </div>
+            
             <div class="input-wrapper">
                 <label>시/도 (전국 17개)</label>
                 <select id="provInput" onchange="loadDistricts()">
@@ -142,49 +144,23 @@
                     <option value="제주">제주특별자치도</option>
                 </select>
             </div>
+            
             <div class="input-wrapper">
                 <label>세부 지역 (시/구/군)</label>
                 <select id="distInput"><option value="">시/도를 먼저 선택하세요</option></select>
             </div>
-            <button class="btn-search" onclick="searchData()">조건에 맞는 프로그램 탐색</button>
-        </div>
-
-    <div class="container">
-        <div class="search-engine">
-            <div class="input-wrapper">
-                <label>날짜 선택</label>
-                <input type="date" id="dateInput">
-            </div>
-            <div class="input-wrapper">
-                <label>시/도 (전국 17개)</label>
-                <select id="provInput" onchange="loadDistricts()">
-                    <option value="">전국 전체보기</option>
-                    <option value="서울">서울특별시</option><option value="부산">부산광역시</option>
-                    <option value="대구">대구광역시</option><option value="인천">인천광역시</option>
-                    <option value="광주">광주광역시</option><option value="대전">대전광역시</option>
-                    <option value="울산">울산광역시</option><option value="세종">세종특별자치시</option>
-                    <option value="경기">경기도</option><option value="강원">강원특별자치도</option>
-                    <option value="충북">충청북도</option><option value="충남">충청남도</option>
-                    <option value="전북">전북특별자치도</option><option value="전남">전라남도</option>
-                    <option value="경북">경상북도</option><option value="경남">경상남도</option>
-                    <option value="제주">제주특별자치도</option>
-                </select>
-            </div>
-            <div class="input-wrapper">
-                <label>세부 지역 (시/구/군)</label>
-                <select id="distInput"><option value="">시/도를 먼저 선택하세요</option></select>
-            </div>
+            
             <button class="btn-search" onclick="searchData()">조건에 맞는 프로그램 탐색</button>
         </div>
 
         <div class="chip-container" id="categoryChips">
-            <div class="chip active" onclick="setCategory('all', this)">전체보기</div>
-            <div class="chip" onclick="setCategory('lecture', this)">📚 지식/대학특강/도서관</div>
-            <div class="chip" onclick="setCategory('activity', this)">🏃 원데이클래스/액티비티</div>
-            <div class="chip" onclick="setCategory('mind', this)">🧘 심리/명상/교류분석</div>
-            <div class="chip" onclick="setCategory('popup', this)">✨ 팝업스토어/문화전시</div>
-            <div class="chip" onclick="setCategory('local', this)">🎪 지역축제/플리마켓</div>
-            <div class="chip" onclick="setCategory('indie', this)">🎵 인디/클래식공연</div>
+            <div class="chip active" id="chip-all" onclick="setCategory('all')">전체보기</div>
+            <div class="chip" id="chip-lecture" onclick="setCategory('lecture')">📚 지식/대학특강/도서관</div>
+            <div class="chip" id="chip-activity" onclick="setCategory('activity')">🏃 원데이클래스/액티비티</div>
+            <div class="chip" id="chip-mind" onclick="setCategory('mind')">🧘 심리/명상/교류분석</div>
+            <div class="chip" id="chip-popup" onclick="setCategory('popup')">✨ 팝업스토어/문화전시</div>
+            <div class="chip" id="chip-local" onclick="setCategory('local')">🎪 지역축제/플리마켓</div>
+            <div class="chip" id="chip-indie" onclick="setCategory('indie')">🎵 인디/클래식공연</div>
         </div>
 
         <div class="result-stats" id="resultStats">탐색 결과 <span>0</span>건</div>
@@ -216,43 +192,26 @@
         "제주": ["제주시","서귀포시"]
     };
 
-    // 17개 시/도 전체가 1개 이상 무조건 포함된 리얼 데이터베이스
+    // 전국 17개 시/도 리얼 데이터베이스
     const database = [
-        // 1. 서울
         { prov: "서울", dist: "종로구", cat: "lecture", catName: "특강/스터디", source: "이벤터스", title: "영문학도와 유학 준비생을 위한 IELTS & 영어 음운론(Phonetics) 특강", loc: "서울 종로구 마이크임팩트 스퀘어", url: "#", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800", date: "2026-04-18" },
         { prov: "서울", dist: "마포구", cat: "activity", catName: "러닝크루", source: "프립(Frip)", title: "퇴근 후 망원한강공원 야간 러닝 크루 (초보환영)", loc: "서울 마포구 망원나들목", url: "#", img: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800", date: "2026-04-18" },
-        // 2. 경기
         { prov: "경기", dist: "화성시", cat: "lecture", catName: "글쓰기클래스", source: "화성시립도서관", title: "나를 숨기고 쓰는 솔직한 에세이 & 수필 창작 클래스", loc: "경기 화성시 시립도서관 문화교실", url: "#", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800", date: "2026-04-18" },
         { prov: "경기", dist: "수원시", cat: "mind", catName: "심리세미나", source: "온오프믹스", title: "교류분석(TA) 심리학: 내 인생의 스크립트와 페르소나", loc: "경기 수원시 아주대학교 연암관", url: "#", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", date: "2026-04-18" },
-        // 3. 인천
         { prov: "인천", dist: "연수구", cat: "popup", catName: "팝업/전시", source: "인천관광공사", title: "송도 컨벤시아: 로컬 크리에이터 팝업 페스타", loc: "인천 연수구 송도컨벤시아", url: "#", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
-        // 4. 부산
         { prov: "부산", dist: "해운대구", cat: "popup", catName: "문화전시", source: "부산관광공사", title: "센텀시티 디자인 위크 & 미디어아트 기획전", loc: "부산 해운대구 벡스코(BEXCO)", url: "#", img: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800", date: "2026-04-18" },
-        // 5. 대구
         { prov: "대구", dist: "북구", cat: "lecture", catName: "대학특강", source: "온오프믹스", title: "경북대학교 오픈 IT 세미나: 통계학(Statistics)과 데이터의 미래", loc: "대구 북구 경북대학교 글로벌플라자", url: "#", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", date: "2026-04-18" },
-        // 6. 광주
         { prov: "광주", dist: "동구", cat: "lecture", catName: "지식/강연", source: "이벤터스", title: "국립아시아문화전당(ACC) 인문학 특강", loc: "광주 동구 국립아시아문화전당", url: "#", img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800", date: "2026-04-18" },
-        // 7. 대전
         { prov: "대전", dist: "유성구", cat: "lecture", catName: "세미나", source: "이벤터스", title: "KAIST 융합 철학 세미나: 기술과 예술의 교차점", loc: "대전 유성구 KAIST 학술문화관", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        // 8. 울산
         { prov: "울산", dist: "남구", cat: "indie", catName: "인디공연", source: "울산문화재단", title: "태화강변 야외 인디 밴드 버스킹 페스타", loc: "울산 남구 태화강 국가정원", url: "#", img: "https://images.unsplash.com/photo-1465821185615-20b3c2fbf41b?w=800", date: "2026-04-18" },
-        // 9. 세종
         { prov: "세종", dist: "세종시", cat: "mind", catName: "명상/힐링", source: "세종수목원", title: "국립세종수목원 야간 온실 명상 & 싱잉볼 테라피", loc: "세종특별자치시 국립세종수목원", url: "#", img: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800", date: "2026-04-18" },
-        // 10. 강원
         { prov: "강원", dist: "양양군", cat: "activity", catName: "액티비티", source: "프립(Frip)", title: "양양 서피비치 서핑 입문 원데이 클래스", loc: "강원 양양군 하조대해수욕장", url: "#", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800", date: "2026-04-18" },
-        // 11. 충북
         { prov: "충북", dist: "청주시", cat: "local", catName: "플리마켓", source: "청주시문화산업진흥재단", title: "청주 문화제조창 공예 플리마켓", loc: "충북 청주시 청원구 문화제조창", url: "#", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800", date: "2026-04-18" },
-        // 12. 충남
         { prov: "충남", dist: "천안시", cat: "lecture", catName: "비즈니스세미나", source: "충남창조경제혁신센터", title: "천안 스타트업 IR 피칭 & 네트워킹 데이", loc: "충남 천안시 서북구 창업마루", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        // 13. 전북
         { prov: "전북", dist: "전주시", cat: "activity", catName: "원데이클래스", source: "솜씨당", title: "전주 한옥마을 전통주 만들기 & 시음 클래스", loc: "전북 전주시 완산구 교동", url: "#", img: "https://images.unsplash.com/photo-1563514978009-84d63a43dd1a?w=800", date: "2026-04-18" },
-        // 14. 전남
         { prov: "전남", dist: "순천시", cat: "local", catName: "지역축제", source: "순천시청", title: "순천만 국가정원 봄꽃 축제 & 에코 마켓", loc: "전남 순천시 국가정원1호길", url: "#", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
-        // 15. 경북
         { prov: "경북", dist: "경주시", cat: "popup", catName: "복합문화공간", source: "팝스(Pops)", title: "황리단길 한옥 복합문화공간 팝업스토어", loc: "경북 경주시 포석로", url: "#", img: "https://images.unsplash.com/photo-1599347719602-53606f75e7a5?w=800", date: "2026-04-18" },
-        // 16. 경남
         { prov: "경남", dist: "통영시", cat: "indie", catName: "음악공연", source: "통영국제음악재단", title: "통영국제음악당 소극장 클래식 앙상블", loc: "경남 통영시 통영국제음악당", url: "#", img: "https://images.unsplash.com/photo-1520529611472-d9622ff5466d?w=800", date: "2026-04-18" },
-        // 17. 제주
         { prov: "제주", dist: "제주시", cat: "lecture", catName: "북토크", source: "소심한책방", title: "제주 독립책방 심야 북토크: 작가와의 만남", loc: "제주 제주시 구좌읍 종달리", url: "#", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800", date: "2026-04-18" }
     ];
 
@@ -265,14 +224,37 @@
         }
     }
 
-    function setCategory(cat, element) {
+    // 1. 드롭다운 변경 시 -> 칩 UI 동기화
+    function syncFromDropdown() {
+        const cat = document.getElementById('catInput').value;
         currentCategory = cat;
+        
+        // 모든 칩의 active 제거 후, 해당 아이디의 칩에 active 추가
         document.querySelectorAll('.chip').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
+        document.getElementById('chip-' + cat).classList.add('active');
+        
+        // 검색 즉시 실행 원치 않으시면 아래 줄 지우셔도 됩니다.
+        searchData();
+    }
+
+    // 2. 칩 클릭 시 -> 드롭다운 UI 동기화
+    function setCategory(cat) {
+        currentCategory = cat;
+        
+        // 칩 UI 업데이트
+        document.querySelectorAll('.chip').forEach(el => el.classList.remove('active'));
+        document.getElementById('chip-' + cat).classList.add('active');
+        
+        // 드롭다운 UI 업데이트
+        document.getElementById('catInput').value = cat;
+        
+        // 검색 실행
         searchData(); 
     }
 
+    // 3. 메인 검색 로직
     function searchData() {
+        // 드롭다운이나 칩이나 currentCategory로 완벽 연동됨
         const date = document.getElementById('dateInput').value;
         const prov = document.getElementById('provInput').value;
         const dist = document.getElementById('distInput').value;
@@ -322,6 +304,7 @@
         });
     }
 
+    // 초기 실행 시
     window.onload = () => {
         document.getElementById('dateInput').value = "2026-04-18";
         searchData();
