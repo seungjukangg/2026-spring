@@ -143,15 +143,7 @@
                     productName: "[무료배송] " + inputName,
                     price: inputPrice, // 유저가 본래 입력한(비싼) 가격
                     url: "https://m.a-bly.com/goods/66172201", // 요청하신 실제 상품 페이지 2
-                    match: "일치율 100%", isLowest: false
-                }
-            ];
-
-            // 가격 오름차순(싼 것부터) 정렬
-            exactProductData.sort((a, b) => a.price - b.price);
-
-            const listContainer = document.getElementById('productList');
-            listContainer.innerHTML = '';
+                    match: "일치율 100%", isLowest: 
 
             exactProductData.forEach((item, index) => {
                 // 최저가 항목에만 특별한 스타일 적용
