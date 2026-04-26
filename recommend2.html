@@ -1,64 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLOT TWIST | 프리미엄 라이프 큐레이터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100;300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* 하이엔드 다크 모드 디자인 */
+        :root {
+            --bg-base: #050505;
+            --bg-surface: #121212;
+            --primary: #ffffff;
+            --accent: #d9f99d; /* 네온 라임 그린 */
+            --accent-glow: rgba(217, 249, 157, 0.4);
+            --text-main: #f4f4f5;
+            --text-sub: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(18, 18, 18, 0.7);
+        }
 
-          
-        .card-img { width: 100%; height: 200px; object-fit: cover; background: #e2e8f0; border-bottom: 1px solid var(--border); }
-        .card-body { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
-        
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-        
-        .badge { font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
-        .badge.lecture { background: #dbeafe; color: #1e40af; } 
-        .badge.activity { background: #ffedd5; color: #c2410c; } 
-        .badge.popup { background: #f3e8ff; color: #6b21a8; } 
-        .badge.local { background: #dcfce7; color: #166534; } 
-        .badge.indie { background: #fce7f3; color: #be185d; }
-        .badge.mind { background: #ecfccb; color: #3f6212; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .source { font-size: 0.75rem; font-weight: 700; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
+        body {
+            font-family: 'Pretendard', sans-serif; background-color: var(--bg-base);
+            color: var(--text-main); line-height: 1.6; overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% -20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        /* 네비게이션 */
+        .navbar { 
+            padding: 30px 50px; display: flex; align-items: center; 
+            position: sticky; top: 0; z-index: 100; 
+            background: var(--glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+        }
+        .navbar h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--primary); }
+        .navbar h1 span { color: var(--accent); }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 60px 40px; }
+
+        .hero { margin-bottom: 80px; }
+        .hero h2 { font-size: 4.5rem; font-weight: 900; line-height: 1.1; letter-spacing: -2px; margin-bottom: 20px; text-transform: uppercase; }
+        .hero p { font-size: 1.25rem; color: var(--text-sub); font-weight: 300; max-width: 650px; }
+
+        /* 글래스모피즘 검색 엔진 */
+        .search-engine {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 24px;
+            padding: 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end;
+            margin-bottom: 50px; backdrop-filter: blur(20px);
+        }
+
+        .input-wrapper { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; min-width: 200px; }
+        .input-wrapper label { font-size: 0.75rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; }
         
-        .title { font-size: 1.25rem; font-weight: 800; line-height: 1.4; margin-bottom: 15px; word-break: keep-all; }
-        .info-row { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
+        select, input[type="date"] {
+            background: var(--bg-surface); border: 1px solid var(--border); color: var(--primary);
+            padding: 18px 20px; border-radius: 14px; font-size: 1rem; outline: none; transition: 0.3s;
+            appearance: none; cursor: pointer; font-family: inherit;
+        }
+        select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
+        .btn-search {
+            background: var(--primary); color: var(--bg-base); border: none; padding: 18px 40px;
+            border-radius: 14px; font-weight: 900; font-size: 1rem; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 1px; height: 56px;
+        }
+        .btn-search:hover { background: var(--accent); transform: scale(1.02); }
+
+        /* 동적 카테고리 칩 */
+        .category-section { margin-bottom: 60px; }
+        
+        .main-chips { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+        .chip {
+            padding: 14px 24px; border-radius: 100px; background: transparent; border: 1px solid var(--border);
+            font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            color: var(--text-sub); display: flex; align-items: center; gap: 8px;
+        }
+        .chip:hover { border-color: var(--primary); color: var(--primary); }
+        .chip.active { background: var(--primary); color: var(--bg-base); border-color: var(--primary); font-weight: 800; }
+
+        .sub-chips { 
+            display: flex; gap: 10px; flex-wrap: wrap; padding: 20px; 
+            background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed var(--border);
+            display: none; animation: slideDown 0.4s ease forwards;
+        }
+        .sub-chips.show { display: flex; }
+        .sub-chip {
+            padding: 8px 18px; border-radius: 8px; background: var(--bg-surface); border: 1px solid var(--border);
+            font-size: 0.85rem; color: var(--text-sub); cursor: pointer; transition: 0.2s; font-weight: 500;
+        }
+        .sub-chip:hover { color: var(--accent); border-color: var(--accent); }
+        .sub-chip.active { background: var(--accent); color: var(--bg-base); border-color: var(--accent); font-weight: 800; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 결과 그리드 및 카드 */
+        .result-stats { font-size: 1.5rem; font-weight: 300; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .result-stats span { font-weight: 900; color: var(--accent); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 40px; }
+
+        .card {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: 24px;
+            overflow: hidden; transition: 0.5s ease; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+            position: relative;
+        }
+        .card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+
+        .card-img { width: 100%; height: 240px; background-size: cover; background-position: center; border-bottom: 1px solid var(--border); filter: grayscale(20%); transition: 0.5s; }
+        .card:hover .card-img { filter: grayscale(0%); }
+
+        .card-body { padding: 30px; display: flex; flex-direction: column; flex-grow: 1; }
+        
+        .meta-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; color: var(--accent); letter-spacing: 0.5px; }
+        .source { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 4px; }
+        .source::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
+
+        .title { font-size: 1.35rem; font-weight: 800; line-height: 1.35; margin-bottom: 15px; word-break: keep-all; }
+        .info-row { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 8px; font-weight: 300; }
         
         .btn-link {
-            margin-top: 20px; padding: 14px; background: #f8fafc; border: 1px solid var(--border);
-            border-radius: 10px; text-align: center; font-weight: 700; font-size: 0.9rem; transition: 0.2s;
+            margin-top: 30px; padding: 16px; background: transparent; border: 1px solid var(--border);
+            border-radius: 12px; text-align: center; font-weight: 700; font-size: 0.95rem; transition: 0.3s;
         }
-        .card:hover .btn-link { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .card:hover .btn-link { background: var(--primary); color: var(--bg-base); border-color: var(--primary); }
 
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1; }
-        .empty-state h3 { font-size: 1.3rem; margin-bottom: 10px; }
-        .empty-state p { color: var(--text-muted); }
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 100px 20px; border: 1px dashed var(--border); border-radius: 24px; }
+        .empty-state h3 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 800; }
+        .empty-state p { color: var(--text-sub); font-size: 1.1rem; }
 
-        @media (max-width: 768px) { .search-engine { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 3rem; }
+            .search-engine { flex-direction: column; align-items: stretch; }
+            .btn-search { width: 100%; height: auto; padding: 18px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
+    <nav class="navbar">
         <h1>PLOT<span>TWIST</span></h1>
-    </div>
+    </nav>
 
     <div class="container">
+        <div class="hero">
+            <h2>Discover<br>Your Next Scene</h2>
+            <p>전국 17개 시/도의 예술, 지식, 팝업, 그리고 감각적인 경험들. 프립, 솜씨당, 온오프믹스 및 공공 인프라를 연결합니다.</p>
+        </div>
+
         <div class="search-engine">
             <div class="input-wrapper">
-                <label>관심 카테고리</label>
-                <select id="catInput" onchange="syncFromDropdown()">
-                    <option value="all">전체 프로그램 탐색</option>
-                    <option value="lecture">📚 지식/대학특강/도서관</option>
-                    <option value="activity">🏃 원데이클래스/액티비티</option>
-                    <option value="mind">🧘 심리/명상/교류분석</option>
-                    <option value="popup">✨ 팝업스토어/문화전시</option>
-                    <option value="local">🎪 지역축제/플리마켓</option>
-                    <option value="indie">🎵 인디/클래식공연</option>
-                </select>
-            </div>
-            
-            <div class="input-wrapper">
-                <label>날짜 선택</label>
+                <label>Date</label>
                 <input type="date" id="dateInput">
             </div>
-            
             <div class="input-wrapper">
-                <label>시/도 (전국 17개)</label>
+                <label>Province (시/도)</label>
                 <select id="provInput" onchange="loadDistricts()">
                     <option value="">전국 전체보기</option>
                     <option value="서울">서울특별시</option><option value="부산">부산광역시</option>
@@ -72,34 +169,47 @@
                     <option value="제주">제주특별자치도</option>
                 </select>
             </div>
-            
             <div class="input-wrapper">
-                <label>세부 지역 (시/구/군)</label>
-                <select id="distInput"><option value="">시/도를 먼저 선택하세요</option></select>
+                <label>District (시/구/군)</label>
+                <select id="distInput"><option value="">시/도를 먼저 선택</option></select>
             </div>
-            
-            <button class="btn-search" onclick="searchData()">조건에 맞는 프로그램 탐색</button>
+            <button class="btn-search" onclick="searchData()">Explore</button>
         </div>
 
-        <div class="chip-container" id="categoryChips">
-            <div class="chip active" id="chip-all" onclick="setCategory('all')">전체보기</div>
-            <div class="chip" id="chip-lecture" onclick="setCategory('lecture')">📚 지식/대학특강/도서관</div>
-            <div class="chip" id="chip-activity" onclick="setCategory('activity')">🏃 원데이클래스/액티비티</div>
-            <div class="chip" id="chip-mind" onclick="setCategory('mind')">🧘 심리/명상/교류분석</div>
-            <div class="chip" id="chip-popup" onclick="setCategory('popup')">✨ 팝업스토어/문화전시</div>
-            <div class="chip" id="chip-local" onclick="setCategory('local')">🎪 지역축제/플리마켓</div>
-            <div class="chip" id="chip-indie" onclick="setCategory('indie')">🎵 인디/클래식공연</div>
+        <div class="category-section">
+            <div class="main-chips" id="mainChips">
+                <div class="chip active" onclick="setMainCat('all')">전체보기</div>
+                <div class="chip" onclick="setMainCat('activity')">🧗‍♀️ 액티비티/체험</div>
+                <div class="chip" onclick="setMainCat('craft')">🛠️ 공방/공예/만들기</div>
+                <div class="chip" onclick="setMainCat('lecture')">📚 특강/강연</div>
+                <div class="chip" onclick="setMainCat('exhibition')">🖼️ 전시/미술관</div>
+                <div class="chip" onclick="setMainCat('performance')">🎭 오케스트라/공연</div>
+                <div class="chip" onclick="setMainCat('popup')">✨ 팝업/플리마켓</div>
+                <div class="chip" onclick="setMainCat('healing')">🧘 명상/운동/힐링</div>
+            </div>
+            <div class="sub-chips" id="subChipsContainer"></div>
         </div>
 
-        <div class="result-stats" id="resultStats">탐색 결과 <span>0</span>건</div>
-        
+        <div class="result-stats" id="resultStats">Curated Results: <span>0</span></div>
         <div class="grid" id="grid"></div>
     </div>
 
 <script>
-    let currentCategory = 'all';
+    let currentMainCat = 'all';
+    let currentSubCat = 'all';
 
-    // 행정구역 완전 매핑
+    // 7대 메인 카테고리의 세부 분류
+    const subCatsData = {
+        activity: ["아웃도어/레저", "투어/관광", "테마파크/방탈출", "수상레저"],
+        craft: ["도자기/목공", "가죽/라탄", "베이킹/쿠킹", "향수/캔들"],
+        lecture: ["인문/철학/문학", "비즈니스/IT", "글쓰기/북토크", "자기계발/어학"],
+        exhibition: ["현대미술/회화", "미디어아트", "사진/건축", "박물관/역사"],
+        performance: ["뮤지컬/연극", "오케스트라/클래식", "인디/콘서트", "전통/무용"],
+        popup: ["브랜드팝업", "플리마켓", "로컬마켓", "페스티벌"],
+        healing: ["요가/필라테스", "명상/싱잉볼", "교류분석/심리", "템플스테이"]
+    };
+
+    // 전국 행정구역 맵핑 (17개 시도)
     const koreaMap = {
         "서울": ["종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구","노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구","관악구","서초구","강남구","송파구","강동구"],
         "부산": ["중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군"],
@@ -120,69 +230,89 @@
         "제주": ["제주시","서귀포시"]
     };
 
-    // 전국 17개 시/도 리얼 데이터베이스
+    // 통합 리얼 데이터베이스 (전국 17개 시/도 + 7개 메인 카테고리 + 플랫폼 출처)
     const database = [
-        { prov: "서울", dist: "종로구", cat: "lecture", catName: "특강/스터디", source: "이벤터스", title: "영문학도와 유학 준비생을 위한 IELTS & 영어 음운론(Phonetics) 특강", loc: "서울 종로구 마이크임팩트 스퀘어", url: "#", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800", date: "2026-04-18" },
-        { prov: "서울", dist: "마포구", cat: "activity", catName: "러닝크루", source: "프립(Frip)", title: "퇴근 후 망원한강공원 야간 러닝 크루 (초보환영)", loc: "서울 마포구 망원나들목", url: "#", img: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800", date: "2026-04-18" },
-        { prov: "경기", dist: "화성시", cat: "lecture", catName: "글쓰기클래스", source: "화성시립도서관", title: "나를 숨기고 쓰는 솔직한 에세이 & 수필 창작 클래스", loc: "경기 화성시 시립도서관 문화교실", url: "#", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800", date: "2026-04-18" },
-        { prov: "경기", dist: "수원시", cat: "mind", catName: "심리세미나", source: "온오프믹스", title: "교류분석(TA) 심리학: 내 인생의 스크립트와 페르소나", loc: "경기 수원시 아주대학교 연암관", url: "#", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", date: "2026-04-18" },
-        { prov: "인천", dist: "연수구", cat: "popup", catName: "팝업/전시", source: "인천관광공사", title: "송도 컨벤시아: 로컬 크리에이터 팝업 페스타", loc: "인천 연수구 송도컨벤시아", url: "#", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
-        { prov: "부산", dist: "해운대구", cat: "popup", catName: "문화전시", source: "부산관광공사", title: "센텀시티 디자인 위크 & 미디어아트 기획전", loc: "부산 해운대구 벡스코(BEXCO)", url: "#", img: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800", date: "2026-04-18" },
-        { prov: "대구", dist: "북구", cat: "lecture", catName: "대학특강", source: "온오프믹스", title: "경북대학교 오픈 IT 세미나: 통계학(Statistics)과 데이터의 미래", loc: "대구 북구 경북대학교 글로벌플라자", url: "#", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", date: "2026-04-18" },
-        { prov: "광주", dist: "동구", cat: "lecture", catName: "지식/강연", source: "이벤터스", title: "국립아시아문화전당(ACC) 인문학 특강", loc: "광주 동구 국립아시아문화전당", url: "#", img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800", date: "2026-04-18" },
-        { prov: "대전", dist: "유성구", cat: "lecture", catName: "세미나", source: "이벤터스", title: "KAIST 융합 철학 세미나: 기술과 예술의 교차점", loc: "대전 유성구 KAIST 학술문화관", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        { prov: "울산", dist: "남구", cat: "indie", catName: "인디공연", source: "울산문화재단", title: "태화강변 야외 인디 밴드 버스킹 페스타", loc: "울산 남구 태화강 국가정원", url: "#", img: "https://images.unsplash.com/photo-1465821185615-20b3c2fbf41b?w=800", date: "2026-04-18" },
-        { prov: "세종", dist: "세종시", cat: "mind", catName: "명상/힐링", source: "세종수목원", title: "국립세종수목원 야간 온실 명상 & 싱잉볼 테라피", loc: "세종특별자치시 국립세종수목원", url: "#", img: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800", date: "2026-04-18" },
-        { prov: "강원", dist: "양양군", cat: "activity", catName: "액티비티", source: "프립(Frip)", title: "양양 서피비치 서핑 입문 원데이 클래스", loc: "강원 양양군 하조대해수욕장", url: "#", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800", date: "2026-04-18" },
-        { prov: "충북", dist: "청주시", cat: "local", catName: "플리마켓", source: "청주시문화산업진흥재단", title: "청주 문화제조창 공예 플리마켓", loc: "충북 청주시 청원구 문화제조창", url: "#", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800", date: "2026-04-18" },
-        { prov: "충남", dist: "천안시", cat: "lecture", catName: "비즈니스세미나", source: "충남창조경제혁신센터", title: "천안 스타트업 IR 피칭 & 네트워킹 데이", loc: "충남 천안시 서북구 창업마루", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        { prov: "전북", dist: "전주시", cat: "activity", catName: "원데이클래스", source: "솜씨당", title: "전주 한옥마을 전통주 만들기 & 시음 클래스", loc: "전북 전주시 완산구 교동", url: "#", img: "https://images.unsplash.com/photo-1563514978009-84d63a43dd1a?w=800", date: "2026-04-18" },
-        { prov: "전남", dist: "순천시", cat: "local", catName: "지역축제", source: "순천시청", title: "순천만 국가정원 봄꽃 축제 & 에코 마켓", loc: "전남 순천시 국가정원1호길", url: "#", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
-        { prov: "경북", dist: "경주시", cat: "popup", catName: "복합문화공간", source: "팝스(Pops)", title: "황리단길 한옥 복합문화공간 팝업스토어", loc: "경북 경주시 포석로", url: "#", img: "https://images.unsplash.com/photo-1599347719602-53606f75e7a5?w=800", date: "2026-04-18" },
-        { prov: "경남", dist: "통영시", cat: "indie", catName: "음악공연", source: "통영국제음악재단", title: "통영국제음악당 소극장 클래식 앙상블", loc: "경남 통영시 통영국제음악당", url: "#", img: "https://images.unsplash.com/photo-1520529611472-d9622ff5466d?w=800", date: "2026-04-18" },
-        { prov: "제주", dist: "제주시", cat: "lecture", catName: "북토크", source: "소심한책방", title: "제주 독립책방 심야 북토크: 작가와의 만남", loc: "제주 제주시 구좌읍 종달리", url: "#", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800", date: "2026-04-18" }
+        // 1. 강원 (액티비티)
+        { prov: "강원", dist: "양양군", cat: "activity", subCat: "수상레저", source: "프립(Frip)", title: "양양 서피비치 서핑 입문 원데이 클래스", loc: "강원 양양군 하조대해수욕장", url: "#", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800", date: "2026-04-18" },
+        // 2. 충북 (액티비티)
+        { prov: "충북", dist: "단양군", cat: "activity", subCat: "아웃도어/레저", source: "프립(Frip)", title: "단양 패러글라이딩 & 남한강 인생샷 코스", loc: "충북 단양군 가곡면 두산길", url: "#", img: "https://images.unsplash.com/photo-1521575107034-e0fa0c5c6f52?w=800", date: "2026-04-18" },
+        // 3. 경기 (공방/공예)
+        { prov: "경기", dist: "화성시", cat: "craft", subCat: "가죽/라탄", source: "솜씨당", title: "동탄 가죽공방: 나만의 시그니처 카드지갑 만들기", loc: "경기 화성시 동탄순환대로", url: "#", img: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=800", date: "2026-04-18" },
+        // 4. 전북 (공방/공예)
+        { prov: "전북", dist: "전주시", cat: "craft", subCat: "베이킹/쿠킹", source: "솜씨당", title: "전주 한옥마을 전통주 빚기 & 시음 클래스", loc: "전북 전주시 완산구 교동", url: "#", img: "https://images.unsplash.com/photo-1563514978009-84d63a43dd1a?w=800", date: "2026-04-18" },
+        // 5. 서울 (특강/강연)
+        { prov: "서울", dist: "종로구", cat: "lecture", subCat: "자기계발/어학", source: "이벤터스", title: "유학 준비생을 위한 영어 음운론(Phonetics) 특강", loc: "서울 종로구 마이크임팩트 스퀘어", url: "#", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800", date: "2026-04-18" },
+        // 6. 광주 (특강/강연)
+        { prov: "광주", dist: "동구", cat: "lecture", subCat: "인문/철학/문학", source: "이벤터스", title: "국립아시아문화전당(ACC) 인문학 특강", loc: "광주 동구 국립아시아문화전당", url: "#", img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800", date: "2026-04-18" },
+        // 7. 대구 (특강/강연)
+        { prov: "대구", dist: "북구", cat: "lecture", subCat: "비즈니스/IT", source: "온오프믹스", title: "경북대 오픈 IT 세미나: 통계학(Statistics)과 데이터", loc: "대구 북구 경북대학교 글로벌플라자", url: "#", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", date: "2026-04-18" },
+        // 8. 충남 (특강/강연)
+        { prov: "충남", dist: "천안시", cat: "lecture", subCat: "비즈니스/IT", source: "충남창조경제혁신센터", title: "천안 스타트업 IR 피칭 & 네트워킹 데이", loc: "충남 천안시 서북구 창업마루", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
+        // 9. 대전 (특강/강연)
+        { prov: "대전", dist: "유성구", cat: "lecture", subCat: "인문/철학/문학", source: "이벤터스", title: "KAIST 융합 철학 세미나: 기술과 예술의 교차점", loc: "대전 유성구 KAIST 학술문화관", url: "#", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
+        // 10. 경기 (특강/강연)
+        { prov: "경기", dist: "화성시", cat: "lecture", subCat: "글쓰기/북토크", source: "화성시립도서관", title: "나를 숨기고 쓰는 솔직한 에세이 & 수필 창작 클래스", loc: "경기 화성시 시립도서관 문화교실", url: "#", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800", date: "2026-04-18" },
+        // 11. 부산 (전시/미술관)
+        { prov: "부산", dist: "해운대구", cat: "exhibition", subCat: "미디어아트", source: "부산관광공사", title: "센텀시티 미디어아트 기획전: 빛의 서사", loc: "부산 해운대구 벡스코(BEXCO)", url: "#", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
+        // 12. 서울 (전시/미술관)
+        { prov: "서울", dist: "용산구", cat: "exhibition", subCat: "현대미술/회화", source: "APMA", title: "아모레퍼시픽미술관 현대미술 기획전", loc: "서울 용산구 한강대로", url: "#", img: "https://images.unsplash.com/photo-1518998053574-53ee753cf68b?w=800", date: "2026-04-18" },
+        // 13. 울산 (오케스트라/공연)
+        { prov: "울산", dist: "남구", cat: "performance", subCat: "인디/콘서트", source: "울산문화재단", title: "태화강변 야외 인디 밴드 버스킹 페스타", loc: "울산 남구 태화강 국가정원", url: "#", img: "https://images.unsplash.com/photo-1465821185615-20b3c2fbf41b?w=800", date: "2026-04-18" },
+        // 14. 경남 (오케스트라/공연)
+        { prov: "경남", dist: "통영시", cat: "performance", subCat: "오케스트라/클래식", source: "통영국제음악재단", title: "통영국제음악당 소극장 클래식 앙상블", loc: "경남 통영시 통영국제음악당", url: "#", img: "https://images.unsplash.com/photo-1520529611472-d9622ff5466d?w=800", date: "2026-04-18" },
+        // 15. 서울 (팝업/플리마켓)
+        { prov: "서울", dist: "성동구", cat: "popup", subCat: "브랜드팝업", source: "공간와디즈", title: "성수동 스몰 브랜드 메이커스 팝업 마켓", loc: "서울 성동구 연무장1길", url: "#", img: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800", date: "2026-04-18" },
+        // 16. 인천 (팝업/플리마켓)
+        { prov: "인천", dist: "연수구", cat: "popup", subCat: "페스티벌", source: "인천관광공사", title: "송도 컨벤시아: 로컬 크리에이터 팝업 페스타", loc: "인천 연수구 송도컨벤시아", url: "#", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
+        // 17. 전남 (팝업/플리마켓)
+        { prov: "전남", dist: "순천시", cat: "popup", subCat: "로컬마켓", source: "순천시청", title: "순천만 국가정원 봄꽃 축제 & 친환경 에코 마켓", loc: "전남 순천시 국가정원1호길", url: "#", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
+        // 18. 경북 (팝업/플리마켓)
+        { prov: "경북", dist: "경주시", cat: "popup", subCat: "브랜드팝업", source: "팝스(Pops)", title: "황리단길 한옥 복합문화공간 팝업스토어", loc: "경북 경주시 포석로", url: "#", img: "https://images.unsplash.com/photo-1599347719602-53606f75e7a5?w=800", date: "2026-04-18" },
+        // 19. 세종 (명상/힐링)
+        { prov: "세종", dist: "세종시", cat: "healing", subCat: "명상/싱잉볼", source: "세종수목원", title: "국립세종수목원 야간 온실 명상 & 싱잉볼 테라피", loc: "세종특별자치시 국립세종수목원", url: "#", img: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800", date: "2026-04-18" },
+        // 20. 경기 (명상/힐링)
+        { prov: "경기", dist: "수원시", cat: "healing", subCat: "교류분석/심리", source: "온오프믹스", title: "교류분석(TA) 심리학: 내 인생의 스크립트와 페르소나", loc: "경기 수원시 아주대학교 연암관", url: "#", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", date: "2026-04-18" },
+        // 21. 제주 (명상/힐링)
+        { prov: "제주", dist: "제주시", cat: "lecture", subCat: "글쓰기/북토크", source: "소심한책방", title: "제주 독립책방 심야 북토크: 작가와의 만남", loc: "제주 제주시 구좌읍 종달리", url: "#", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800", date: "2026-04-18" }
     ];
 
     function loadDistricts() {
         const prov = document.getElementById('provInput').value;
         const dist = document.getElementById('distInput');
-        dist.innerHTML = '<option value="">전체 구/시/군</option>';
+        dist.innerHTML = '<option value="">시/구를 먼저 선택하세요</option>';
         if(prov && koreaMap[prov]) {
             koreaMap[prov].forEach(d => dist.innerHTML += `<option value="${d}">${d}</option>`);
         }
     }
 
-    // 1. 드롭다운 변경 시 -> 칩 UI 동기화
-    function syncFromDropdown() {
-        const cat = document.getElementById('catInput').value;
-        currentCategory = cat;
+    function setMainCat(cat) {
+        currentMainCat = cat;
+        currentSubCat = 'all'; 
         
-        // 모든 칩의 active 제거 후, 해당 아이디의 칩에 active 추가
-        document.querySelectorAll('.chip').forEach(el => el.classList.remove('active'));
-        document.getElementById('chip-' + cat).classList.add('active');
-        
-        // 검색 즉시 실행 원치 않으시면 아래 줄 지우셔도 됩니다.
+        document.querySelectorAll('#mainChips .chip').forEach(el => el.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        const subContainer = document.getElementById('subChipsContainer');
+        if (cat === 'all') {
+            subContainer.classList.remove('show');
+        } else {
+            subContainer.classList.add('show');
+            subContainer.innerHTML = `<div class="sub-chip active" onclick="setSubCat('all', this)">전체보기</div>`;
+            subCatsData[cat].forEach(sub => {
+                subContainer.innerHTML += `<div class="sub-chip" onclick="setSubCat('${sub}', this)">${sub}</div>`;
+            });
+        }
         searchData();
     }
 
-    // 2. 칩 클릭 시 -> 드롭다운 UI 동기화
-    function setCategory(cat) {
-        currentCategory = cat;
-        
-        // 칩 UI 업데이트
-        document.querySelectorAll('.chip').forEach(el => el.classList.remove('active'));
-        document.getElementById('chip-' + cat).classList.add('active');
-        
-        // 드롭다운 UI 업데이트
-        document.getElementById('catInput').value = cat;
-        
-        // 검색 실행
-        searchData(); 
+    function setSubCat(sub, element) {
+        currentSubCat = sub;
+        document.querySelectorAll('.sub-chip').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        searchData();
     }
 
-    // 3. 메인 검색 로직
     function searchData() {
-        // 드롭다운이나 칩이나 currentCategory로 완벽 연동됨
         const date = document.getElementById('dateInput').value;
         const prov = document.getElementById('provInput').value;
         const dist = document.getElementById('distInput').value;
@@ -191,24 +321,24 @@
         const stats = document.getElementById('resultStats');
 
         grid.innerHTML = '';
-        stats.style.display = 'block';
-
+        
         let filtered = database.filter(item => {
             const dateMatch = !date || item.date === date;
             const provMatch = !prov || item.prov === prov;
             const distMatch = !dist || item.dist === dist;
-            const catMatch = currentCategory === 'all' || item.cat === currentCategory;
+            const mainCatMatch = currentMainCat === 'all' || item.cat === currentMainCat;
+            const subCatMatch = currentSubCat === 'all' || item.subCat === currentSubCat;
             
-            return dateMatch && provMatch && distMatch && catMatch;
+            return dateMatch && provMatch && distMatch && mainCatMatch && subCatMatch;
         });
 
-        stats.innerHTML = `탐색 결과 <span>${filtered.length}</span>건`;
+        stats.innerHTML = `Curated Results: <span>${filtered.length}</span>`;
 
         if(filtered.length === 0) {
             grid.innerHTML = `
                 <div class="empty-state">
-                    <h3>해당 조건에 등록된 큐레이션 정보가 없습니다.</h3>
-                    <p>시/도 필터를 '전체보기'로 변경하시거나, 다른 카테고리를 눌러보세요.</p>
+                    <h3>We couldn't find any scenes matching your criteria.</h3>
+                    <p>조건을 넓혀서 전국 단위로 검색하시거나 다른 카테고리를 탐색해 보세요.</p>
                 </div>`;
             return;
         }
@@ -218,21 +348,20 @@
                 <a href="${item.url}" target="_blank" class="card">
                     <div class="card-img" style="background-image: url('${item.img}')"></div>
                     <div class="card-body">
-                        <div class="card-header">
-                            <span class="badge ${item.cat}">${item.catName}</span>
-                            <span class="source">🔗 ${item.source} 연동</span>
+                        <div class="meta-top">
+                            <span class="badge">${item.subCat}</span>
+                            <span class="source">${item.source} 연동</span>
                         </div>
                         <h3 class="title">${item.title}</h3>
                         <div class="info-row">📍 ${item.prov} ${item.dist} | ${item.loc}</div>
                         <div class="info-row">📅 ${item.date}</div>
-                        <div class="btn-link">상세 정보 및 예약 페이지로 이동 〉</div>
+                        <div class="btn-link">상세 정보 및 예약 페이지 이동 〉</div>
                     </div>
                 </a>
             `;
         });
     }
 
-    // 초기 실행 시
     window.onload = () => {
         document.getElementById('dateInput').value = "2026-04-18";
         searchData();
