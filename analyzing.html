@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLOT TWIST | 금융 지능 진단 & 자산 로드맵</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100;300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #121212;
+            --primary: #ffffff;
+            --accent: #22c55e; /* 성공을 상징하는 그린 */
+            --accent-glow: rgba(34, 197, 94, 0.4);
+            --text-main: #f4f4f5;
+            --text-sub: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Pretendard', sans-serif; background-color: var(--bg);
+            color: var(--text-main); line-height: 1.6; overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% -20%, rgba(34,197,94,0.1) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .navbar { padding: 30px 50px; display: flex; justify-content: center; border-bottom: 1px solid var(--border); background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
+        .navbar h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
+        .navbar h1 span { color: var(--accent); }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 80px 20px; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; }
+
+        /* 진행 바 */
+        .progress-container { width: 100%; height: 4px; background: var(--border); border-radius: 10px; margin-bottom: 50px; position: relative; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; border-radius: 10px; transition: 0.5s ease; box-shadow: 0 0 10px var(--accent); }
+
+        /* 퀴즈 박스 */
+        .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: 32px; padding: 50px; position: relative; animation: slideUp 0.6s ease forwards; }
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .q-num { font-size: 0.9rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .question { font-size: 2.2rem; font-weight: 900; margin-bottom: 40px; line-height: 1.3; word-break: keep-all; }
+
+        .options { display: grid; gap: 15px; }
+        .btn-opt {
+            background: transparent; border: 1px solid var(--border); color: var(--text-main);
+            padding: 24px 30px; border-radius: 16px; font-size: 1.1rem; text-align: left;
+            cursor: pointer; transition: 0.3s; position: relative; font-weight: 500;
+        }
+        .btn-opt:hover { background: rgba(255,255,255,0.03); border-color: var(--primary); }
+        .btn-opt::after { content: '→'; position: absolute; right: 30px; opacity: 0; transition: 0.3s; }
+        .btn-opt:hover::after { opacity: 1; }
+
+        /* 결과 화면 디자인 */
+        #resultView { display: none; }
+        .res-header { text-align: center; margin-bottom: 60px; }
+        .res-badge { display: inline-block; padding: 8px 20px; background: rgba(34,197,94,0.1); border: 1px solid var(--accent); border-radius: 100px; color: var(--accent); font-weight: 800; font-size: 0.9rem; margin-bottom: 20px; }
+        .res-title { font-size: 3.5rem; font-weight: 900; margin-bottom: 20px; }
+        .res-score { font-size: 1.2rem; color: var(--text-sub); }
+
+        .roadmap-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .res-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 35px; transition: 0.3s; }
+        .res-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .res-card h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .res-card p { color: var(--text-sub); font-size: 1rem; margin-bottom: 20px; }
+        
+        .rec-item { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+        .rec-item h4 { font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; }
+        .rec-item span { font-size: 0.85rem; color: var(--text-sub); }
+
+        .btn-restart { margin-top: 50px; display: block; width: 100%; padding: 20px; background: var(--primary); color: var(--bg); border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; text-decoration: none; text-align: center; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) { .question { font-size: 1.6rem; } .res-title { font-size: 2.2rem; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1>PLOT<span>TWIST</span> FINANCE</h1>
+    </nav>
+
+    <div class="container">
+        <div id="quizView">
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="quiz-card" id="quizCard">
+                </div>
+        </div>
+
+        <div id="resultView">
+            <div class="res-header">
+                <div class="res-badge">진단 리포트 발행</div>
+                <h1 class="res-title" id="finalPersona">분석 중...</h1>
+                <p class="res-score" id="scoreInfo"></p>
+            </div>
+
+            <div class="roadmap-container">
+                <div class="res-card">
+                    <h3>📈 추천 포트폴리오</h3>
+                    <div id="recStocks"></div>
+                </div>
+                <div class="res-card">
+                    <h3>📚 학습 로드맵</h3>
+                    <div id="recEducation"></div>
+                </div>
+                <div class="res-card">
+                    <h3>⚡️ Immediate Action</h3>
+                    <div id="recAction"></div>
+                </div>
+            </div>
+
+            <button class="btn-restart" onclick="location.reload()">테스트 다시 하기</button>
+        </div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            q: "기업이 벌어들인 순이익에 비해 주가가 얼마나 비싼지 나타내는 지표인 'PER'의 올바른 설명은?",
+            opts: [
+                { txt: "PER이 낮을수록 기업 가치 대비 주가가 저평가되어 있을 가능성이 높다.", score: 20 },
+                { txt: "PER은 주가와 상관없이 기업의 매출 성장성만을 나타낸다.", score: 0 },
+                { txt: "PER이 높을수록 배당금을 많이 주는 기업이다.", score: 5 }
+            ]
+        },
+        {
+            q: "주식 투자 시 리스크를 줄이기 위해 여러 종목에 나누어 투자하는 것을 무엇이라 하나요?",
+            opts: [
+                { txt: "몰빵 투자", score: 0 },
+                { txt: "분산 투자 (Portfolio Diversification)", score: 20 },
+                { txt: "레버리지 투자", score: 5 }
+            ]
+        },
+        {
+            q: "원금에 대해서만 이자가 붙는 단리와 달리, 이자에 이자가 붙어 자산이 기하급수적으로 늘어나는 효과는?",
+            opts: [
+                { txt: "복리 효과 (Compound Interest)", score: 20 },
+                { txt: "인플레이션 효과", score: 0 },
+                { txt: "환차익 효과", score: 5 }
+            ]
+        },
+        {
+            q: "기업이 순이익의 일부를 주주들에게 현금으로 나누어 주는 것을 무엇이라 합니까?",
+            opts: [
+                { txt: "유상증자", score: 0 },
+                { txt: "공매도", score: 0 },
+                { txt: "배당 (Dividend)", score: 20 }
+            ]
+        },
+        {
+            q: "본인의 현재 자산 수준과 가장 가까운 항목을 선택해 주세요. (가점 항목)",
+            opts: [
+                { txt: "시드머니 500만 원 이하: 이제 막 저축을 시작한 단계", score: 5 },
+                { txt: "시드머니 500만 원 ~ 5,000만 원: 본격적인 자산 운용 단계", score: 10 },
+                { txt: "시드머니 5,000만 원 이상: 자산 배분과 절세가 중요한 단계", score: 20 }
+            ]
+        }
+    ];
+
+    let currentIdx = 0;
+    let totalScore = 0;
+
+    function renderQuiz() {
+        const quizCard = document.getElementById('quizCard');
+        const qData = questions[currentIdx];
+        const progress = ((currentIdx) / questions.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+
+        quizCard.innerHTML = `
+            <span class="q-num">Question 0${currentIdx + 1}</span>
+            <h2 class="question">${qData.q}</h2>
+            <div class="options">
+                ${qData.opts.map((opt, i) => `
+                    <button class="btn-opt" onclick="handleAnswer(${opt.score})">${opt.txt}</button>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function handleAnswer(score) {
+        totalScore += score;
+        if (currentIdx < questions.length - 1) {
+            currentIdx++;
+            renderQuiz();
+        } else {
+            document.getElementById('progressBar').style.width = '100%';
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quizView').style.display = 'none';
+        document.getElementById('resultView').style.display = 'block';
+        
+        const persona = document.getElementById('finalPersona');
+        const scoreInfo = document.getElementById('scoreInfo');
+        const stocks = document.getElementById('recStocks');
+        const edu = document.getElementById('recEducation');
+        const action = document.getElementById('recAction');
+
+        scoreInfo.innerText = `당신의 금융 지능 지수는 ${totalScore}점입니다.`;
+
+        if (totalScore <= 40) {
+            persona.innerText = "잠재적 금융 새싹형";
+            stocks.innerHTML = createRecItem("미국/한국 시장 지수 ETF", "KODEX 200, S&P 500 등 안정적인 인덱스 펀드 위주로 시작하세요.");
+            edu.innerHTML = createRecItem("📖 추천 도서", "'돈의 속성 (김승호)', '나의 월급 재테크 (유튜브)'") + createRecItem("📺 유튜브 채널", "소수정예 금융 기초 강의");
+            action.innerHTML = createRecItem("청약통장/파킹통장 세팅", "기초 자금을 모으는 습관부터 만드는 것이 1순위입니다.");
+        } else if (totalScore <= 70) {
+            persona.innerText = "스마트 자산 성장형";
+            stocks.innerHTML = createRecItem("배당주 및 우량주", "삼성전자, 맥쿼리인프라 등 꾸준한 현금흐름을 만드는 종목.") + createRecItem("배당 성장 ETF", "SCHD 등 배당금이 늘어나는 미국 ETF.");
+            edu.innerHTML = createRecItem("📖 추천 도서", "'돈의 심리학 (모건 하우절)', '전설로 떠나는 월가의 영웅'") + createRecItem("📺 추천 영상", "슈카월드 (경제 트렌드 분석)");
+            action.innerHTML = createRecItem("중개형 ISA 계좌 개설", "주식 투자 수익에 대해 비과세 혜택을 챙길 수 있는 필수 계좌입니다.");
+        } else {
+            persona.innerText = "전략적 가치 분석가형";
+            stocks.innerHTML = createRecItem("저PBR 가치주 & 성장주", "재무제표 분석을 통한 저평가 기업(풍산, 명인제약 등) 발굴.") + createRecItem("개별 기술주", "엔비디아, 테슬라 등 메가 트렌드 주도주.");
+            edu.innerHTML = createRecItem("📖 추천 도서", "'현명한 투자자 (벤자민 그레이엄)', '치밀한 기업 분석 리포트'") + createRecItem("📺 추천 영상", "삼프로TV (심층 기업 분석 편)");
+            action.innerHTML = createRecItem("연금저축 & IRP 최적화", "세액공제를 극대화하고 자산 배분 전략을 통해 절세와 수익을 동시에 잡으세요.");
+        }
+    }
+
+    function createRecItem(title, desc) {
+        return `<div class="rec-item"><h4>${title}</h4><span>${desc}</span></div>`;
+    }
+
+    window.onload = renderQuiz;
+</script>
+</body>
+</html>
