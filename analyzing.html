@@ -23,7 +23,6 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            /* 스크롤을 내릴 수 있도록 충분한 여백 제공 */
             height: 200vh; 
             overflow-x: hidden;
             font-family: var(--font-sans);
@@ -41,33 +40,37 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            z-index: 20; /* 처음에는 가장 위에 위치 */
+            z-index: 20;
             background-color: var(--bg-color);
             transition: opacity 0.1s ease-out;
+        }
+
+        /* 첫 화면 로고 뒤 반투명 배경 (image_1ccf77.jpg) */
+        .intro-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('image_1ccf77.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* 첨부해주신 이미지(image_fe4efa.jpg)를 위아래로 잘라서 배치 */
         .eye-image {
             width: 100%;
-            height: 25vh; /* 원본 이미지의 눈 부분만 보이도록 높이 제한 */
-            background-image: url('image_fe4efa.jpg'); /* 사용자님의 이미지 파일명 연동 */
+            height: 25vh; 
+            background-image: url('image_fe4efa.jpg'); 
             background-size: cover;
             background-repeat: no-repeat;
-            /* 흑백 모드를 원하셨으므로 안전장치로 그레이스케일 적용 */
             filter: grayscale(100%); 
         }
 
-        /* 상단 눈은 이미지의 맨 위쪽을 보여줌 */
-        .eye-top {
-            background-position: center top;
-        }
+        .eye-top { background-position: center top; }
+        .eye-bottom { background-position: center bottom; }
 
-        /* 하단 눈은 이미지의 맨 아래쪽을 보여줌 */
-        .eye-bottom {
-            background-position: center bottom;
-        }
-
-        /* 중앙 텍스트 영역 */
         .center-content {
             flex-grow: 1;
             display: flex;
@@ -110,15 +113,14 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: 10; /* 초기에는 로고 뒤에 위치 */
-            opacity: 0; /* 초기에는 완전히 투명함 */
+            z-index: 10; 
+            opacity: 0; 
             display: flex;
             align-items: center;
             justify-content: center;
-            /* 버튼이 잘 보이도록 은은한 배경 효과 */
             background: radial-gradient(circle at center, #111111 0%, #000000 100%);
             transition: opacity 0.1s ease-out;
-            pointer-events: none; /* 투명할 때는 클릭 방지 */
+            pointer-events: none; 
         }
 
         .button-container {
@@ -166,34 +168,15 @@
             transform-origin: left;
         }
 
-        @media (max-width: 768px) {
-            .button-container {
-                flex-direction: column;
-                gap: 20px;
-            }
-        }
-        /* --- 새로 추가되는 CSS --- */
-        
-        /* 1. 첫 화면 로고 뒤 반투명 배경 (image_1ccf77.jpg) */
-        .intro-section::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('image_1ccf77.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15; /* 반투명 정도 (숫자 조절 가능) */
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* 2. 설문 & 결과 페이지 컨테이너 */
+        /* ------------------------------------
+           Survey & Result Section (설문 및 결과 UI)
+        ------------------------------------ */
         .survey-container, .result-container, .transition-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100vh;
             background-color: var(--bg-color);
             z-index: 100;
-            display: none; /* 기본은 숨김 */
+            display: none; 
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -208,7 +191,6 @@
             opacity: 1;
         }
 
-        /* 3. 설문 UI (MBTI 스타일) */
         .progress-bar {
             position: absolute;
             top: 0; left: 0;
@@ -237,6 +219,7 @@
             gap: 15px;
             width: 100%;
             max-width: 500px;
+            margin: 0 auto;
         }
 
         .option-btn {
@@ -256,7 +239,6 @@
             background-color: rgba(255,255,255,0.1);
         }
 
-        /* 4. 중간 트랜지션 화면 */
         .transition-text {
             font-family: var(--font-serif);
             font-size: 3rem;
@@ -271,7 +253,6 @@
             100% { opacity: 0.5; }
         }
 
-        /* 5. 결과 페이지 UI */
         .result-content {
             max-width: 800px;
             width: 100%;
@@ -299,7 +280,6 @@
             line-height: 1.6;
         }
 
-        /* Axis 축 디자인 */
         .axis-container {
             margin-bottom: 40px;
             text-align: left;
@@ -309,9 +289,7 @@
             border: 1px solid #333;
         }
 
-        .axis-row {
-            margin-bottom: 25px;
-        }
+        .axis-row { margin-bottom: 25px; }
 
         .axis-labels {
             display: flex;
@@ -341,43 +319,44 @@
             box-shadow: 0 0 10px rgba(255,255,255,0.8);
             transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        @media (max-width: 768px) {
+            .button-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .question-text { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
 
     <!-- 첫 화면 (스크롤 시 사라짐) -->
     <div class="intro-section" id="introSection">
-        <!-- 상단 눈 이미지 -->
         <div class="eye-image eye-top"></div>
-        
-        <!-- 중앙 텍스트 -->
         <div class="center-content">
             <p class="sub-text">Analyzing one's soul, connecting to Seoul.</p>
             <h1 class="main-title">The mirror of<br>the s<span>(e)</span>oul</h1>
             <p class="sub-text">Take in the soul of Seoul.</p>
         </div>
-
-        <!-- 하단 눈 이미지 -->
         <div class="eye-image eye-bottom"></div>
     </div>
 
     <!-- 버튼 영역 (스크롤 시 나타남) -->
     <div class="action-section" id="actionSection">
         <div class="button-container">
-            <a href="#설문" class="action-btn">mirroring my soul</a>
-            <a href="#추천" class="action-btn">searching my seoul</a>
+            <!-- 고장 안나게 id="startSurveyBtn"를 직접 부여했습니다 -->
+            <a href="#" id="startSurveyBtn" class="action-btn">mirroring my soul</a>
+            <a href="#" class="action-btn">searching my seoul</a>
         </div>
     </div>
-    <!-- --- 새로 추가되는 HTML --- -->
 
     <!-- 설문 페이지 -->
     <div class="survey-container" id="surveyContainer">
         <div class="progress-bar" id="progressBar"></div>
         <div class="question-box">
             <h2 class="question-text" id="questionText">질문 로딩중...</h2>
-            <div class="options-wrapper" id="optionsWrapper">
-                <!-- 버튼이 자바스크립트로 생성됨 -->
-            </div>
+            <div class="options-wrapper" id="optionsWrapper"></div>
         </div>
     </div>
 
@@ -389,21 +368,14 @@
     <!-- 결과 페이지 -->
     <div class="result-container" id="resultContainer">
         <div class="result-content">
-            <div id="archetypeResult">
-                <!-- 결과 텍스트 삽입됨 -->
-            </div>
-            
-            <div class="axis-container" id="axisContainer">
-                <!-- 축 UI 삽입됨 -->
-            </div>
-
-            <!-- 다시하기 또는 장소 찾기 버튼 -->
+            <div id="archetypeResult"></div>
+            <div class="axis-container" id="axisContainer"></div>
             <button class="option-btn" style="width:100%; max-width:300px; margin: 0 auto; display:block;" onclick="location.reload()">Back to Home</button>
         </div>
     </div>
 
-    <!-- 스크롤 이벤트 자바스크립트 -->
     <script>
+        // --- 1. 스크롤 이벤트 ---
         const introSection = document.getElementById('introSection');
         const actionSection = document.getElementById('actionSection');
 
@@ -411,46 +383,40 @@
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
             
-            // 화면의 절반 정도 내렸을 때 전환되도록 계산
             let scrollRatio = scrollY / (windowHeight * 0.5);
             if (scrollRatio > 1) scrollRatio = 1;
 
-            // 1. 눈 이미지와 중앙 로고는 스크롤할수록 투명해짐 (사라짐)
             introSection.style.opacity = 1 - scrollRatio;
-            
-            // 2. 버튼 섹션은 스크롤할수록 선명해짐 (나타남)
             actionSection.style.opacity = scrollRatio;
 
-            // 버튼 섹션이 어느 정도 나타났을 때(로고가 흐려졌을 때) 클릭 활성화 및 위로 올림
+            // 스크롤이 충분히 내려와야 클릭이 활성화됩니다!
             if (scrollRatio > 0.5) {
                 actionSection.style.pointerEvents = 'auto';
-                actionSection.style.zIndex = '30'; // 버튼을 맨 앞으로 가져옴
+                actionSection.style.zIndex = '30';
             } else {
                 actionSection.style.pointerEvents = 'none';
-                actionSection.style.zIndex = '10'; // 로고를 다시 맨 앞으로
+                actionSection.style.zIndex = '10';
             }
         });
-        // --- 새로 추가되는 JavaScript ---
 
-        // 1. "mirroring my soul" 버튼 클릭 이벤트 가로채기
-        const startBtn = document.querySelector('a[href="#설문"]');
+        // --- 2. 설문 시작 이벤트 (ID로 매칭하여 에러 방지) ---
+        const startBtn = document.getElementById('startSurveyBtn');
         startBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // 기본 앵커 이동 막기
-            document.body.style.overflow = 'hidden'; // 스크롤 막기
+            e.preventDefault(); 
+            document.body.style.overflow = 'hidden'; 
             
-            // 기존 화면 숨기기
             document.getElementById('introSection').style.display = 'none';
             document.getElementById('actionSection').style.display = 'none';
             
-            // 설문 화면 띄우기
             const surveyContainer = document.getElementById('surveyContainer');
             surveyContainer.style.display = 'flex';
-            setTimeout(() => surveyContainer.classList.add('active'), 50);
+            // 약간의 딜레이를 주어 애니메이션 작동
+            setTimeout(() => surveyContainer.classList.add('active'), 50); 
             
-            renderQuestion(); // 첫 질문 렌더링
+            renderQuestion(); 
         });
 
-        // 2. 질문 데이터 (20개)
+        // --- 3. 설문 로직 ---
         const questions = [
             { q: "Q1. 당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
             { q: "Q2. 가장 편안한 소리 환경은?", options: ["완전한 정적", "잔잔한 배경음 (카페/재즈)", "사람들의 웅성거림", "음악/활기 있는 소음"] },
@@ -475,7 +441,7 @@
         ];
 
         let currentQuestionIndex = 0;
-        let answers = []; // 사용자가 선택한 답변 인덱스(0~3) 저장
+        let answers = []; 
 
         function renderQuestion() {
             if(currentQuestionIndex >= questions.length) {
@@ -483,7 +449,6 @@
                 return;
             }
 
-            // 프로그레스 바 업데이트
             const progress = ((currentQuestionIndex) / questions.length) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
 
@@ -491,22 +456,22 @@
             document.getElementById('questionText').innerText = qData.q;
             
             const wrapper = document.getElementById('optionsWrapper');
-            wrapper.innerHTML = ''; // 기존 버튼 초기화
+            wrapper.innerHTML = ''; 
             
             qData.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt;
                 btn.onclick = () => {
-                    answers.push(idx); // 선택한 번호(0~3) 저장
+                    answers.push(idx); 
                     currentQuestionIndex++;
-                    renderQuestion(); // 다음 질문
+                    renderQuestion(); 
                 };
                 wrapper.appendChild(btn);
             });
         }
 
-        // 3. 트랜지션 (분석 중 화면)
+        // --- 4. 분석 중(트랜지션) 화면 ---
         function showTransition() {
             const surveyBox = document.getElementById('surveyContainer');
             surveyBox.classList.remove('active');
@@ -516,12 +481,11 @@
                 transBox.style.display = 'flex';
                 setTimeout(() => transBox.classList.add('active'), 50);
                 
-                // 2.5초 후 결과 화면으로 이동
                 setTimeout(showResult, 2500);
             }, 500);
         }
 
-        // 4. 아키타입 데이터 (11개)
+        // --- 5. 결과 계산 및 표시 ---
         const archetypes = [
             { name: "Midnight Observer", sub: "고요 + 내향 + 밤 + 사색", desc: "“혼자 깊이 빠지는 타입”", rec: "👉 추천: 심야 카페, 서재형 카페, 한적한 바" },
             { name: "Quiet Curator", sub: "미니멀 + 안정 + 몰입", desc: "“취향을 조용히 쌓는 사람”", rec: "👉 추천: 독립서점, 전시형 카페, 북카페" },
@@ -536,7 +500,6 @@
             { name: "Soft Retreator", sub: "회복 + 자연 + 저자극", desc: "“도시 속 쉼을 찾는 사람”", rec: "👉 추천: 한강, 숲 카페, 한옥 카페" }
         ];
 
-        // 5. 결과 계산 및 렌더링
         function showResult() {
             const transBox = document.getElementById('transitionScreen');
             transBox.classList.remove('active');
@@ -544,12 +507,10 @@
             setTimeout(() => {
                 transBox.style.display = 'none';
                 
-                // 간단한 알고리즘: 사용자가 고른 답변(0~3)의 총합을 기준으로 11개 결과 중 하나를 매핑
                 const totalScore = answers.reduce((a, b) => a + b, 0);
                 const resultIndex = totalScore % 11; 
                 const myResult = archetypes[resultIndex];
 
-                // 텍스트 렌더링
                 const resultHtml = `
                     <h1 class="archetype-title">${myResult.name}</h1>
                     <p class="archetype-sub">${myResult.sub}</p>
@@ -557,7 +518,6 @@
                 `;
                 document.getElementById('archetypeResult').innerHTML = resultHtml;
 
-                // Axis 축 동적 렌더링 (답변 합계를 이용해 축의 위치 %를 계산)
                 const axisData = [
                     { name: "Energy Axis", left: "내향", right: "외향", val: (answers[0]+answers[1]+answers[2]+answers[11]) * 8 },
                     { name: "Stimulus Axis", left: "저자극", right: "고자극", val: (answers[3]+answers[6]+answers[10]+answers[16]) * 8 },
@@ -568,7 +528,6 @@
 
                 let axesHtml = '';
                 axisData.forEach(axis => {
-                    // %가 0~100 사이를 벗어나지 않도록 보정
                     let percent = Math.min(Math.max(axis.val, 10), 90); 
                     axesHtml += `
                         <div class="axis-row">
@@ -585,13 +544,14 @@
                 });
                 document.getElementById('axisContainer').innerHTML = axesHtml;
 
-                // 결과창 띄우기
                 const resultBox = document.getElementById('resultContainer');
                 resultBox.style.display = 'flex';
-                setTimeout(() => resultBox.classList.add('active'), 50);
+                
+                setTimeout(() => {
+                    resultBox.classList.add('active');
+                }, 50);
             }, 500);
         }
     </script>
-
 </body>
 </html>
