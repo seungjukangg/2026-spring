@@ -3,404 +3,831 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLOT TWIST | 프리미엄 라이프 큐레이터</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100;300;400;600;800;900&display=swap" rel="stylesheet">
+    <title>The mirror of the s(e)oul</title>
+    <!-- 세리프 폰트와 산세리프 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        /* 하이엔드 다크 모드 디자인 */
         :root {
-            --bg-base: #050505;
-            --bg-surface: #121212;
-            --primary: #ffffff;
-            --accent: #d9f99d; /* 네온 라임 그린 */
-            --accent-glow: rgba(217, 249, 157, 0.4);
-            --text-main: #f4f4f5;
-            --text-sub: #a1a1aa;
-            --border: rgba(255, 255, 255, 0.1);
-            --glass: rgba(18, 18, 18, 0.7);
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Noto Sans KR', sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: 'Pretendard', sans-serif; background-color: var(--bg-base);
-            color: var(--text-main); line-height: 1.6; overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% -20%, rgba(255,255,255,0.05) 0%, transparent 50%);
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 200vh; 
+            overflow-x: hidden;
+            font-family: var(--font-sans);
         }
 
-        /* 네비게이션 */
-        .navbar { 
-            padding: 30px 50px; display: flex; align-items: center; 
-            position: sticky; top: 0; z-index: 100; 
-            background: var(--glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
-        }
-        .navbar h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--primary); }
-        .navbar h1 span { color: var(--accent); }
-
-        .container { max-width: 1400px; margin: 0 auto; padding: 60px 40px; }
-
-        .hero { margin-bottom: 80px; }
-        .hero h2 { font-size: 4.5rem; font-weight: 900; line-height: 1.1; letter-spacing: -2px; margin-bottom: 20px; text-transform: uppercase; }
-        .hero p { font-size: 1.25rem; color: var(--text-sub); font-weight: 300; max-width: 650px; }
-
-        /* 글래스모피즘 검색 엔진 */
-        .search-engine {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 24px;
-            padding: 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end;
-            margin-bottom: 50px; backdrop-filter: blur(20px);
+        /* ------------------------------------
+           Intro Section (첫 화면: 눈 + 중앙 로고)
+        ------------------------------------ */
+        .intro-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 20;
+            background-color: var(--bg-color);
+            transition: opacity 0.1s ease-out;
         }
 
-        .input-wrapper { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; min-width: 200px; }
-        .input-wrapper label { font-size: 0.75rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; }
-        
-        select, input[type="date"] {
-            background: var(--bg-surface); border: 1px solid var(--border); color: var(--primary);
-            padding: 18px 20px; border-radius: 14px; font-size: 1rem; outline: none; transition: 0.3s;
-            appearance: none; cursor: pointer; font-family: inherit;
+        /* 첫 화면 로고 뒤 반투명 배경 (image_1ccf77.jpg) */
+        .intro-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('image_1ccf77.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
         }
-        select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        .btn-search {
-            background: var(--primary); color: var(--bg-base); border: none; padding: 18px 40px;
-            border-radius: 14px; font-weight: 900; font-size: 1rem; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 1px; height: 56px;
+        /* 첨부해주신 이미지(image_fe4efa.jpg)를 위아래로 잘라서 배치 */
+        .eye-image {
+            width: 100%;
+            height: 25vh; 
+            background-image: url('image_fe4efa.jpg'); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            filter: grayscale(100%); 
         }
-        .btn-search:hover { background: var(--accent); transform: scale(1.02); }
 
-        /* 동적 카테고리 칩 */
-        .category-section { margin-bottom: 60px; }
-        
-        .main-chips { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-        .chip {
-            padding: 14px 24px; border-radius: 100px; background: transparent; border: 1px solid var(--border);
-            font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            color: var(--text-sub); display: flex; align-items: center; gap: 8px;
+        .eye-top { background-position: center top; }
+        .eye-bottom { background-position: center bottom; }
+
+        .center-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
         }
-        .chip:hover { border-color: var(--primary); color: var(--primary); }
-        .chip.active { background: var(--primary); color: var(--bg-base); border-color: var(--primary); font-weight: 800; }
 
-        .sub-chips { 
-            display: flex; gap: 10px; flex-wrap: wrap; padding: 20px; 
-            background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed var(--border);
-            display: none; animation: slideDown 0.4s ease forwards;
+        .main-title {
+            font-family: var(--font-serif);
+            font-size: clamp(3rem, 7vw, 7rem);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin: 20px 0;
         }
-        .sub-chips.show { display: flex; }
-        .sub-chip {
-            padding: 8px 18px; border-radius: 8px; background: var(--bg-surface); border: 1px solid var(--border);
-            font-size: 0.85rem; color: var(--text-sub); cursor: pointer; transition: 0.2s; font-weight: 500;
+
+        .main-title span {
+            font-style: italic;
+            color: #aaaaaa;
         }
-        .sub-chip:hover { color: var(--accent); border-color: var(--accent); }
-        .sub-chip.active { background: var(--accent); color: var(--bg-base); border-color: var(--accent); font-weight: 800; }
 
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .sub-text {
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            color: #cccccc;
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+        }
 
-        /* 결과 그리드 및 카드 */
-        .result-stats { font-size: 1.5rem; font-weight: 300; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .result-stats span { font-weight: 900; color: var(--accent); }
+        /* ------------------------------------
+           Action Section (스크롤 후 나타나는 클릭 버튼 영역)
+        ------------------------------------ */
+        .action-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10; 
+            opacity: 0; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #111111 0%, #000000 100%);
+            transition: opacity 0.1s ease-out;
+            pointer-events: none; 
+        }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 40px; }
+        .button-container {
+            display: flex;
+            gap: 60px; /* 버튼 사이 간격 */
+        }
 
-        .card {
-            background: var(--bg-surface); border: 1px solid var(--border); border-radius: 24px;
-            overflow: hidden; transition: 0.5s ease; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+        /* 버튼 위 설명 텍스트 컨테이너 */
+        .btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; 
+        }
+
+        .btn-desc {
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            color: #aaaaaa;
+            letter-spacing: 0.05em;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+        }
+
+        .action-btn {
+            display: inline-block;
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 20px 50px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+            letter-spacing: 0.05em;
+            transition: all 0.4s ease;
             position: relative;
+            overflow: hidden;
+            background: transparent;
+            cursor: pointer;
+            text-transform: lowercase;
+            width: 100%;
+            text-align: center;
         }
-        .card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
 
-        .card-img { width: 100%; height: 240px; background-size: cover; background-position: center; border-bottom: 1px solid var(--border); filter: grayscale(20%); transition: 0.5s; }
-        .card:hover .card-img { filter: grayscale(0%); }
-
-        .card-body { padding: 30px; display: flex; flex-direction: column; flex-grow: 1; }
-        
-        .meta-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-        .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; color: var(--accent); letter-spacing: 0.5px; }
-        .source { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 4px; }
-        .source::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
-
-        .title { font-size: 1.35rem; font-weight: 800; line-height: 1.35; margin-bottom: 15px; word-break: keep-all; }
-        .info-row { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 8px; font-weight: 300; }
-        
-        .btn-link {
-            margin-top: 30px; padding: 16px; background: transparent; border: 1px solid var(--border);
-            border-radius: 12px; text-align: center; font-weight: 700; font-size: 0.95rem; transition: 0.3s;
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #ffffff;
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
         }
-        .card:hover .btn-link { background: var(--primary); color: var(--bg-base); border-color: var(--primary); }
 
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 100px 20px; border: 1px dashed var(--border); border-radius: 24px; }
-        .empty-state h3 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 800; }
-        .empty-state p { color: var(--text-sub); font-size: 1.1rem; }
+        .action-btn:hover {
+            color: #000000;
+            border-color: #ffffff;
+        }
+
+        .action-btn:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* ------------------------------------
+           Survey & Result Section (설문 및 결과 UI)
+        ------------------------------------ */
+        .survey-container, .result-container, .transition-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 100;
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .survey-container.active, .result-container.active, .transition-screen.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 0; left: 0;
+            height: 4px;
+            background-color: #ffffff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 800px;
+        }
+
+        .question-text {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            word-break: keep-all;
+        }
+
+        .options-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .option-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            border-color: #fff;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .transition-text {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            font-style: italic;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .result-content {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .archetype-title {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .archetype-sub {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .archetype-desc {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .axis-container {
+            margin-bottom: 40px;
+            text-align: left;
+            background: #111;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+
+        .axis-row { margin-bottom: 25px; }
+
+        .axis-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .axis-line {
+            position: relative;
+            width: 100%;
+            height: 4px;
+            background-color: #333;
+            border-radius: 2px;
+        }
+
+        .axis-dot {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+            transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ------------------------------------
+           Searching my Seoul (지도 & 장소 리스트)
+        ------------------------------------ */
+        
+        /* 지도 트랜지션 (점 찍히는 화면) */
+        .map-transition-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: url('https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop') center/cover;
+            filter: grayscale(100%) contrast(120%) brightness(0.4);
+            z-index: 150;
+            display: none; 
+            opacity: 0;
+            transition: opacity 1s ease;
+            overflow: hidden;
+        }
+
+        .map-overlay-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: #ffffff;
+            z-index: 10;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+
+        .map-dot {
+            position: absolute;
+            width: 3px; height: 3px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffffff;
+            opacity: 0;
+            animation: flashDot 0.8s forwards;
+        }
+
+        @keyframes flashDot {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        /* 추천 장소 리스트 컨테이너 (배경 투명화) */
+        .places-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: transparent; 
+            z-index: 120;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            overflow-y: auto;
+            padding: 80px 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 추천 리스트 배경에 깔리는 반투명 흑백 서울 지도 */
+        .places-container::before {
+            content: '';
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: url('https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop') center top/cover;
+            filter: grayscale(100%) brightness(0.6); 
+            opacity: 0.25; 
+            z-index: -1; 
+            pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+        }
+
+        .places-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .place-card {
+            background: rgba(10, 10, 10, 0.8); /* 반투명 배경 효과 추가 */
+            backdrop-filter: blur(5px);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            text-decoration: none;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .place-card:hover {
+            border-color: #ffffff;
+            transform: translateY(-5px);
+            background: rgba(17, 17, 17, 0.9);
+        }
+
+        .place-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .place-vibe {
+            font-size: 0.8rem;
+            color: #888;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .place-desc {
+            font-size: 0.95rem;
+            color: #cccccc;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .place-link-text {
+            font-size: 0.85rem;
+            color: #ffffff;
+            text-align: right;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            font-style: italic;
+        }
 
         @media (max-width: 768px) {
-            .hero h2 { font-size: 3rem; }
-            .search-engine { flex-direction: column; align-items: stretch; }
-            .btn-search { width: 100%; height: auto; padding: 18px; }
+            .button-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .question-text { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <h1>PLOT<span>TWIST</span></h1>
-    </nav>
-
-    <div class="container">
-        <div class="hero">
-            <h2>Discover<br>Your Next Scene</h2>
-            <p>전국 17개 시/도의 예술, 지식, 팝업, 그리고 감각적인 경험들. 프립, 솜씨당, 온오프믹스 및 공공 인프라를 연결합니다.</p>
+    <!-- 첫 화면 (스크롤 시 사라짐) -->
+    <div class="intro-section" id="introSection">
+        <div class="eye-image eye-top"></div>
+        <div class="center-content">
+            <p class="sub-text">Analyzing one's soul, connecting to Seoul.</p>
+            <h1 class="main-title">The mirror of<br>the s<span>(e)</span>oul</h1>
+            <p class="sub-text">Take in the soul of Seoul.</p>
         </div>
-
-        <div class="search-engine">
-            <div class="input-wrapper">
-                <label>Date</label>
-                <input type="date" id="dateInput">
-            </div>
-            <div class="input-wrapper">
-                <label>Province (시/도)</label>
-                <select id="provInput" onchange="loadDistricts()">
-                    <option value="">전국 전체보기</option>
-                    <option value="서울">서울특별시</option><option value="부산">부산광역시</option>
-                    <option value="대구">대구광역시</option><option value="인천">인천광역시</option>
-                    <option value="광주">광주광역시</option><option value="대전">대전광역시</option>
-                    <option value="울산">울산광역시</option><option value="세종">세종특별자치시</option>
-                    <option value="경기">경기도</option><option value="강원">강원특별자치도</option>
-                    <option value="충북">충청북도</option><option value="충남">충청남도</option>
-                    <option value="전북">전북특별자치도</option><option value="전남">전라남도</option>
-                    <option value="경북">경상북도</option><option value="경남">경상남도</option>
-                    <option value="제주">제주특별자치도</option>
-                </select>
-            </div>
-            <div class="input-wrapper">
-                <label>District (시/구/군)</label>
-                <select id="distInput"><option value="">시/도를 먼저 선택</option></select>
-            </div>
-            <button class="btn-search" onclick="searchData()">Explore</button>
-        </div>
-
-        <div class="category-section">
-            <div class="main-chips" id="mainChips">
-                <div class="chip active" onclick="setMainCat('all')">전체보기</div>
-                <div class="chip" onclick="setMainCat('activity')">🧗‍♀️ 액티비티/체험</div>
-                <div class="chip" onclick="setMainCat('craft')">🛠️ 공방/공예/만들기</div>
-                <div class="chip" onclick="setMainCat('lecture')">📚 특강/강연</div>
-                <div class="chip" onclick="setMainCat('exhibition')">🖼️ 전시/미술관</div>
-                <div class="chip" onclick="setMainCat('performance')">🎭 오케스트라/공연</div>
-                <div class="chip" onclick="setMainCat('popup')">✨ 팝업/플리마켓</div>
-                <div class="chip" onclick="setMainCat('healing')">🧘 명상/운동/힐링</div>
-            </div>
-            <div class="sub-chips" id="subChipsContainer"></div>
-        </div>
-
-        <div class="result-stats" id="resultStats">Curated Results: <span>0</span></div>
-        <div class="grid" id="grid"></div>
+        <div class="eye-image eye-bottom"></div>
     </div>
 
-<script>
-    let currentMainCat = 'all';
-    let currentSubCat = 'all';
+    <!-- 버튼 영역 (스크롤 시 나타남) -->
+    <div class="action-section" id="actionSection">
+        <div class="button-container">
+            <!-- 설명이 추가된 첫 번째 버튼 -->
+            <div class="btn-wrapper">
+                <p class="btn-desc">당신의 공간 성향을 찾아보세요</p>
+                <a href="#" id="startSurveyBtn" class="action-btn">mirroring my soul</a>
+            </div>
+            
+            <!-- 설명이 추가된 두 번째 버튼 -->
+            <div class="btn-wrapper">
+                <p class="btn-desc">당신의 성향을 반영한 감각있는 서울의 공간</p>
+                <a href="#" class="action-btn">searching my seoul</a>
+            </div>
+        </div>
+    </div>
 
-    // 7대 메인 카테고리의 세부 분류
-    const subCatsData = {
-        activity: ["아웃도어/레저", "투어/관광", "테마파크/방탈출", "수상레저"],
-        craft: ["도자기/목공", "가죽/라탄", "베이킹/쿠킹", "향수/캔들"],
-        lecture: ["인문/철학/문학", "비즈니스/IT", "글쓰기/북토크", "자기계발/어학"],
-        exhibition: ["현대미술/회화", "미디어아트", "사진/건축", "박물관/역사"],
-        performance: ["뮤지컬/연극", "오케스트라/클래식", "인디/콘서트", "전통/무용"],
-        popup: ["브랜드팝업", "플리마켓", "로컬마켓", "페스티벌"],
-        healing: ["요가/필라테스", "명상/싱잉볼", "교류분석/심리", "템플스테이"]
-    };
+    <!-- 설문 페이지 -->
+    <div class="survey-container" id="surveyContainer">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="question-box">
+            <h2 class="question-text" id="questionText">질문 로딩중...</h2>
+            <div class="options-wrapper" id="optionsWrapper"></div>
+        </div>
+    </div>
 
-    // 전국 행정구역 맵핑 (17개 시도)
-    const koreaMap = {
-        "서울": ["종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구","노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구","관악구","서초구","강남구","송파구","강동구"],
-        "부산": ["중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군"],
-        "대구": ["중구","동구","서구","남구","북구","수성구","달서구","달성군","군위군"],
-        "인천": ["중구","동구","미추홀구","연수구","남동구","부평구","계양구","서구","강화군","옹진군"],
-        "광주": ["동구","서구","남구","북구","광산구"],
-        "대전": ["동구","중구","서구","유성구","대덕구"],
-        "울산": ["중구","남구","동구","북구","울주군"],
-        "세종": ["세종특별자치시"],
-        "경기": ["수원시","성남시","의정부시","안양시","부천시","광명시","평택시","동두천시","안산시","고양시","과천시","구리시","남양주시","오산시","시흥시","군포시","의왕시","하남시","용인시","파주시","이천시","안성시","김포시","화성시","광주시","양주시","포천시","여주시","연천군","가평군","양평군"],
-        "강원": ["춘천시","원주시","강릉시","동해시","태백시","속초시","삼척시","홍천군","횡성군","영월군","평창군","정선군","철원군","화천군","양구군","인제군","고성군","양양군"],
-        "충북": ["청주시","충주시","제천시","보은군","옥천군","영동군","증평군","진천군","괴산군","음성군","단양군"],
-        "충남": ["천안시","공주시","보령시","아산시","서산시","논산시","계룡시","당진시","금산군","부여군","서천군","청양군","홍성군","예산군","태안군"],
-        "전북": ["전주시","군산시","익산시","정읍시","남원시","김제시","완주군","진안군","무주군","장수군","임실군","순창군","고창군","부안군"],
-        "전남": ["목포시","여수시","순천시","나주시","광양시","담양군","곡성군","구례군","고흥군","보성군","화순군","장흥군","강진군","해남군","영암군","무안군","함평군","영광군","장성군","완도군","진도군","신안군"],
-        "경북": ["포항시","경주시","김천시","안동시","구미시","영주시","영천시","상주시","문경시","경산시","의성군","청송군","영양군","영덕군","청도군","고령군","성주군","칠곡군","예천군","봉화군","울진군","울릉군"],
-        "경남": ["창원시","진주시","통영시","사천시","김해시","밀양시","거제시","양산시","의령군","함안군","창녕군","고성군","남해군","하동군","산청군","함양군","거창군","합천군"],
-        "제주": ["제주시","서귀포시"]
-    };
+    <!-- 트랜지션 (분석 중) 화면 -->
+    <div class="transition-screen" id="transitionScreen">
+        <h1 class="transition-text">&lt;&lt; Your Seoul Soul Archetype &gt;&gt;</h1>
+    </div>
 
-    // 통합 리얼 데이터베이스 (전국 17개 시/도 + 7개 메인 카테고리 + 플랫폼 출처)
-    // 통합 리얼 데이터베이스 (온오프믹스, 문화포털, 대한민국 구석구석 등 실제 링크 완벽 연동)
-   // 통합 리얼 데이터베이스 (클래스101, 인터파크, 프립, 이벤터스, 공공포털 등 전방위 소스 연동 완료)
-    const database = [
-        // --- 서울 ---
-        { prov: "서울", dist: "종로구", cat: "lecture", subCat: "자기계발/어학", source: "이벤터스", title: "유학 준비생을 위한 영문학 & 영어 음운론(Phonetics) 특강", loc: "서울 종로구 마이크임팩트", url: "https://event-us.kr/", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800", date: "2026-04-18" },
-        { prov: "서울", dist: "마포구", cat: "craft", subCat: "도자기/목공", source: "클래스101", title: "아이패드 프로크리에이트로 나만의 동화 일러스트 굿즈 만들기", loc: "서울 마포구 합정동 스튜디오", url: "https://class101.net/", img: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=800", date: "2026-04-18" },
-        { prov: "서울", dist: "용산구", cat: "exhibition", subCat: "현대미술/회화", source: "인터파크 티켓", title: "국립중앙박물관 특별전: 시대의 얼굴, 셰익스피어부터 에드 시런까지", loc: "서울 용산구 국립중앙박물관", url: "https://tickets.interpark.com/", img: "https://images.unsplash.com/photo-1518998053574-53ee753cf68b?w=800", date: "2026-04-18" },
-        { prov: "서울", dist: "성동구", cat: "popup", subCat: "브랜드팝업", source: "공간와디즈", title: "성수동 스몰 브랜드 메이커스 팝업 마켓", loc: "서울 성동구 연무장1길", url: "https://gongganwadiz.com/", img: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800", date: "2026-04-18" },
-        { prov: "서울", dist: "성북구", cat: "lecture", subCat: "비즈니스/IT", source: "온오프믹스", title: "파이썬(Python)과 R을 활용한 통계적 데이터 분석 세미나", loc: "서울 성북구 하나스퀘어", url: "https://onoffmix.com/", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        { prov: "서울", dist: "서초구", cat: "performance", subCat: "오케스트라/클래식", source: "인터파크 티켓", title: "국립심포니오케스트라 정기연주회: 베토벤 교향곡 9번", loc: "서울 서초구 예술의전당 콘서트홀", url: "https://tickets.interpark.com/", img: "https://images.unsplash.com/photo-1520529611472-d9622ff5466d?w=800", date: "2026-04-18" },
-        
-        // --- 경기 ---
-        { prov: "경기", dist: "화성시", cat: "lecture", subCat: "인문/철학/문학", source: "문화포털", title: "어른을 위한 그림책 심리학: 내면의 아이(Child) 만나기", loc: "경기 화성시 동탄복합문화센터 도서관", url: "https://www.culture.go.kr/", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800", date: "2026-04-18" },
-        { prov: "경기", dist: "화성시", cat: "mind", subCat: "교류분석/심리", source: "이벤터스", title: "교류분석(TA) 특강: 삶의 스크립트와 통제적(Controlling) 자아 이해하기", loc: "경기 화성시 시민대학", url: "https://event-us.kr/", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", date: "2026-04-18" },
-        { prov: "경기", dist: "수원시", cat: "exhibition", subCat: "미디어아트", source: "대한민국 구석구석", title: "식물의 생리와 노화: 자연의 순환을 담은 생태 미디어아트 전", loc: "경기 수원시 시립미술관", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1518998053574-53ee753cf68b?w=800", date: "2026-04-18" },
-        { prov: "경기", dist: "파주시", cat: "exhibition", subCat: "박물관/역사", source: "마이리얼트립", title: "파주 출판단지 지혜의 숲 & 활판인쇄박물관 투어 가이드", loc: "경기 파주시 회동길", url: "https://www.myrealtrip.com/", img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800", date: "2026-04-18" },
+    <!-- 결과 페이지 -->
+    <div class="result-container" id="resultContainer">
+        <div class="result-content">
+            <div id="archetypeResult"></div>
+            <div class="axis-container" id="axisContainer"></div>
+            <button class="option-btn" id="goSearchingBtn" style="width:100%; max-width:400px; margin: 0 auto 15px; display:block; border-color:#fff; background:rgba(255,255,255,0.1);">Searching my Seoul 하러가기</button>
+            <button class="option-btn" style="width:100%; max-width:400px; margin: 0 auto; display:block; font-size:0.9rem; padding: 15px;" onclick="location.reload()">Back to Home</button>
+        </div>
+    </div>
 
-        // --- 인천 ---
-        { prov: "인천", dist: "연수구", cat: "popup", subCat: "페스티벌", source: "문화포털", title: "송도 컨벤시아: 로컬 크리에이터 팝업 페스타", loc: "인천 연수구 송도컨벤시아", url: "https://www.culture.go.kr/", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
-        { prov: "인천", dist: "중구", cat: "local", subCat: "플리마켓", source: "대한민국 구석구석", title: "개항장 문화지구 레트로 플리마켓", loc: "인천 중구 신포로", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800", date: "2026-04-18" },
+    <!-- 지도 매핑 화면 -->
+    <div class="map-transition-screen" id="mapTransitionScreen">
+        <h1 class="map-overlay-text">Plotting your coordinates...</h1>
+    </div>
 
-        // --- 부산 ---
-        { prov: "부산", dist: "해운대구", cat: "exhibition", subCat: "미디어아트", source: "문화포털", title: "센텀시티 미디어아트 기획전: 빛의 서사", loc: "부산 해운대구 벡스코(BEXCO)", url: "https://www.culture.go.kr/", img: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800", date: "2026-04-18" },
-        { prov: "부산", dist: "수영구", cat: "popup", subCat: "브랜드팝업", source: "대한민국 구석구석", title: "F1963 복합문화공간 상설 기획전 및 팝업", loc: "부산 수영구 구락로", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800", date: "2026-04-18" },
-        { prov: "부산", dist: "남구", cat: "performance", subCat: "뮤지컬/연극", source: "인터파크 티켓", title: "오리지널 내한 뮤지컬 '오페라의 유령' 부산 투어", loc: "부산 남구 드림씨어터", url: "https://tickets.interpark.com/", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
+    <!-- 장소 추천 리스트 화면 -->
+    <div class="places-container" id="placesContainer">
+        <div class="places-header">
+            <h1 class="archetype-title" style="font-size: 3rem;">Your Seoul Archive</h1>
+            <p class="archetype-sub">분석 결과를 바탕으로 당신의 취향에 닿아있는 공간을 추천합니다.</p>
+        </div>
+        <div class="places-grid" id="placesGrid"></div>
+        <button class="option-btn" style="width:100%; max-width:300px; margin: 50px auto 0; display:block;" onclick="location.reload()">Return to Main</button>
+    </div>
 
-        // --- 대구 ---
-        { prov: "대구", dist: "북구", cat: "lecture", subCat: "비즈니스/IT", source: "온오프믹스", title: "경북대 오픈 IT 세미나: 데이터 기반 마케팅 전략", loc: "대구 북구 경북대학교 글로벌플라자", url: "https://onoffmix.com/", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", date: "2026-04-18" },
-        { prov: "대구", dist: "중구", cat: "local", subCat: "로컬마켓", source: "대한민국 구석구석", title: "김광석 다시 그리기 길 야간 문화 축제", loc: "대구 중구 대봉동", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
+    <script>
+        // --- 1. 장소 데이터베이스 (이곳에 추가하시면 됩니다) ---
+        const placesDB = {
+            introvert: [
+                { title: "파피어 프로스트", vibe: "사색 · 기록 · 서재", desc: "고요하게 나의 내면으로 침잠할 수 있는 문구점 겸 카페. 노트와 펜만 있으면 완벽한 곳.", link: "https://map.naver.com/p/entry/place/1416133236?placePath=%252Fhome%253Fentry%253Dplt&searchType=place&lng=126.9692198&lat=37.5803821" },
+                { title: "로컬스티치 서교", vibe: "몰입 · 작업 · 영감", desc: "크리에이터들을 위한 고요한 영감의 공간. 노트북 하나 들고 하루 종일 글쓰기 좋은 라운지.", link: "https://localstitch.town/" },
+                { title: "보안여관", vibe: "전시 · 통의동 · 영감", desc: "오래된 여관의 뼈대를 남긴 갤러리 겸 서점. 삐걱거리는 나무 바닥 소리와 함께 사색하기 좋은 곳.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832?c=15.00,0,0,0,dh" },
+                { title: "수수께끼와 답장", vibe: "독서 · 휴식 · 저자극", desc: "도심 속 작은 아지트처럼 꾸며진 공간. 책을 읽으며 복잡한 머릿속을 비워내기 좋습니다.", link: "https://bit.ly/house-of-riddles" }
+            ],
+            extrovert: [
+                { title: "AllThatJazz", vibe: "재즈 · 밤 · 고자극", desc: "이태원의 밤을 낭만으로 채우는 라이브 재즈바. 사람들의 열기와 음악이 뒤섞인 공간.", link: "https://www.bgwg.kr/" },
+                { title: "성수연방", vibe: "팝업 · 탐험 · 복합공간", desc: "언제나 새로운 브랜드와 힙한 사람들이 모이는 곳. 트렌드의 최전선에서 자극을 받기 좋습니다.", link: "https://sites.google.com/view/ssyb" },
+                { title: "부기우기", vibe: "음악 · 교류 · 공연", desc: "신청곡을 적어내고 공간을 채우는 사운드에 몸을 맡기는 곳. 우연한 대화가 싹트기도 합니다.", link: "https://allthatjazz.kr/" },
+                { title: "Graphic", vibe: "만화 · 그림 · 무제한간식", desc: "오래된 골목에 숨겨진 트렌디한 만화방, 무제한 간식과 아늑한 공간.", link: "https://map.naver.com/p/entry/place/1867194239?c=14.71,0,0,0,dh" }
+            ]
+        };
 
-        // --- 광주 ---
-        { prov: "광주", dist: "동구", cat: "lecture", subCat: "인문/철학/문학", source: "이벤터스", title: "국립아시아문화전당(ACC) 인문학 특강", loc: "광주 동구 국립아시아문화전당", url: "https://event-us.kr/", img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800", date: "2026-04-18" },
-        { prov: "광주", dist: "북구", cat: "exhibition", subCat: "현대미술/회화", source: "문화포털", title: "광주비엔날레 특별전: 아시아의 텍스트", loc: "광주 북구 비엔날레전시관", url: "https://www.culture.go.kr/", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
+        // --- 2. 스크롤 이벤트 ---
+        const introSection = document.getElementById('introSection');
+        const actionSection = document.getElementById('actionSection');
 
-        // --- 대전 ---
-        { prov: "대전", dist: "유성구", cat: "lecture", subCat: "인문/철학/문학", source: "온오프믹스", title: "KAIST 융합 철학 세미나: 기술과 예술의 교차점", loc: "대전 유성구 KAIST 학술문화관", url: "https://onoffmix.com/", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        { prov: "대전", dist: "서구", cat: "exhibition", subCat: "사진/건축", source: "문화포털", title: "대전시립미술관 건축 사진 기획전", loc: "대전 서구 만년동", url: "https://www.culture.go.kr/", img: "https://images.unsplash.com/photo-1518998053574-53ee753cf68b?w=800", date: "2026-04-18" },
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            let scrollRatio = scrollY / (windowHeight * 0.5);
+            if (scrollRatio > 1) scrollRatio = 1;
 
-        // --- 울산 ---
-        { prov: "울산", dist: "남구", cat: "performance", subCat: "인디/콘서트", source: "인터파크 티켓", title: "태화강변 야외 인디 밴드 버스킹 페스타", loc: "울산 남구 태화강 국가정원", url: "https://tickets.interpark.com/", img: "https://images.unsplash.com/photo-1465821185615-20b3c2fbf41b?w=800", date: "2026-04-18" },
-        { prov: "울산", dist: "동구", cat: "activity", subCat: "투어/관광", source: "마이리얼트립", title: "대왕암공원 해안 둘레길 선셋 워킹 투어 가이드", loc: "울산 동구 일산동", url: "https://www.myrealtrip.com/", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800", date: "2026-04-18" },
+            introSection.style.opacity = 1 - scrollRatio;
+            actionSection.style.opacity = scrollRatio;
 
-        // --- 세종 ---
-        { prov: "세종", dist: "세종시", cat: "healing", subCat: "명상/싱잉볼", source: "대한민국 구석구석", title: "국립세종수목원 야간 온실 명상 & 싱잉볼 테라피", loc: "세종특별자치시 국립세종수목원", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800", date: "2026-04-18" },
+            if (scrollRatio > 0.5) {
+                actionSection.style.pointerEvents = 'auto';
+                actionSection.style.zIndex = '30';
+            } else {
+                actionSection.style.pointerEvents = 'none';
+                actionSection.style.zIndex = '10';
+            }
+        });
 
-        // --- 강원 ---
-        { prov: "강원", dist: "양양군", cat: "activity", subCat: "수상레저", source: "프립(Frip)", title: "양양 서피비치 서핑 입문 원데이 클래스", loc: "강원 양양군 하조대해수욕장", url: "https://www.frip.co.kr/", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800", date: "2026-04-18" },
-        { prov: "강원", dist: "강릉시", cat: "exhibition", subCat: "미디어아트", source: "문화포털", title: "아르떼뮤지엄 강릉: 영원한 자연", loc: "강원 강릉시 난설헌로", url: "https://www.culture.go.kr/", img: "https://images.unsplash.com/photo-1554188248-986adbb73be4?w=800", date: "2026-04-18" },
-        { prov: "강원", dist: "평창군", cat: "healing", subCat: "템플스테이", source: "클래스101", title: "월정사 주말 휴식형 템플스테이 패키지", loc: "강원 평창군 오대산 월정사", url: "https://class101.net/", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", date: "2026-04-18" },
+        // --- 3. 설문 시작 이벤트 ---
+        const startBtn = document.getElementById('startSurveyBtn');
+        startBtn.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            document.body.style.overflow = 'hidden'; 
+            
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('actionSection').style.display = 'none';
+            
+            const surveyContainer = document.getElementById('surveyContainer');
+            surveyContainer.style.display = 'flex';
+            setTimeout(() => surveyContainer.classList.add('active'), 50); 
+            
+            renderQuestion(); 
+        });
 
-        // --- 충북 ---
-        { prov: "충북", dist: "청주시", cat: "local", subCat: "플리마켓", source: "문화포털", title: "청주 문화제조창 공예 플리마켓", loc: "충북 청주시 청원구 문화제조창", url: "https://www.culture.go.kr/", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800", date: "2026-04-18" },
+        // --- 4. 설문 로직 ---
+        const questions = [
+            { q: "Q1. 당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
+            { q: "Q2. 가장 편안한 소리 환경은?", options: ["완전한 정적", "잔잔한 배경음 (카페/재즈)", "사람들의 웅성거림", "음악/활기 있는 소음"] },
+            { q: "Q3. 선호하는 공간의 밀도는?", options: ["널찍하고 비어있는 공간", "적당히 여유로운 공간", "아늑하게 채워진 공간", "꽉 찬 활기 있는 공간"] },
+            { q: "Q4. 가장 끌리는 조명은?", options: ["자연광", "따뜻한 간접조명", "어두운 무드 조명", "네온/강한 인공조명"] },
+            { q: "Q5. 가장 ‘나답다’고 느끼는 시간은?", options: ["이른 아침", "낮", "저녁", "깊은 밤"] },
+            { q: "Q6. 공간을 찾는 주된 이유는?", options: ["몰입 (공부/작업)", "사색/감정 정리", "대화/관계", "자극/영감 얻기"] },
+            { q: "Q7. 요즘 가장 원하는 감정 상태는?", options: ["안정/평온", "따뜻함/위로", "설렘/로맨틱", "자극/흥분"] },
+            { q: "Q8. 끌리는 공간 스타일은?", options: ["미니멀/화이트", "우드/빈티지", "클래식/유럽풍", "힙/인더스트리얼"] },
+            { q: "Q9. 공간 선택 시 중요한 기준은?", options: ["가격 효율", "분위기", "독특함", "브랜드/퀄리티"] },
+            { q: "Q10. 당신은?", options: ["익숙한 곳 반복", "70% 익숙 + 30% 새로움", "50:50", "항상 새로운 곳"] },
+            { q: "Q11. 감각 중 가장 중요한 것은?", options: ["시각 (인테리어)", "청각 (음악/소리)", "후각 (향)", "촉각 (의자/공간 질감)"] },
+            { q: "Q12. 공간에서 타인과의 거리감은?", options: ["완전 분리", "적당한 거리", "자연스럽게 섞임", "적극적 교류"] },
+            { q: "Q13. 더 끌리는 것은?", options: ["책/글", "음악", "음식/카페", "예술/전시"] },
+            { q: "Q14. 좋은 공간을 위해 이동 가능한 범위는?", options: ["집 근처만", "30분 이내", "1시간 이내", "거리 상관 없음"] },
+            { q: "Q15. 공간 방문 스타일은?", options: ["철저한 계획", "대략 계획", "즉흥", "완전 즉흥"] },
+            { q: "Q16. 당신에게 공간은?", options: ["생산의 장소", "회복의 장소", "관계의 장소", "탈출의 장소"] },
+            { q: "Q17. 선호하는 공간 온도/느낌은?", options: ["차갑고 깔끔", "중립적", "따뜻하고 포근", "뜨겁고 에너지 있음"] },
+            { q: "Q18. 당신은?", options: ["대중적인 것 선호", "적당히 개성", "확실한 취향 있음", "매우 니치/마이너 취향"] },
+            { q: "Q19. 한 공간에 머무는 스타일은?", options: ["짧게 여러 곳", "1~2시간", "오래 머무름", "하루 종일"] },
+            { q: "Q20. 가장 끌리는 하루는?", options: ["조용히 책 읽는 하루", "카페/거리 산책", "사람들과 대화", "새로운 곳 탐험"] }
+        ];
 
-        // --- 충남 ---
-        { prov: "충남", dist: "천안시", cat: "lecture", subCat: "비즈니스/IT", source: "온오프믹스", title: "천안 스타트업 IR 피칭 & 네트워킹 데이", loc: "충남 천안시 서북구 창업마루", url: "https://onoffmix.com/", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=800", date: "2026-04-18" },
-        { prov: "충남", dist: "부여군", cat: "local", subCat: "페스티벌", source: "대한민국 구석구석", title: "부여 서동연꽃축제 및 백제 문화 탐방", loc: "충남 부여군 서동공원", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1599347719602-53606f75e7a5?w=800", date: "2026-04-18" },
+        let currentQuestionIndex = 0;
+        let answers = []; 
 
-        // --- 전북 ---
-        { prov: "전북", dist: "전주시", cat: "craft", subCat: "베이킹/쿠킹", source: "솜씨당", title: "전주 한옥마을 전통주 빚기 & 시음 클래스", loc: "전북 전주시 완산구 교동", url: "https://www.ssdang.com/", img: "https://images.unsplash.com/photo-1563514978009-84d63a43dd1a?w=800", date: "2026-04-18" },
-        { prov: "전북", dist: "군산시", cat: "local", subCat: "투어/관광", source: "마이리얼트립", title: "군산 시간여행 축제: 근대역사문화 해설 투어", loc: "전북 군산시 근대역사박물관", url: "https://www.myrealtrip.com/", img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800", date: "2026-04-18" },
+        function renderQuestion() {
+            if(currentQuestionIndex >= questions.length) {
+                showTransition();
+                return;
+            }
 
-        // --- 전남 ---
-        { prov: "전남", dist: "순천시", cat: "popup", subCat: "로컬마켓", source: "대한민국 구석구석", title: "순천만 국가정원 봄꽃 축제 & 친환경 에코 마켓", loc: "전남 순천시 국가정원1호길", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1514525253344-f814d074d08a?w=800", date: "2026-04-18" },
-        { prov: "전남", dist: "목포시", cat: "performance", subCat: "전통/무용", source: "인터파크 티켓", title: "목포시립무용단 정기공연: 남도의 멋", loc: "전남 목포시 목포시민문화체육센터", url: "https://tickets.interpark.com/", img: "https://images.unsplash.com/photo-1520529611472-d9622ff5466d?w=800", date: "2026-04-18" },
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
 
-        // --- 경북 ---
-        { prov: "경북", dist: "경주시", cat: "popup", subCat: "브랜드팝업", source: "공간와디즈", title: "황리단길 한옥 복합문화공간 팝업스토어", loc: "경북 경주시 포석로", url: "https://gongganwadiz.com/", img: "https://images.unsplash.com/photo-1599347719602-53606f75e7a5?w=800", date: "2026-04-18" },
-        { prov: "경북", dist: "포항시", cat: "activity", subCat: "수상레저", source: "프립(Frip)", title: "포항 월포해수욕장 선셋 서핑 클래스", loc: "경북 포항시 북구 청하면", url: "https://www.frip.co.kr/", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800", date: "2026-04-18" },
-
-        // --- 경남 ---
-        { prov: "경남", dist: "통영시", cat: "performance", subCat: "오케스트라/클래식", source: "인터파크 티켓", title: "통영국제음악당 소극장 클래식 앙상블", loc: "경남 통영시 통영국제음악당", url: "https://tickets.interpark.com/", img: "https://images.unsplash.com/photo-1520529611472-d9622ff5466d?w=800", date: "2026-04-18" },
-        { prov: "경남", dist: "진주시", cat: "local", subCat: "페스티벌", source: "대한민국 구석구석", title: "진주 남강유등축제 야간 투어", loc: "경남 진주시 남강 일대", url: "https://korean.visitkorea.or.kr/", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800", date: "2026-04-18" },
-
-        // --- 제주 ---
-        { prov: "제주", dist: "제주시", cat: "lecture", subCat: "글쓰기/북토크", source: "온오프믹스", title: "제주 독립책방 심야 북토크: 작가와의 만남", loc: "제주 제주시 구좌읍 종달리", url: "https://onoffmix.com/", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800", date: "2026-04-18" },
-        { prov: "제주", dist: "서귀포시", cat: "healing", subCat: "요가/필라테스", source: "프립(Frip)", title: "제주 남부 해안가 선셋 요가 & 명상", loc: "제주 서귀포시 대정읍", url: "https://www.frip.co.kr/", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800", date: "2026-04-18" },
-        { prov: "제주", dist: "제주시", cat: "activity", subCat: "투어/관광", source: "마이리얼트립", title: "우도 반나절 전기자전거 투어 가이드", loc: "제주 제주시 우도면", url: "https://www.myrealtrip.com/", img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800", date: "2026-04-18" }
-    ];
-
-    function loadDistricts() {
-        const prov = document.getElementById('provInput').value;
-        const dist = document.getElementById('distInput');
-        dist.innerHTML = '<option value="">시/구를 먼저 선택하세요</option>';
-        if(prov && koreaMap[prov]) {
-            koreaMap[prov].forEach(d => dist.innerHTML += `<option value="${d}">${d}</option>`);
-        }
-    }
-
-    function setMainCat(cat) {
-        currentMainCat = cat;
-        currentSubCat = 'all'; 
-        
-        document.querySelectorAll('#mainChips .chip').forEach(el => el.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-
-        const subContainer = document.getElementById('subChipsContainer');
-        if (cat === 'all') {
-            subContainer.classList.remove('show');
-        } else {
-            subContainer.classList.add('show');
-            subContainer.innerHTML = `<div class="sub-chip active" onclick="setSubCat('all', this)">전체보기</div>`;
-            subCatsData[cat].forEach(sub => {
-                subContainer.innerHTML += `<div class="sub-chip" onclick="setSubCat('${sub}', this)">${sub}</div>`;
+            const qData = questions[currentQuestionIndex];
+            document.getElementById('questionText').innerText = qData.q;
+            
+            const wrapper = document.getElementById('optionsWrapper');
+            wrapper.innerHTML = ''; 
+            
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    answers.push(idx); 
+                    currentQuestionIndex++;
+                    renderQuestion(); 
+                };
+                wrapper.appendChild(btn);
             });
         }
-        searchData();
-    }
 
-    function setSubCat(sub, element) {
-        currentSubCat = sub;
-        document.querySelectorAll('.sub-chip').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
-        searchData();
-    }
-
-    function searchData() {
-        const date = document.getElementById('dateInput').value;
-        const prov = document.getElementById('provInput').value;
-        const dist = document.getElementById('distInput').value;
-        
-        const grid = document.getElementById('grid');
-        const stats = document.getElementById('resultStats');
-
-        grid.innerHTML = '';
-        
-        let filtered = database.filter(item => {
-            const dateMatch = !date || item.date === date;
-            const provMatch = !prov || item.prov === prov;
-            const distMatch = !dist || item.dist === dist;
-            const mainCatMatch = currentMainCat === 'all' || item.cat === currentMainCat;
-            const subCatMatch = currentSubCat === 'all' || item.subCat === currentSubCat;
-            
-            return dateMatch && provMatch && distMatch && mainCatMatch && subCatMatch;
-        });
-
-        stats.innerHTML = `Curated Results: <span>${filtered.length}</span>`;
-
-        if(filtered.length === 0) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <h3>We couldn't find any scenes matching your criteria.</h3>
-                    <p>조건을 넓혀서 전국 단위로 검색하시거나 다른 카테고리를 탐색해 보세요.</p>
-                </div>`;
-            return;
+        // --- 5. 분석 중(트랜지션) 화면 ---
+        function showTransition() {
+            const surveyBox = document.getElementById('surveyContainer');
+            surveyBox.classList.remove('active');
+            setTimeout(() => {
+                surveyBox.style.display = 'none';
+                const transBox = document.getElementById('transitionScreen');
+                transBox.style.display = 'flex';
+                setTimeout(() => transBox.classList.add('active'), 50);
+                
+                setTimeout(showResult, 2500);
+            }, 500);
         }
 
-        filtered.forEach(item => {
-            grid.innerHTML += `
-                <a href="${item.url}" target="_blank" class="card">
-                    <div class="card-img" style="background-image: url('${item.img}')"></div>
-                    <div class="card-body">
-                        <div class="meta-top">
-                            <span class="badge">${item.subCat}</span>
-                            <span class="source">${item.source} 연동</span>
+        // --- 6. 결과 계산 및 표시 ---
+        const archetypes = [
+            { name: "Midnight Observer", sub: "고요 + 내향 + 밤 + 사색", desc: "“혼자 깊이 빠지는 타입”", rec: "👉 추천: 심야 카페, 서재형 카페, 한적한 바" },
+            { name: "Quiet Curator", sub: "미니멀 + 안정 + 몰입", desc: "“취향을 조용히 쌓는 사람”", rec: "👉 추천: 독립서점, 전시형 카페, 북카페" },
+            { name: "Urban Pulse", sub: "외향 + 고자극 + 밤", desc: "“도시의 에너지에서 살아나는 타입”", rec: "👉 추천: 재즈바, LP바, 힙한 카페" },
+            { name: "Slow Ritualist", sub: "안정 + 반복 + 낮", desc: "“루틴 속에서 편안함을 느끼는 타입”", rec: "👉 추천: 단골 카페, 조용한 프랜차이즈" },
+            { name: "Sensory Drifter", sub: "감각 중심 + 즉흥 + 탐험", desc: "“분위기를 따라 떠도는 사람”", rec: "👉 추천: 골목 카페, 감성 공간" },
+            { name: "Deep Diver", sub: "몰입 + 혼자 + 장시간", desc: "“한 공간에서 끝까지 파는 타입”", rec: "👉 추천: 도서관, 스터디카페, 조용한 라운지" },
+            { name: "Romantic Escapist", sub: "감성 + 따뜻함 + 밤", desc: "“현실보다 분위기를 사는 사람”", rec: "👉 추천: 와인바, 무드 카페, 한옥 공간" },
+            { name: "Social Flow Seeker", sub: "사람 + 자연스러운 교류", desc: "“관계 속에서 흐르는 타입”", rec: "👉 추천: 브런치 카페, 라운지, 커뮤니티 공간" },
+            { name: "Aesthetic Explorer", sub: "새로움 + 미적 집착", desc: "“예쁜 곳을 찾아다니는 사람”", rec: "👉 추천: 전시, 디자인 카페, 핫플" },
+            { name: "Momentum Chaser", sub: "활동 + 이동 + 자극", desc: "“한 곳에 머물지 않는 타입”", rec: "👉 추천: 복합공간, 팝업, 거리 중심지" },
+            { name: "Soft Retreator", sub: "회복 + 자연 + 저자극", desc: "“도시 속 쉼을 찾는 사람”", rec: "👉 추천: 한강, 숲 카페, 한옥 카페" }
+        ];
+
+        function showResult() {
+            const transBox = document.getElementById('transitionScreen');
+            transBox.classList.remove('active');
+            
+            setTimeout(() => {
+                transBox.style.display = 'none';
+                
+                const totalScore = answers.reduce((a, b) => a + b, 0);
+                const resultIndex = totalScore % 11; 
+                const myResult = archetypes[resultIndex];
+
+                const resultHtml = `
+                    <h1 class="archetype-title">${myResult.name}</h1>
+                    <p class="archetype-sub">${myResult.sub}</p>
+                    <p class="archetype-desc">${myResult.desc}<br><br>${myResult.rec}</p>
+                `;
+                document.getElementById('archetypeResult').innerHTML = resultHtml;
+
+                const axisData = [
+                    { name: "Energy Axis", left: "내향", right: "외향", val: (answers[0]+answers[1]+answers[2]+answers[11]) * 8 },
+                    { name: "Stimulus Axis", left: "저자극", right: "고자극", val: (answers[3]+answers[6]+answers[10]+answers[16]) * 8 },
+                    { name: "Aesthetic Axis", left: "미니멀", right: "힙/빈티지", val: (answers[7]+answers[8]+answers[12]) * 10 },
+                    { name: "Purpose Axis", left: "몰입", right: "탐험(관계)", val: (answers[5]+answers[15]+answers[19]) * 10 },
+                    { name: "Routine Axis", left: "안정", right: "새로움", val: (answers[9]+answers[13]+answers[14]) * 10 }
+                ];
+
+                let axesHtml = '';
+                axisData.forEach(axis => {
+                    let percent = Math.min(Math.max(axis.val, 10), 90); 
+                    axesHtml += `
+                        <div class="axis-row">
+                            <div class="axis-labels">
+                                <span>${axis.left}</span>
+                                <span>${axis.name}</span>
+                                <span>${axis.right}</span>
+                            </div>
+                            <div class="axis-line">
+                                <div class="axis-dot" style="left: ${percent}%;"></div>
+                            </div>
                         </div>
-                        <h3 class="title">${item.title}</h3>
-                        <div class="info-row">📍 ${item.prov} ${item.dist} | ${item.loc}</div>
-                        <div class="info-row">📅 ${item.date}</div>
-                        <div class="btn-link">상세 정보 및 예약 페이지 이동 〉</div>
-                    </div>
-                </a>
-            `;
-        });
-    }
+                    `;
+                });
+                document.getElementById('axisContainer').innerHTML = axesHtml;
 
-    window.onload = () => {
-        document.getElementById('dateInput').value = "2026-04-18";
-        searchData();
-    };
-</script>
+                const resultBox = document.getElementById('resultContainer');
+                resultBox.style.display = 'flex';
+                
+                setTimeout(() => {
+                    resultBox.classList.add('active');
+                }, 50);
+            }, 500);
+        }
 
+        // --- 7. 지도 애니메이션 및 장소 렌더링 함수 ---
+        const introvertTypes = [0, 1, 3, 5, 10]; 
+
+        function startSearchingSeoul(userArchetypeIndex) {
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('actionSection').style.display = 'none';
+            window.scrollTo(0, 0); 
+
+            const mapScreen = document.getElementById('mapTransitionScreen');
+            mapScreen.style.display = 'block';
+            
+            for(let i = 0; i < 150; i++) {
+                let dot = document.createElement('div');
+                dot.className = 'map-dot';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.animationDelay = Math.random() * 2 + 's'; 
+                mapScreen.appendChild(dot);
+            }
+
+            setTimeout(() => { mapScreen.style.opacity = '1'; }, 50);
+
+            setTimeout(() => {
+                mapScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    mapScreen.style.display = 'none';
+                    mapScreen.innerHTML = '<h1 class="map-overlay-text">Plotting your coordinates...</h1>'; 
+                    
+                    renderPlaces(userArchetypeIndex);
+                }, 1000); 
+            }, 3500); 
+        }
+
+        function renderPlaces(typeIndex) {
+            const placesBox = document.getElementById('placesContainer');
+            const grid = document.getElementById('placesGrid');
+            grid.innerHTML = ''; 
+
+            let targetPlaces = [];
+            if (typeIndex === undefined) {
+                targetPlaces = placesDB.introvert.concat(placesDB.extrovert);
+            } else {
+                targetPlaces = introvertTypes.includes(typeIndex) ? placesDB.introvert : placesDB.extrovert;
+            }
+
+            targetPlaces.forEach(place => {
+                const card = document.createElement('a');
+                card.href = place.link;
+                card.target = "_blank"; 
+                card.className = "place-card";
+                card.innerHTML = `
+                    <h2 class="place-title">${place.title}</h2>
+                    <p class="place-vibe">${place.vibe}</p>
+                    <p class="place-desc">${place.desc}</p>
+                    <div class="place-link-text">Naver Map 열기 &rarr;</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            placesBox.style.display = 'flex';
+            setTimeout(() => { placesBox.style.opacity = '1'; }, 50);
+        }
+
+        // --- 8. 버튼 이벤트 리스너 연결 ---
+        const goSearchBtn = document.getElementById('goSearchingBtn');
+        if(goSearchBtn) {
+            goSearchBtn.addEventListener('click', () => {
+                const totalScore = answers.reduce((a, b) => a + b, 0);
+                const finalResultIndex = totalScore % 11;
+                startSearchingSeoul(finalResultIndex);
+            });
+        }
+
+        const mainSearchBtn = document.querySelectorAll('.action-btn')[1]; 
+        if(mainSearchBtn) {
+            mainSearchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                startSearchingSeoul(undefined); 
+            });
+        }
+    </script>
 </body>
 </html>
