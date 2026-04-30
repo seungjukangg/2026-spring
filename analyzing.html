@@ -368,6 +368,39 @@
             <a href="#추천" class="action-btn">searching my seoul</a>
         </div>
     </div>
+    <!-- --- 새로 추가되는 HTML --- -->
+
+    <!-- 설문 페이지 -->
+    <div class="survey-container" id="surveyContainer">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="question-box">
+            <h2 class="question-text" id="questionText">질문 로딩중...</h2>
+            <div class="options-wrapper" id="optionsWrapper">
+                <!-- 버튼이 자바스크립트로 생성됨 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 트랜지션 (분석 중) 화면 -->
+    <div class="transition-screen" id="transitionScreen">
+        <h1 class="transition-text">&lt;&lt; Your Seoul Soul Archetype &gt;&gt;</h1>
+    </div>
+
+    <!-- 결과 페이지 -->
+    <div class="result-container" id="resultContainer">
+        <div class="result-content">
+            <div id="archetypeResult">
+                <!-- 결과 텍스트 삽입됨 -->
+            </div>
+            
+            <div class="axis-container" id="axisContainer">
+                <!-- 축 UI 삽입됨 -->
+            </div>
+
+            <!-- 다시하기 또는 장소 찾기 버튼 -->
+            <button class="option-btn" style="width:100%; max-width:300px; margin: 0 auto; display:block;" onclick="location.reload()">Back to Home</button>
+        </div>
+    </div>
 
     <!-- 스크롤 이벤트 자바스크립트 -->
     <script>
@@ -397,6 +430,167 @@
                 actionSection.style.zIndex = '10'; // 로고를 다시 맨 앞으로
             }
         });
+        // --- 새로 추가되는 JavaScript ---
+
+        // 1. "mirroring my soul" 버튼 클릭 이벤트 가로채기
+        const startBtn = document.querySelector('a[href="#설문"]');
+        startBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // 기본 앵커 이동 막기
+            document.body.style.overflow = 'hidden'; // 스크롤 막기
+            
+            // 기존 화면 숨기기
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('actionSection').style.display = 'none';
+            
+            // 설문 화면 띄우기
+            const surveyContainer = document.getElementById('surveyContainer');
+            surveyContainer.style.display = 'flex';
+            setTimeout(() => surveyContainer.classList.add('active'), 50);
+            
+            renderQuestion(); // 첫 질문 렌더링
+        });
+
+        // 2. 질문 데이터 (20개)
+        const questions = [
+            { q: "Q1. 당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
+            { q: "Q2. 가장 편안한 소리 환경은?", options: ["완전한 정적", "잔잔한 배경음 (카페/재즈)", "사람들의 웅성거림", "음악/활기 있는 소음"] },
+            { q: "Q3. 선호하는 공간의 밀도는?", options: ["널찍하고 비어있는 공간", "적당히 여유로운 공간", "아늑하게 채워진 공간", "꽉 찬 활기 있는 공간"] },
+            { q: "Q4. 가장 끌리는 조명은?", options: ["자연광", "따뜻한 간접조명", "어두운 무드 조명", "네온/강한 인공조명"] },
+            { q: "Q5. 가장 ‘나답다’고 느끼는 시간은?", options: ["이른 아침", "낮", "저녁", "깊은 밤"] },
+            { q: "Q6. 공간을 찾는 주된 이유는?", options: ["몰입 (공부/작업)", "사색/감정 정리", "대화/관계", "자극/영감 얻기"] },
+            { q: "Q7. 요즘 가장 원하는 감정 상태는?", options: ["안정/평온", "따뜻함/위로", "설렘/로맨틱", "자극/흥분"] },
+            { q: "Q8. 끌리는 공간 스타일은?", options: ["미니멀/화이트", "우드/빈티지", "클래식/유럽풍", "힙/인더스트리얼"] },
+            { q: "Q9. 공간 선택 시 중요한 기준은?", options: ["가격 효율", "분위기", "독특함", "브랜드/퀄리티"] },
+            { q: "Q10. 당신은?", options: ["익숙한 곳 반복", "70% 익숙 + 30% 새로움", "50:50", "항상 새로운 곳"] },
+            { q: "Q11. 감각 중 가장 중요한 것은?", options: ["시각 (인테리어)", "청각 (음악/소리)", "후각 (향)", "촉각 (의자/공간 질감)"] },
+            { q: "Q12. 공간에서 타인과의 거리감은?", options: ["완전 분리", "적당한 거리", "자연스럽게 섞임", "적극적 교류"] },
+            { q: "Q13. 더 끌리는 것은?", options: ["책/글", "음악", "음식/카페", "예술/전시"] },
+            { q: "Q14. 좋은 공간을 위해 이동 가능한 범위는?", options: ["집 근처만", "30분 이내", "1시간 이내", "거리 상관 없음"] },
+            { q: "Q15. 공간 방문 스타일은?", options: ["철저한 계획", "대략 계획", "즉흥", "완전 즉흥"] },
+            { q: "Q16. 당신에게 공간은?", options: ["생산의 장소", "회복의 장소", "관계의 장소", "탈출의 장소"] },
+            { q: "Q17. 선호하는 공간 온도/느낌은?", options: ["차갑고 깔끔", "중립적", "따뜻하고 포근", "뜨겁고 에너지 있음"] },
+            { q: "Q18. 당신은?", options: ["대중적인 것 선호", "적당히 개성", "확실한 취향 있음", "매우 니치/마이너 취향"] },
+            { q: "Q19. 한 공간에 머무는 스타일은?", options: ["짧게 여러 곳", "1~2시간", "오래 머무름", "하루 종일"] },
+            { q: "Q20. 가장 끌리는 하루는?", options: ["조용히 책 읽는 하루", "카페/거리 산책", "사람들과 대화", "새로운 곳 탐험"] }
+        ];
+
+        let currentQuestionIndex = 0;
+        let answers = []; // 사용자가 선택한 답변 인덱스(0~3) 저장
+
+        function renderQuestion() {
+            if(currentQuestionIndex >= questions.length) {
+                showTransition();
+                return;
+            }
+
+            // 프로그레스 바 업데이트
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            const qData = questions[currentQuestionIndex];
+            document.getElementById('questionText').innerText = qData.q;
+            
+            const wrapper = document.getElementById('optionsWrapper');
+            wrapper.innerHTML = ''; // 기존 버튼 초기화
+            
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    answers.push(idx); // 선택한 번호(0~3) 저장
+                    currentQuestionIndex++;
+                    renderQuestion(); // 다음 질문
+                };
+                wrapper.appendChild(btn);
+            });
+        }
+
+        // 3. 트랜지션 (분석 중 화면)
+        function showTransition() {
+            const surveyBox = document.getElementById('surveyContainer');
+            surveyBox.classList.remove('active');
+            setTimeout(() => {
+                surveyBox.style.display = 'none';
+                const transBox = document.getElementById('transitionScreen');
+                transBox.style.display = 'flex';
+                setTimeout(() => transBox.classList.add('active'), 50);
+                
+                // 2.5초 후 결과 화면으로 이동
+                setTimeout(showResult, 2500);
+            }, 500);
+        }
+
+        // 4. 아키타입 데이터 (11개)
+        const archetypes = [
+            { name: "Midnight Observer", sub: "고요 + 내향 + 밤 + 사색", desc: "“혼자 깊이 빠지는 타입”", rec: "👉 추천: 심야 카페, 서재형 카페, 한적한 바" },
+            { name: "Quiet Curator", sub: "미니멀 + 안정 + 몰입", desc: "“취향을 조용히 쌓는 사람”", rec: "👉 추천: 독립서점, 전시형 카페, 북카페" },
+            { name: "Urban Pulse", sub: "외향 + 고자극 + 밤", desc: "“도시의 에너지에서 살아나는 타입”", rec: "👉 추천: 재즈바, LP바, 힙한 카페" },
+            { name: "Slow Ritualist", sub: "안정 + 반복 + 낮", desc: "“루틴 속에서 편안함을 느끼는 타입”", rec: "👉 추천: 단골 카페, 조용한 프랜차이즈" },
+            { name: "Sensory Drifter", sub: "감각 중심 + 즉흥 + 탐험", desc: "“분위기를 따라 떠도는 사람”", rec: "👉 추천: 골목 카페, 감성 공간" },
+            { name: "Deep Diver", sub: "몰입 + 혼자 + 장시간", desc: "“한 공간에서 끝까지 파는 타입”", rec: "👉 추천: 도서관, 스터디카페, 조용한 라운지" },
+            { name: "Romantic Escapist", sub: "감성 + 따뜻함 + 밤", desc: "“현실보다 분위기를 사는 사람”", rec: "👉 추천: 와인바, 무드 카페, 한옥 공간" },
+            { name: "Social Flow Seeker", sub: "사람 + 자연스러운 교류", desc: "“관계 속에서 흐르는 타입”", rec: "👉 추천: 브런치 카페, 라운지, 커뮤니티 공간" },
+            { name: "Aesthetic Explorer", sub: "새로움 + 미적 집착", desc: "“예쁜 곳을 찾아다니는 사람”", rec: "👉 추천: 전시, 디자인 카페, 핫플" },
+            { name: "Momentum Chaser", sub: "활동 + 이동 + 자극", desc: "“한 곳에 머물지 않는 타입”", rec: "👉 추천: 복합공간, 팝업, 거리 중심지" },
+            { name: "Soft Retreator", sub: "회복 + 자연 + 저자극", desc: "“도시 속 쉼을 찾는 사람”", rec: "👉 추천: 한강, 숲 카페, 한옥 카페" }
+        ];
+
+        // 5. 결과 계산 및 렌더링
+        function showResult() {
+            const transBox = document.getElementById('transitionScreen');
+            transBox.classList.remove('active');
+            
+            setTimeout(() => {
+                transBox.style.display = 'none';
+                
+                // 간단한 알고리즘: 사용자가 고른 답변(0~3)의 총합을 기준으로 11개 결과 중 하나를 매핑
+                const totalScore = answers.reduce((a, b) => a + b, 0);
+                const resultIndex = totalScore % 11; 
+                const myResult = archetypes[resultIndex];
+
+                // 텍스트 렌더링
+                const resultHtml = `
+                    <h1 class="archetype-title">${myResult.name}</h1>
+                    <p class="archetype-sub">${myResult.sub}</p>
+                    <p class="archetype-desc">${myResult.desc}<br><br>${myResult.rec}</p>
+                `;
+                document.getElementById('archetypeResult').innerHTML = resultHtml;
+
+                // Axis 축 동적 렌더링 (답변 합계를 이용해 축의 위치 %를 계산)
+                const axisData = [
+                    { name: "Energy Axis", left: "내향", right: "외향", val: (answers[0]+answers[1]+answers[2]+answers[11]) * 8 },
+                    { name: "Stimulus Axis", left: "저자극", right: "고자극", val: (answers[3]+answers[6]+answers[10]+answers[16]) * 8 },
+                    { name: "Aesthetic Axis", left: "미니멀", right: "힙/빈티지", val: (answers[7]+answers[8]+answers[12]) * 10 },
+                    { name: "Purpose Axis", left: "몰입", right: "탐험(관계)", val: (answers[5]+answers[15]+answers[19]) * 10 },
+                    { name: "Routine Axis", left: "안정", right: "새로움", val: (answers[9]+answers[13]+answers[14]) * 10 }
+                ];
+
+                let axesHtml = '';
+                axisData.forEach(axis => {
+                    // %가 0~100 사이를 벗어나지 않도록 보정
+                    let percent = Math.min(Math.max(axis.val, 10), 90); 
+                    axesHtml += `
+                        <div class="axis-row">
+                            <div class="axis-labels">
+                                <span>${axis.left}</span>
+                                <span>${axis.name}</span>
+                                <span>${axis.right}</span>
+                            </div>
+                            <div class="axis-line">
+                                <div class="axis-dot" style="left: ${percent}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('axisContainer').innerHTML = axesHtml;
+
+                // 결과창 띄우기
+                const resultBox = document.getElementById('resultContainer');
+                resultBox.style.display = 'flex';
+                setTimeout(() => resultBox.classList.add('active'), 50);
+            }, 500);
+        }
     </script>
 
 </body>
