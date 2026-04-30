@@ -59,7 +59,7 @@
         .main-title span { font-style: italic; color: #aaaaaa; }
         .sub-text { font-size: 0.9rem; letter-spacing: 0.1em; color: #cccccc; font-family: var(--font-sans); text-transform: uppercase; }
 
-        /* [추가] 하단 스크롤 유도 애니메이션 */
+        /* 하단 스크롤 유도 애니메이션 */
         .scroll-indicator {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             text-align: center; z-index: 25; transition: opacity 0.3s; pointer-events: none;
@@ -77,7 +77,7 @@
             background: radial-gradient(circle at center, #111111 0%, #000000 100%);
             transition: opacity 0.3s ease-out; pointer-events: none; 
         }
-        .button-container { display: flex; gap: 60px; }
+        .button-container { display: flex; gap: 60px; justify-content: center; width: 100%; }
         .btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .btn-desc {
             font-family: var(--font-sans); font-size: 0.95rem; color: #aaaaaa; letter-spacing: 0.05em; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
@@ -85,7 +85,7 @@
         .action-btn {
             display: inline-block; font-family: var(--font-serif); font-size: 1.5rem; color: #ffffff; text-decoration: none; padding: 20px 50px;
             border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50px; letter-spacing: 0.05em; transition: all 0.4s ease;
-            position: relative; overflow: hidden; background: transparent; cursor: pointer; text-transform: lowercase; width: 100%; text-align: center;
+            position: relative; overflow: hidden; background: transparent; cursor: pointer; text-transform: lowercase; width: 100%; min-width: 300px; text-align: center;
         }
         .action-btn::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -151,7 +151,7 @@
             overflow-y: auto; padding: 80px 20px; flex-direction: column; align-items: center;
         }
         
-        /* HTML <img> 태그를 사용한 완벽한 흑백지도 뒷배경 마스크 효과 */
+        /* HTML <img> 태그를 사용한 흑백지도 뒷배경 마스크 효과 */
         .places-bg-image {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             object-fit: cover; z-index: -1; opacity: 0.3; 
@@ -188,23 +188,19 @@
             <p class="sub-text">Take in the soul of Seoul.</p>
         </div>
         <div class="eye-image eye-bottom"></div>
-        <!-- 하단 스크롤 인디케이터 추가 -->
+        <!-- 하단 스크롤 인디케이터 -->
         <div class="scroll-indicator" id="scrollIndicator">
             <span>Scroll Down</span>
             <div class="arrow"></div>
         </div>
     </div>
 
-    <!-- 2. 스크롤 후 버튼 영역 -->
+    <!-- 2. 스크롤 후 버튼 영역 (오직 1개의 버튼만 남김!) -->
     <div class="action-section" id="actionSection">
         <div class="button-container">
             <div class="btn-wrapper">
                 <p class="btn-desc">당신의 공간 성향을 찾아보세요</p>
                 <a href="#" id="startSurveyBtn" class="action-btn">mirroring my soul</a>
-            </div>
-            <div class="btn-wrapper">
-                <p class="btn-desc">당신의 성향을 반영한 감각있는 서울의 공간</p>
-                <a href="#" id="mainSearchBtn" class="action-btn">searching my seoul</a>
             </div>
         </div>
     </div>
@@ -240,7 +236,6 @@
 
     <!-- 7. 공간 추천 리스트 UI -->
     <div class="places-container" id="placesContainer">
-        <!-- 배경용 지도 이미지 직접 삽입 -->
         <img src="https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop" class="places-bg-image" alt="Seoul Background">
 
         <div class="places-header">
@@ -253,25 +248,25 @@
 
     <script>
         // ==========================================
-        // 1. 장소 데이터베이스 (이곳에 장소를 계속 추가하세요)
+        // 1. 장소 데이터베이스 (내향 6개, 외향 6개 = 총 12개 구성)
         // ==========================================
         const placesDB = {
             introvert: [
-                { title: "Papier Prost", vibe: "사색 · 기록 · 서재", desc: "고요하게 나의 내면으로 침잠할 수 있는 서촌의 문구점 겸 카페. 노트와 펜만 있으면 완벽한 곳.", link: "https://map.naver.com/p/entry/place/1416133236?placePath=%252Fhome%253Fentry%253Dplt&searchType=place&lng=126.9692198&lat=37.5803821" },
-                { title: "LocalStitch 서교", vibe: "몰입 · 작업 · 영감", desc: "크리에이터들을 위한 고요한 영감의 공간. 노트북 하나 들고 하루 종일 글쓰기 좋은 라운지.", link: "https://localstitch.town/" },
-                { title: "보안여관", vibe: "전시 · 통의동 · 영감", desc: "오래된 여관의 뼈대를 남긴 갤러리 겸 서점. 삐걱거리는 나무 바닥 소리와 함께 사색하기 좋은 곳.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832?c=15.00,0,0,0,dh" },
-                { title: "수수께끼와 답장", vibe: "독서 · 휴식 · 저자극", desc: "서초 도심 속 작은 아지트처럼 꾸며진 공간. 책을 읽으며 복잡한 머릿속을 비워내기 좋습니다.", link: "https://map.naver.com/p/entry/place/2097989513?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302318&locale=ko&svcName=map_pcv5" },
-                { title: "맨홀커피웨스턴책방", vibe: "클래식 · 인테리어 · 디저트 ", desc: "영등포 골목 1만 권의 책과 커피가 어우러진 아늑한 공간", link: "https://map.naver.com/p/entry/place/1471240461?c=11.76,0,0,0,dh&placePath=/home?bookmarkId=2866770638&from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302312&locale=ko&svcName=map_pcv5" }, 
-                { title: "pointtofiveseconds", vibe: "향수 · 소품샵 · 티코스", desc: "경복궁 뷰에서 프리미엄 티코스를 즐기며 당신만의 향을 시향해보세요", link: "https://map.naver.com/p/entry/place/1125006314?c=14.55,0,0,0,dh&placePath=/home?bookmarkId=4397527871&from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302326&locale=ko&svcName=map_pcv5" }
+                { title: "파피어 프로스트", vibe: "사색 · 기록 · 서재", desc: "고요하게 나의 내면으로 침잠할 수 있는 문구점 겸 카페. 노트와 펜만 있으면 완벽한 곳.", link: "https://map.naver.com/p/entry/place/1416133236" },
+                { title: "로컬스티치 서교", vibe: "몰입 · 작업 · 영감", desc: "크리에이터들을 위한 고요한 영감의 공간. 노트북 하나 들고 하루 종일 글쓰기 좋은 라운지.", link: "https://localstitch.town/" },
+                { title: "보안여관", vibe: "전시 · 통의동 · 영감", desc: "오래된 여관의 뼈대를 남긴 갤러리 겸 서점. 삐걱거리는 나무 바닥 소리와 함께 사색하기 좋은 곳.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832" },
+                { title: "수수께끼와 답장", vibe: "독서 · 휴식 · 저자극", desc: "도심 속 작은 아지트처럼 꾸며진 공간. 책을 읽으며 복잡한 머릿속을 비워내기 좋습니다.", link: "https://bit.ly/house-of-riddles" },
+                { title: "소전서림", vibe: "도서관 · 예술 · 고립", desc: "책에 완전히 파묻힐 수 있는 프라이빗 문학 도서관. 오직 나만의 시간에 집중하세요.", link: "https://map.naver.com/" },
+                { title: "오무사", vibe: "무음 · 찻집 · 명상", desc: "음악 소리조차 없는 고요한 찻집. 시각과 미각에만 집중하며 쉬어가는 공간입니다.", link: "https://map.naver.com/" }
+            ],
             extrovert: [
-                { title: "AllThatJazz", vibe: "재즈 · 밤 · 고자극", desc: "이태원의 밤을 낭만으로 채우는 라이브 재즈바. 사람들의 열기와 음악이 뒤섞인 공간.", link: "https://map.naver.com/p/search/allthatjazz?c=15.00,0,0,0,dh" },
+                { title: "AllThatJazz", vibe: "재즈 · 밤 · 고자극", desc: "이태원의 밤을 낭만으로 채우는 라이브 재즈바. 사람들의 열기와 음악이 뒤섞인 공간.", link: "https://www.bgwg.kr/" },
                 { title: "성수연방", vibe: "팝업 · 탐험 · 복합공간", desc: "언제나 새로운 브랜드와 힙한 사람들이 모이는 곳. 트렌드의 최전선에서 자극을 받기 좋습니다.", link: "https://sites.google.com/view/ssyb" },
-                { title: "BoogieWoogie", vibe: "음악 · 교류 · 공연", desc: "신청곡을 적어내고 공간을 채우는 사운드에 몸을 맡기는 곳. 우연한 대화가 싹트기도 합니다.", link: "https://map.naver.com/p/search/boogiewoogie/place/37921792?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302317&locale=ko&svcName=map_pcv5&searchText=boogiewoogie" },
-                { title: "Graphic", vibe: "만화 · 그림 · 무제한간식", desc: "해방촌에 숨겨진 트렌디한 만화방, 무제한 간식과 아늑한 공간.", link: "https://map.naver.com/p/entry/place/1867194239?c=14.71,0,0,0,dh" },
-                { title: "스테이희와", vibe: "한옥 · 료칸 · 자연", desc: "혜화 끝자락에 위치한 프라이빗 한옥 독채, 산으로 둘러쌓인 자연의 공간." , link: "https://map.naver.com/p/entry/place/1095060963?c=13.23,0,0,0,dh&placePath=/home?bookmarkId=4299220930&from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302320&locale=ko&svcName=map_pcv5&businessCategory=guesthouse" },
-                { title: "DynamicMaze", vibe: "한옥 · 료칸 · 자연", desc: "인사동의 명물, 끝없는 미로에서 탈출하라! 액티비티와 다양한 게도 함께", link: "https://map.naver.com/p/entry/place/36631598?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302325&locale=ko&svcName=map_pcv5" }
+                { title: "부기우기", vibe: "음악 · 교류 · 공연", desc: "신청곡을 적어내고 공간을 채우는 사운드에 몸을 맡기는 곳. 우연한 대화가 싹트기도 합니다.", link: "https://allthatjazz.kr/" },
+                { title: "Graphic", vibe: "만화 · 그림 · 무제한간식", desc: "오래된 골목에 숨겨진 트렌디한 만화방, 무제한 간식과 아늑한 공간.", link: "https://map.naver.com/p/entry/place/1867194239" },
+                { title: "더현대 서울", vibe: "쇼핑 · 자극 · 트렌드", desc: "거대한 스케일의 실내 공간에서 하루 종일 새로운 시각적 자극을 탐험해보세요.", link: "https://map.naver.com/" },
+                { title: "을지로 녁", vibe: "미식 · 힙스터 · 저녁", desc: "친구들과 와인 한 잔하며 텐션을 올리기 좋은 숨겨진 아지트.", link: "https://map.naver.com/" }
             ]
-
         };
 
         // ==========================================
@@ -291,7 +286,6 @@
             introSection.style.opacity = 1 - scrollRatio;
             actionSection.style.opacity = scrollRatio;
 
-            // [핵심 수정] 스크롤 내렸을 때 로고 화면의 클릭 이벤트를 강제로 꺼서 버튼이 눌리게 함
             if (scrollRatio > 0.5) {
                 actionSection.style.pointerEvents = 'auto';
                 actionSection.style.zIndex = '30';
@@ -440,7 +434,6 @@
         // ==========================================
         // 5. Searching my Seoul (지도 애니메이션 & 추천 리스트)
         // ==========================================
-        // 내향, 안정, 사색형 아키타입 인덱스 (0, 1, 3, 5, 6, 10)
         const introvertTypes = [0, 1, 3, 5, 6, 10]; 
 
         function startSearchingSeoul(userArchetypeIndex) {
@@ -452,7 +445,6 @@
             const mapScreen = document.getElementById('mapTransitionScreen');
             mapScreen.style.display = 'block';
             
-            // 지도에 점 찍는 애니메이션 연출
             for(let i = 0; i < 150; i++) {
                 let dot = document.createElement('div');
                 dot.className = 'map-dot';
@@ -463,7 +455,6 @@
             }
             setTimeout(() => { mapScreen.style.opacity = '1'; }, 50);
 
-            // 3.5초 뒤 장소 리스트 화면으로 이동
             setTimeout(() => {
                 mapScreen.style.opacity = '0';
                 setTimeout(() => {
@@ -481,9 +472,9 @@
             
             let targetPlaces = [];
             if (typeIndex === undefined) {
-                targetPlaces = placesDB.introvert.concat(placesDB.extrovert); // 첫 화면에서 들어오면 전체 표시
+                targetPlaces = placesDB.introvert.concat(placesDB.extrovert); 
             } else {
-                targetPlaces = introvertTypes.includes(typeIndex) ? placesDB.introvert : placesDB.extrovert; // 성향 맞춤 표시
+                targetPlaces = introvertTypes.includes(typeIndex) ? placesDB.introvert : placesDB.extrovert; 
             }
             
             targetPlaces.forEach(place => {
@@ -512,14 +503,6 @@
                 const totalScore = answers.reduce((a, b) => a + b, 0);
                 const finalResultIndex = totalScore % 11;
                 startSearchingSeoul(finalResultIndex);
-            });
-        }
-
-        const mainSearchBtn = document.getElementById('mainSearchBtn'); 
-        if(mainSearchBtn) {
-            mainSearchBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                startSearchingSeoul(undefined); 
             });
         }
     </script>
