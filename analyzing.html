@@ -327,6 +327,127 @@
             }
             .question-text { font-size: 1.8rem; }
         }
+        /* --- [추가] Searching my Seoul 지도 애니메이션 & 장소 리스트 CSS --- */
+
+        /* 1. 흑백 지도 트랜지션 화면 */
+        .map-transition-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            /* 서울 느낌의 흑백 지도/도시 배경 플레이스홀더 */
+            background: url('https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop') center/cover;
+            filter: grayscale(100%) contrast(120%) brightness(0.4);
+            z-index: 150;
+            display: none; /* 기본 숨김 */
+            opacity: 0;
+            transition: opacity 1s ease;
+            overflow: hidden;
+        }
+
+        .map-overlay-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: #ffffff;
+            z-index: 10;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+
+        /* 지도 위에 찍히는 수많은 점들 */
+        .map-dot {
+            position: absolute;
+            width: 3px; height: 3px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffffff;
+            opacity: 0;
+            /* 자바스크립트로 위치와 애니메이션 딜레이가 부여됨 */
+            animation: flashDot 0.8s forwards;
+        }
+
+        @keyframes flashDot {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        /* 2. 장소 추천 리스트 화면 */
+        .places-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 120;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            overflow-y: auto;
+            padding: 80px 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .places-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .place-card {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            text-decoration: none;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .place-card:hover {
+            border-color: #ffffff;
+            transform: translateY(-5px);
+            background: #111111;
+        }
+
+        .place-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .place-vibe {
+            font-size: 0.8rem;
+            color: #888;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .place-desc {
+            font-size: 0.95rem;
+            color: #cccccc;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .place-link-text {
+            font-size: 0.85rem;
+            color: #ffffff;
+            text-align: right;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -366,12 +487,34 @@
     </div>
 
     <!-- 결과 페이지 -->
+   <!-- 1. 수정된 결과 페이지 (버튼 추가됨) -->
     <div class="result-container" id="resultContainer">
         <div class="result-content">
             <div id="archetypeResult"></div>
             <div class="axis-container" id="axisContainer"></div>
-            <button class="option-btn" style="width:100%; max-width:300px; margin: 0 auto; display:block;" onclick="location.reload()">Back to Home</button>
+            <!-- 버튼 2개로 분리 (추천 보러가기 / 다시하기) -->
+            <button class="option-btn" id="goSearchingBtn" style="width:100%; max-width:400px; margin: 0 auto 15px; display:block; border-color:#fff; background:rgba(255,255,255,0.1);">Searching my Seoul 하러가기</button>
+            <button class="option-btn" style="width:100%; max-width:400px; margin: 0 auto; display:block; font-size:0.9rem; padding: 15px;" onclick="location.reload()">Back to Home</button>
         </div>
+    </div>
+
+    <!-- 2. 새로 추가되는 지도 매핑 화면 -->
+    <div class="map-transition-screen" id="mapTransitionScreen">
+        <!-- 자바스크립트로 수백 개의 점(dot)이 이곳에 생성됩니다 -->
+        <h1 class="map-overlay-text">Plotting your coordinates...</h1>
+    </div>
+
+    <!-- 3. 새로 추가되는 장소 추천 리스트 화면 -->
+    <div class="places-container" id="placesContainer">
+        <div class="places-header">
+            <h1 class="archetype-title" style="font-size: 3rem;">Your Seoul Archive</h1>
+            <p class="archetype-sub">분석 결과를 바탕으로 당신의 취향에 닿아있는 공간을 추천합니다.</p>
+        </div>
+        
+        <!-- 이 그리드 안에 장소 카드들이 삽입됩니다 -->
+        <div class="places-grid" id="placesGrid"></div>
+
+        <button class="option-btn" style="width:100%; max-width:300px; margin: 50px auto 0; display:block;" onclick="location.reload()">Return to Main</button>
     </div>
 
     <script>
@@ -551,6 +694,123 @@
                     resultBox.classList.add('active');
                 }, 50);
             }, 500);
+        }
+        // --- [추가] 장소 데이터베이스 및 추천 로직 ---
+
+        // 1. 장소 데이터베이스 (이 양식에 맞춰 네이버 링크와 설명을 추가하시면 됩니다)
+        const placesDB = {
+            // A그룹: 혼자 기록, 사색, 탐구, 미니멀, 안정 (url: 10978aac...)
+            introvert: [
+                { title: "파피어 프로스트", vibe: "사색 · 기록 · 서재", desc: "고요하게 나의 내면으로 침잠할 수 있는 문구점 겸 카페. 노트와 펜만 있으면 완벽한 곳.", link: "https://map.naver.com/p/entry/place/1416133236?placePath=%252Fhome%253Fentry%253Dplt&searchType=place&lng=126.9692198&lat=37.5803821" },
+                { title: "로컬스티치 서교", vibe: "몰입 · 작업 · 영감", desc: "크리에이터들을 위한 고요한 영감의 공간. 노트북 하나 들고 하루 종일 글쓰기 좋은 라운지.", link: "https://localstitch.town/" },
+                { title: "보안여관", vibe: "전시 · 통의동 · 영감", desc: "오래된 여관의 뼈대를 남긴 갤러리 겸 서점. 삐걱거리는 나무 바닥 소리와 함께 사색하기 좋은 곳.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832?c=15.00,0,0,0,dh&placePath=/home?bk_query=%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80&entry=bmp&from=map&fromPanelNum=2&timestamp=202604302221&locale=ko&svcName=map_pcv5&searchText=%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80" },
+                { title: "수수께끼와 답장", vibe: "독서 · 휴식 · 저자극", desc: "도심 속 작은 아지트처럼 꾸며진 공간. 책을 읽으며 복잡한 머릿속을 비워내기 좋습니다.", link: "https://bit.ly/house-of-riddles" }
+                // 여기에 콤마(,)를 찍고 수십/수백 개를 계속 복붙해서 늘리시면 됩니다.
+            ],
+            // B그룹: 자극, 외향, 힙함, 탐험 (url: 603ba12f...)
+            extrovert: [
+                { title: "AllThatJazz", vibe: "재즈 · 밤 · 고자극", desc: "이태원의 밤을 낭만으로 채우는 라이브 재즈바. 사람들의 열기와 음악이 뒤섞인 공간.", link: "https://www.bgwg.kr/" },
+                { title: "성수연방", vibe: "팝업 · 탐험 · 복합공간", desc: "언제나 새로운 브랜드와 힙한 사람들이 모이는 곳. 트렌드의 최전선에서 자극을 받기 좋습니다.", link: "https://sites.google.com/view/ssyb" },
+                { title: "부기우기", vibe: "음악 · 교류 · 공연", desc: "신청곡을 적어내고 공간을 채우는 사운드에 몸을 맡기는 곳. 우연한 대화가 싹트기도 합니다.", link: "https://allthatjazz.kr/" },
+                { title: "Graphic", vibe: "만화 · 그림 · 무제한간식", desc: "오래된 골목에 숨겨진 트렌디한 만화방, 무제한 간식과 아늑한 공간.", link: "https://map.naver.com/p/entry/place/1867194239?c=14.71,0,0,0,dh&placePath=/home?bookmarkId=3954167924&from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302226&locale=ko&svcName=map_pcv5
+        };
+
+        // 2. 아키타입별 그룹 매핑
+        // 내향/안정형 타입 인덱스: 0(Midnight), 1(Quiet), 3(Slow), 5(Deep), 10(Soft)
+        const introvertTypes = [0, 1, 3, 5, 10]; 
+
+        // 3. 지도 애니메이션 및 장소 렌더링 함수
+        function startSearchingSeoul(userArchetypeIndex) {
+            // 현재 화면(결과창 또는 메인) 숨기기
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('actionSection').style.display = 'none';
+            window.scrollTo(0, 0); // 스크롤 맨 위로
+
+            // 지도 화면 켜기
+            const mapScreen = document.getElementById('mapTransitionScreen');
+            mapScreen.style.display = 'block';
+            
+            // 지도에 찍힐 100개의 더미 점(Dot) 동적 생성
+            for(let i = 0; i < 150; i++) {
+                let dot = document.createElement('div');
+                dot.className = 'map-dot';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.left = Math.random() * 100 + '%';
+                // 점들이 순차적으로 깜빡이도록 딜레이 부여
+                dot.style.animationDelay = Math.random() * 2 + 's'; 
+                mapScreen.appendChild(dot);
+            }
+
+            setTimeout(() => { mapScreen.style.opacity = '1'; }, 50);
+
+            // 3초간 지도 애니메이션 보여준 후 리스트로 이동
+            setTimeout(() => {
+                mapScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    mapScreen.style.display = 'none';
+                    mapScreen.innerHTML = '<h1 class="map-overlay-text">Plotting your coordinates...</h1>'; // 점들 초기화
+                    
+                    renderPlaces(userArchetypeIndex);
+                }, 1000); // fade out 기다림
+            }, 3500); // 3.5초간 지도 보여줌
+        }
+
+        // 4. 리스트 렌더링 함수
+        function renderPlaces(typeIndex) {
+            const placesBox = document.getElementById('placesContainer');
+            const grid = document.getElementById('placesGrid');
+            grid.innerHTML = ''; // 초기화
+
+            // 결과값이 없으면(메인화면에서 바로 눌렀을 때) 두 그룹을 합쳐서 보여줌
+            let targetPlaces = [];
+            if (typeIndex === undefined) {
+                targetPlaces = placesDB.introvert.concat(placesDB.extrovert);
+            } else {
+                targetPlaces = introvertTypes.includes(typeIndex) ? placesDB.introvert : placesDB.extrovert;
+            }
+
+            // 카드 HTML 생성
+            targetPlaces.forEach(place => {
+                const card = document.createElement('a');
+                card.href = place.link;
+                card.target = "_blank"; // 새 창에서 네이버 지도 열기
+                card.className = "place-card";
+                card.innerHTML = `
+                    <h2 class="place-title">${place.title}</h2>
+                    <p class="place-vibe">${place.vibe}</p>
+                    <p class="place-desc">${place.desc}</p>
+                    <div class="place-link-text">Naver Map 열기 &rarr;</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // 화면 노출
+            placesBox.style.display = 'flex';
+            setTimeout(() => { placesBox.style.opacity = '1'; }, 50);
+        }
+
+        // 5. 버튼 이벤트 리스너 연결
+        // 5-1. 결과창의 "Searching 하러가기" 버튼
+        const goSearchBtn = document.getElementById('goSearchingBtn');
+        if(goSearchBtn) {
+            goSearchBtn.addEventListener('click', () => {
+                // 이전에 계산해둔 결과 인덱스(0~10)를 가져와서 넘김
+                const totalScore = answers.reduce((a, b) => a + b, 0);
+                const finalResultIndex = totalScore % 11;
+                startSearchingSeoul(finalResultIndex);
+            });
+        }
+
+        // 5-2. 첫 메인 화면의 "searching my seoul" 버튼 (아이디가 없으면 못 찾으므로 querySelector 사용)
+        const mainSearchBtn = document.querySelectorAll('.action-btn')[1]; // 두 번째 버튼
+        if(mainSearchBtn) {
+            mainSearchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // 메인에서 누르면 타입 없이 전체/혼합 장소를 띄우도록 설정
+                startSearchingSeoul(undefined); 
+            });
         }
     </script>
 </body>
