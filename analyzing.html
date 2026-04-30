@@ -172,6 +172,175 @@
                 gap: 20px;
             }
         }
+        /* --- 새로 추가되는 CSS --- */
+        
+        /* 1. 첫 화면 로고 뒤 반투명 배경 (image_1ccf77.jpg) */
+        .intro-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('image_1ccf77.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15; /* 반투명 정도 (숫자 조절 가능) */
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 2. 설문 & 결과 페이지 컨테이너 */
+        .survey-container, .result-container, .transition-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 100;
+            display: none; /* 기본은 숨김 */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .survey-container.active, .result-container.active, .transition-screen.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* 3. 설문 UI (MBTI 스타일) */
+        .progress-bar {
+            position: absolute;
+            top: 0; left: 0;
+            height: 4px;
+            background-color: #ffffff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 800px;
+        }
+
+        .question-text {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            word-break: keep-all;
+        }
+
+        .options-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .option-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            border-color: #fff;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* 4. 중간 트랜지션 화면 */
+        .transition-text {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            font-style: italic;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* 5. 결과 페이지 UI */
+        .result-content {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .archetype-title {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .archetype-sub {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .archetype-desc {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Axis 축 디자인 */
+        .axis-container {
+            margin-bottom: 40px;
+            text-align: left;
+            background: #111;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+
+        .axis-row {
+            margin-bottom: 25px;
+        }
+
+        .axis-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .axis-line {
+            position: relative;
+            width: 100%;
+            height: 4px;
+            background-color: #333;
+            border-radius: 2px;
+        }
+
+        .axis-dot {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+            transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
 </head>
 <body>
