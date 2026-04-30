@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The mirror of the s(e)oul</title>
-    <!-- 세리프 폰트와 산세리프 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -28,465 +27,138 @@
             font-family: var(--font-sans);
         }
 
-        /* ------------------------------------
-           Intro Section (첫 화면: 눈 + 중앙 로고)
-        ------------------------------------ */
+        /* --- 1. 첫 화면 --- */
         .intro-section {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            z-index: 20;
-            background-color: var(--bg-color);
-            transition: opacity 0.1s ease-out;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            display: flex; flex-direction: column; justify-content: space-between;
+            z-index: 20; background-color: var(--bg-color); transition: opacity 0.1s ease-out;
         }
-
-        /* 첫 화면 로고 뒤 반투명 배경 (image_1ccf77.jpg) */
         .intro-section::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('image_1ccf77.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            z-index: -1;
-            pointer-events: none;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('image_1ccf77.jpg'); background-size: cover; background-position: center;
+            opacity: 0.15; z-index: -1; pointer-events: none;
         }
-
-        /* 첨부해주신 이미지(image_fe4efa.jpg)를 위아래로 잘라서 배치 */
         .eye-image {
-            width: 100%;
-            height: 25vh; 
-            background-image: url('image_fe4efa.jpg'); 
-            background-size: cover;
-            background-repeat: no-repeat;
-            filter: grayscale(100%); 
+            width: 100%; height: 25vh; background-image: url('image_fe4efa.jpg'); 
+            background-size: cover; background-repeat: no-repeat; filter: grayscale(100%); 
         }
-
         .eye-top { background-position: center top; }
         .eye-bottom { background-position: center bottom; }
-
         .center-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
+            flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px;
         }
-
         .main-title {
-            font-family: var(--font-serif);
-            font-size: clamp(3rem, 7vw, 7rem);
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            line-height: 1.1;
-            text-transform: uppercase;
-            margin: 20px 0;
+            font-family: var(--font-serif); font-size: clamp(3rem, 7vw, 7rem); font-weight: 400; letter-spacing: 0.02em; line-height: 1.1; text-transform: uppercase; margin: 20px 0;
         }
+        .main-title span { font-style: italic; color: #aaaaaa; }
+        .sub-text { font-size: 0.9rem; letter-spacing: 0.1em; color: #cccccc; font-family: var(--font-sans); text-transform: uppercase; }
 
-        .main-title span {
-            font-style: italic;
-            color: #aaaaaa;
-        }
-
-        .sub-text {
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            color: #cccccc;
-            font-family: var(--font-sans);
-            text-transform: uppercase;
-        }
-
-        /* ------------------------------------
-           Action Section (스크롤 후 나타나는 클릭 버튼 영역)
-        ------------------------------------ */
+        /* --- 2. 버튼 영역 --- */
         .action-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 10; 
-            opacity: 0; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 10; opacity: 0; display: flex; align-items: center; justify-content: center;
             background: radial-gradient(circle at center, #111111 0%, #000000 100%);
-            transition: opacity 0.1s ease-out;
-            pointer-events: none; 
+            transition: opacity 0.1s ease-out; pointer-events: none; 
         }
-
-        .button-container {
-            display: flex;
-            gap: 60px; /* 버튼 사이 간격 */
-        }
-
-        /* 버튼 위 설명 텍스트 컨테이너 */
-        .btn-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px; 
-        }
-
+        .button-container { display: flex; gap: 60px; }
+        .btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .btn-desc {
-            font-family: var(--font-sans);
-            font-size: 0.95rem;
-            color: #aaaaaa;
-            letter-spacing: 0.05em;
-            text-align: center;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+            font-family: var(--font-sans); font-size: 0.95rem; color: #aaaaaa; letter-spacing: 0.05em; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
         }
-
         .action-btn {
-            display: inline-block;
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 20px 50px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px;
-            letter-spacing: 0.05em;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            background: transparent;
-            cursor: pointer;
-            text-transform: lowercase;
-            width: 100%;
-            text-align: center;
+            display: inline-block; font-family: var(--font-serif); font-size: 1.5rem; color: #ffffff; text-decoration: none; padding: 20px 50px;
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50px; letter-spacing: 0.05em; transition: all 0.4s ease;
+            position: relative; overflow: hidden; background: transparent; cursor: pointer; text-transform: lowercase; width: 100%; text-align: center;
         }
-
         .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: #ffffff;
-            z-index: -1;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s ease;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff; z-index: -1; transform: scaleX(0); transform-origin: right; transition: transform 0.4s ease;
         }
+        .action-btn:hover { color: #000000; border-color: #ffffff; }
+        .action-btn:hover::before { transform: scaleX(1); transform-origin: left; }
 
-        .action-btn:hover {
-            color: #000000;
-            border-color: #ffffff;
-        }
-
-        .action-btn:hover::before {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        /* ------------------------------------
-           Survey & Result Section (설문 및 결과 UI)
-        ------------------------------------ */
+        /* --- 3. 설문 & 결과 UI --- */
         .survey-container, .result-container, .transition-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: var(--bg-color);
-            z-index: 100;
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            overflow-y: auto;
-            padding: 20px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: var(--bg-color); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.5s ease; overflow-y: auto; padding: 20px;
         }
-
-        .survey-container.active, .result-container.active, .transition-screen.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .progress-bar {
-            position: absolute;
-            top: 0; left: 0;
-            height: 4px;
-            background-color: #ffffff;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .question-box {
-            text-align: center;
-            margin-bottom: 50px;
-            max-width: 800px;
-        }
-
-        .question-text {
-            font-family: var(--font-serif);
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            word-break: keep-all;
-        }
-
-        .options-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
+        .survey-container.active, .result-container.active, .transition-screen.active { display: flex; opacity: 1; }
+        .progress-bar { position: absolute; top: 0; left: 0; height: 4px; background-color: #ffffff; width: 0%; transition: width 0.3s ease; }
+        .question-box { text-align: center; margin-bottom: 50px; max-width: 800px; }
+        .question-text { font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 40px; word-break: keep-all; }
+        .options-wrapper { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 500px; margin: 0 auto; }
         .option-btn {
-            background: transparent;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-family: var(--font-sans);
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background: transparent; border: 1px solid #444; color: #fff; padding: 20px; border-radius: 12px;
+            font-size: 1.1rem; font-family: var(--font-sans); cursor: pointer; transition: all 0.3s ease;
         }
-
-        .option-btn:hover {
-            border-color: #fff;
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .transition-text {
-            font-family: var(--font-serif);
-            font-size: 3rem;
-            font-style: italic;
-            text-align: center;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-
-        .result-content {
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-            padding: 50px 20px;
-        }
-
-        .archetype-title {
-            font-family: var(--font-serif);
-            font-size: 3.5rem;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .archetype-sub {
-            font-size: 1.2rem;
-            color: #aaa;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-
-        .archetype-desc {
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-
-        .axis-container {
-            margin-bottom: 40px;
-            text-align: left;
-            background: #111;
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
-        }
-
+        .option-btn:hover { border-color: #fff; background-color: rgba(255,255,255,0.1); }
+        .transition-text { font-family: var(--font-serif); font-size: 3rem; font-style: italic; text-align: center; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .result-content { max-width: 800px; width: 100%; text-align: center; padding: 50px 20px; }
+        .archetype-title { font-family: var(--font-serif); font-size: 3.5rem; color: #fff; margin-bottom: 10px; }
+        .archetype-sub { font-size: 1.2rem; color: #aaa; margin-bottom: 30px; font-style: italic; }
+        .archetype-desc { font-size: 1.1rem; margin-bottom: 40px; line-height: 1.6; }
+        .axis-container { margin-bottom: 40px; text-align: left; background: #111; padding: 30px; border-radius: 15px; border: 1px solid #333; }
         .axis-row { margin-bottom: 25px; }
+        .axis-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        .axis-line { position: relative; width: 100%; height: 4px; background-color: #333; border-radius: 2px; }
+        .axis-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; background-color: #fff; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); transition: left 1s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        .axis-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .axis-line {
-            position: relative;
-            width: 100%;
-            height: 4px;
-            background-color: #333;
-            border-radius: 2px;
-        }
-
-        .axis-dot {
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 14px;
-            height: 14px;
-            background-color: #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255,255,255,0.8);
-            transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* ------------------------------------
-           Searching my Seoul (지도 & 장소 리스트)
-        ------------------------------------ */
-        
-        /* 지도 트랜지션 (점 찍히는 화면) */
+        /* --- 4. 지도 애니메이션 --- */
         .map-transition-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: url('https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop') center/cover;
             filter: grayscale(100%) contrast(120%) brightness(0.4);
-            z-index: 150;
-            display: none; 
-            opacity: 0;
-            transition: opacity 1s ease;
-            overflow: hidden;
+            z-index: 150; display: none; opacity: 0; transition: opacity 1s ease; overflow: hidden;
         }
-
         .map-overlay-text {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: var(--font-serif);
-            font-size: clamp(2rem, 5vw, 4rem);
-            color: #ffffff;
-            z-index: 10;
-            text-shadow: 0 0 20px rgba(0,0,0,0.8);
-            letter-spacing: 0.1em;
-            text-align: center;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-serif); font-size: clamp(2rem, 5vw, 4rem); color: #ffffff; z-index: 10; text-shadow: 0 0 20px rgba(0,0,0,0.8); letter-spacing: 0.1em; text-align: center;
         }
-
         .map-dot {
-            position: absolute;
-            width: 3px; height: 3px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #ffffff;
-            opacity: 0;
-            animation: flashDot 0.8s forwards;
+            position: absolute; width: 3px; height: 3px; background-color: #ffffff; border-radius: 50%; box-shadow: 0 0 8px #ffffff; opacity: 0; animation: flashDot 0.8s forwards;
         }
 
-        @keyframes flashDot {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1.5); }
-            100% { opacity: 0.7; transform: scale(1); }
-        }
-
-        /* 추천 장소 리스트 컨테이너 (배경 투명화) */
+        /* --- 5. 장소 리스트 화면 (여기에 HTML 이미지 태그를 띄울 겁니다) --- */
         .places-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: transparent; 
-            z-index: 120;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            overflow-y: auto;
-            padding: 80px 20px;
-            flex-direction: column;
-            align-items: center;
+            background-color: transparent; /* 배경 투명하게 */
+            z-index: 120; display: none; opacity: 0; transition: opacity 0.5s ease;
+            overflow-y: auto; padding: 80px 20px; flex-direction: column; align-items: center;
         }
 
-        /* 추천 리스트 배경에 깔리는 반투명 흑백 서울 지도 */
-        .places-container::before {
-            content: '';
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background: url('https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop') center top/cover;
-            filter: grayscale(100%) brightness(0.6); 
-            opacity: 0.25; 
-            z-index: -1; 
-            pointer-events: none;
+        /* (수정됨) HTML <img> 태그용 스타일 */
+        .places-bg-image {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            object-fit: cover; z-index: -1; opacity: 0.25; 
+            filter: grayscale(100%) brightness(0.6); pointer-events: none;
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
         }
 
-        .places-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
+        .places-header { text-align: center; margin-bottom: 50px; z-index: 10; }
         .places-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1200px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; z-index: 10;
         }
-
         .place-card {
-            background: rgba(10, 10, 10, 0.8); /* 반투명 배경 효과 추가 */
-            backdrop-filter: blur(5px);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 25px;
-            text-decoration: none;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
+            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(8px); border: 1px solid #333; border-radius: 12px; padding: 25px; text-decoration: none; color: #ffffff; display: flex; flex-direction: column; transition: all 0.3s ease;
         }
-
-        .place-card:hover {
-            border-color: #ffffff;
-            transform: translateY(-5px);
-            background: rgba(17, 17, 17, 0.9);
-        }
-
-        .place-title {
-            font-family: var(--font-serif);
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-
-        .place-vibe {
-            font-size: 0.8rem;
-            color: #888;
-            letter-spacing: 0.1em;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        .place-desc {
-            font-size: 0.95rem;
-            color: #cccccc;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-
-        .place-link-text {
-            font-size: 0.85rem;
-            color: #ffffff;
-            text-align: right;
-            border-top: 1px solid #333;
-            padding-top: 15px;
-            font-style: italic;
-        }
+        .place-card:hover { border-color: #ffffff; transform: translateY(-5px); background: rgba(17, 17, 17, 0.95); }
+        .place-title { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 8px; }
+        .place-vibe { font-size: 0.8rem; color: #888; letter-spacing: 0.1em; margin-bottom: 15px; text-transform: uppercase; }
+        .place-desc { font-size: 0.95rem; color: #cccccc; line-height: 1.5; margin-bottom: 20px; flex-grow: 1; }
+        .place-link-text { font-size: 0.85rem; color: #ffffff; text-align: right; border-top: 1px solid #333; padding-top: 15px; font-style: italic; }
 
         @media (max-width: 768px) {
-            .button-container {
-                flex-direction: column;
-                gap: 30px;
-            }
+            .button-container { flex-direction: column; gap: 30px; }
             .question-text { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 첫 화면 (스크롤 시 사라짐) -->
+    <!-- 첫 화면 -->
     <div class="intro-section" id="introSection">
         <div class="eye-image eye-top"></div>
         <div class="center-content">
@@ -497,16 +169,13 @@
         <div class="eye-image eye-bottom"></div>
     </div>
 
-    <!-- 버튼 영역 (스크롤 시 나타남) -->
+    <!-- 버튼 영역 -->
     <div class="action-section" id="actionSection">
         <div class="button-container">
-            <!-- 설명이 추가된 첫 번째 버튼 -->
             <div class="btn-wrapper">
                 <p class="btn-desc">당신의 공간 성향을 찾아보세요</p>
                 <a href="#" id="startSurveyBtn" class="action-btn">mirroring my soul</a>
             </div>
-            
-            <!-- 설명이 추가된 두 번째 버튼 -->
             <div class="btn-wrapper">
                 <p class="btn-desc">당신의 성향을 반영한 감각있는 서울의 공간</p>
                 <a href="#" class="action-btn">searching my seoul</a>
@@ -523,7 +192,7 @@
         </div>
     </div>
 
-    <!-- 트랜지션 (분석 중) 화면 -->
+    <!-- 트랜지션 화면 -->
     <div class="transition-screen" id="transitionScreen">
         <h1 class="transition-text">&lt;&lt; Your Seoul Soul Archetype &gt;&gt;</h1>
     </div>
@@ -538,13 +207,18 @@
         </div>
     </div>
 
-    <!-- 지도 매핑 화면 -->
+    <!-- 지도 트랜지션 화면 -->
     <div class="map-transition-screen" id="mapTransitionScreen">
         <h1 class="map-overlay-text">Plotting your coordinates...</h1>
     </div>
 
-    <!-- 장소 추천 리스트 화면 -->
+    <!-- 장소 리스트 화면 -->
     <div class="places-container" id="placesContainer">
+        
+        <!-- (수정됨) CSS가 아니라 HTML <img> 태그로 지도를 직접 박아넣었습니다 -->
+        <!-- 만약 링크 오류가 나면 src="..." 안의 주소를 여러분이 가진 사진 파일명(예: seoul.jpg)으로 바꾸시면 됩니다! -->
+        <img src="https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop" class="places-bg-image" alt="Seoul Background">
+
         <div class="places-header">
             <h1 class="archetype-title" style="font-size: 3rem;">Your Seoul Archive</h1>
             <p class="archetype-sub">분석 결과를 바탕으로 당신의 취향에 닿아있는 공간을 추천합니다.</p>
@@ -554,7 +228,6 @@
     </div>
 
     <script>
-        // --- 1. 장소 데이터베이스 (이곳에 추가하시면 됩니다) ---
         const placesDB = {
             introvert: [
                 { title: "Papier Prost", vibe: "사색 · 기록 · 서재", desc: "고요하게 나의 내면으로 침잠할 수 있는 서촌의 문구점 겸 카페. 노트와 펜만 있으면 완벽한 곳.", link: "https://map.naver.com/p/entry/place/1416133236?placePath=%252Fhome%253Fentry%253Dplt&searchType=place&lng=126.9692198&lat=37.5803821" },
@@ -573,7 +246,6 @@
             ]
         };
 
-        // --- 2. 스크롤 이벤트 ---
         const introSection = document.getElementById('introSection');
         const actionSection = document.getElementById('actionSection');
 
@@ -596,7 +268,6 @@
             }
         });
 
-        // --- 3. 설문 시작 이벤트 ---
         const startBtn = document.getElementById('startSurveyBtn');
         startBtn.addEventListener('click', function(e) {
             e.preventDefault(); 
@@ -612,7 +283,6 @@
             renderQuestion(); 
         });
 
-        // --- 4. 설문 로직 ---
         const questions = [
             { q: "Q1. 당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
             { q: "Q2. 가장 편안한 소리 환경은?", options: ["완전한 정적", "잔잔한 배경음 (카페/재즈)", "사람들의 웅성거림", "음악/활기 있는 소음"] },
@@ -644,16 +314,12 @@
                 showTransition();
                 return;
             }
-
             const progress = ((currentQuestionIndex) / questions.length) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
-
             const qData = questions[currentQuestionIndex];
             document.getElementById('questionText').innerText = qData.q;
-            
             const wrapper = document.getElementById('optionsWrapper');
             wrapper.innerHTML = ''; 
-            
             qData.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
@@ -667,7 +333,6 @@
             });
         }
 
-        // --- 5. 분석 중(트랜지션) 화면 ---
         function showTransition() {
             const surveyBox = document.getElementById('surveyContainer');
             surveyBox.classList.remove('active');
@@ -676,12 +341,10 @@
                 const transBox = document.getElementById('transitionScreen');
                 transBox.style.display = 'flex';
                 setTimeout(() => transBox.classList.add('active'), 50);
-                
                 setTimeout(showResult, 2500);
             }, 500);
         }
 
-        // --- 6. 결과 계산 및 표시 ---
         const archetypes = [
             { name: "Midnight Observer", sub: "고요 + 내향 + 밤 + 사색", desc: "“혼자 깊이 빠지는 타입”", rec: "👉 추천: 심야 카페, 서재형 카페, 한적한 바" },
             { name: "Quiet Curator", sub: "미니멀 + 안정 + 몰입", desc: "“취향을 조용히 쌓는 사람”", rec: "👉 추천: 독립서점, 전시형 카페, 북카페" },
@@ -699,21 +362,17 @@
         function showResult() {
             const transBox = document.getElementById('transitionScreen');
             transBox.classList.remove('active');
-            
             setTimeout(() => {
                 transBox.style.display = 'none';
-                
                 const totalScore = answers.reduce((a, b) => a + b, 0);
                 const resultIndex = totalScore % 11; 
                 const myResult = archetypes[resultIndex];
-
                 const resultHtml = `
                     <h1 class="archetype-title">${myResult.name}</h1>
                     <p class="archetype-sub">${myResult.sub}</p>
                     <p class="archetype-desc">${myResult.desc}<br><br>${myResult.rec}</p>
                 `;
                 document.getElementById('archetypeResult').innerHTML = resultHtml;
-
                 const axisData = [
                     { name: "Energy Axis", left: "내향", right: "외향", val: (answers[0]+answers[1]+answers[2]+answers[11]) * 8 },
                     { name: "Stimulus Axis", left: "저자극", right: "고자극", val: (answers[3]+answers[6]+answers[10]+answers[16]) * 8 },
@@ -721,35 +380,23 @@
                     { name: "Purpose Axis", left: "몰입", right: "탐험(관계)", val: (answers[5]+answers[15]+answers[19]) * 10 },
                     { name: "Routine Axis", left: "안정", right: "새로움", val: (answers[9]+answers[13]+answers[14]) * 10 }
                 ];
-
                 let axesHtml = '';
                 axisData.forEach(axis => {
                     let percent = Math.min(Math.max(axis.val, 10), 90); 
                     axesHtml += `
                         <div class="axis-row">
-                            <div class="axis-labels">
-                                <span>${axis.left}</span>
-                                <span>${axis.name}</span>
-                                <span>${axis.right}</span>
-                            </div>
-                            <div class="axis-line">
-                                <div class="axis-dot" style="left: ${percent}%;"></div>
-                            </div>
+                            <div class="axis-labels"><span>${axis.left}</span><span>${axis.name}</span><span>${axis.right}</span></div>
+                            <div class="axis-line"><div class="axis-dot" style="left: ${percent}%;"></div></div>
                         </div>
                     `;
                 });
                 document.getElementById('axisContainer').innerHTML = axesHtml;
-
                 const resultBox = document.getElementById('resultContainer');
                 resultBox.style.display = 'flex';
-                
-                setTimeout(() => {
-                    resultBox.classList.add('active');
-                }, 50);
+                setTimeout(() => { resultBox.classList.add('active'); }, 50);
             }, 500);
         }
 
-        // --- 7. 지도 애니메이션 및 장소 렌더링 함수 ---
         const introvertTypes = [0, 1, 3, 5, 10]; 
 
         function startSearchingSeoul(userArchetypeIndex) {
@@ -757,10 +404,8 @@
             document.getElementById('introSection').style.display = 'none';
             document.getElementById('actionSection').style.display = 'none';
             window.scrollTo(0, 0); 
-
             const mapScreen = document.getElementById('mapTransitionScreen');
             mapScreen.style.display = 'block';
-            
             for(let i = 0; i < 150; i++) {
                 let dot = document.createElement('div');
                 dot.className = 'map-dot';
@@ -769,16 +414,12 @@
                 dot.style.animationDelay = Math.random() * 2 + 's'; 
                 mapScreen.appendChild(dot);
             }
-
             setTimeout(() => { mapScreen.style.opacity = '1'; }, 50);
-
             setTimeout(() => {
                 mapScreen.style.opacity = '0';
-                
                 setTimeout(() => {
                     mapScreen.style.display = 'none';
                     mapScreen.innerHTML = '<h1 class="map-overlay-text">Plotting your coordinates...</h1>'; 
-                    
                     renderPlaces(userArchetypeIndex);
                 }, 1000); 
             }, 3500); 
@@ -788,14 +429,12 @@
             const placesBox = document.getElementById('placesContainer');
             const grid = document.getElementById('placesGrid');
             grid.innerHTML = ''; 
-
             let targetPlaces = [];
             if (typeIndex === undefined) {
                 targetPlaces = placesDB.introvert.concat(placesDB.extrovert);
             } else {
                 targetPlaces = introvertTypes.includes(typeIndex) ? placesDB.introvert : placesDB.extrovert;
             }
-
             targetPlaces.forEach(place => {
                 const card = document.createElement('a');
                 card.href = place.link;
@@ -809,12 +448,10 @@
                 `;
                 grid.appendChild(card);
             });
-
             placesBox.style.display = 'flex';
             setTimeout(() => { placesBox.style.opacity = '1'; }, 50);
         }
 
-        // --- 8. 버튼 이벤트 리스너 연결 ---
         const goSearchBtn = document.getElementById('goSearchingBtn');
         if(goSearchBtn) {
             goSearchBtn.addEventListener('click', () => {
