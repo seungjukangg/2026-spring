@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The mirror of the s(e)oul</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #000000;
@@ -136,7 +137,7 @@
         .upload-area { width: 100%; height: 250px; border: 2px dashed #444; border-radius: 15px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: #888; margin: 20px 0; background-size: cover; background-position: center; transition: 0.3s; }
         .upload-area:hover { border-color: #fff; color: #fff; }
         
-       /* --- 감정 버튼 (블랙 앤 화이트 시크 컨셉 적용) --- */
+        /* 감정 버튼 (블랙 앤 화이트 시크 컨셉 적용) */
         .emotion-group { display: flex; gap: 10px; margin: 20px 0; width: 100%; justify-content: center; flex-wrap: wrap; }
         .emotion-btn { 
             background: transparent; border: 1px solid #333; color: #888; padding: 10px 22px; 
@@ -174,7 +175,6 @@
         .receipt-divider { width: 100%; border-bottom: 2px dashed #444; margin: 15px 0; }
         .receipt-barcode { width: 100%; height: 50px; margin: 10px 0; background: repeating-linear-gradient(90deg, #111, #111 3px, transparent 3px, transparent 6px, #111 6px, #111 8px, transparent 8px, transparent 10px); opacity: 0.85; }
         .receipt-footer { text-align: center; font-size: 0.75rem; font-weight: bold; margin-top: 10px; letter-spacing: 0.05em; line-height: 1.4; color: #333; }
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     </style>
 </head>
 <body>
@@ -231,7 +231,7 @@
     <div class="places-container" id="placesContainer">
         <img src="https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop" class="places-bg-image">
         
-        <!-- [추가] 성향 결과를 반영한 서브타이틀 -->
+        <!-- 성향 결과를 반영한 서브타이틀 -->
         <p id="dynamicArchiveSubtitle" style="font-size: 0.9rem; color: #aaa; letter-spacing: 0.05em; margin-bottom: 5px; font-style: italic;"></p>
         <h1 class="main-title" style="font-size: 2.5rem; margin-bottom: 25px;">Your Seoul Archive</h1>
         
@@ -276,11 +276,10 @@
                 <!-- 이미지 업로드 -->
                 <label class="upload-area" id="uploadArea">
                     <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                    <span id="uploadText">📸 터치하여 공간의 사진 업로드</span>
+                    <span id="uploadText" style="font-family: var(--font-serif); font-style: italic;">Touch here to upload a photo</span>
                 </label>
 
-                <!-- 감정 선택 -->
-               <!-- 감정 선택 (8가지 시크한 무드) -->
+                <!-- 감정 선택 (8가지 시크한 무드) -->
                 <div class="emotion-group" id="emotionGroup">
                     <button class="emotion-btn" data-emo="평온">평온</button>
                     <button class="emotion-btn" data-emo="사색">사색</button>
@@ -293,12 +292,11 @@
                 </div>
 
                 <!-- 한 줄 기록 -->
-                <input type="text" class="archive-input" id="oneLineRecord" placeholder="✏️ 이 공간에서 느낀 감정을 한 줄로 남겨주세요." autocomplete="off">
+                <input type="text" class="archive-input" id="oneLineRecord" placeholder="이 공간에서 느낀 감정을 한 줄로 남겨주세요." autocomplete="off">
 
-                <button class="option-btn" id="generateCardBtn" style="background:#fff; color:#000; font-weight:bold; margin-top:10px;">기록 카드 생성하기</button>
+                <button class="option-btn" id="generateCardBtn" style="background:#fff; color:#000; font-weight:bold; margin-top:10px; border-radius: 50px; font-family: var(--font-serif);">Generate Archive Receipt</button>
             </div>
 
-            <!-- STEP 2: 완성된 핀터레스트 카드 & 홈으로 -->
             <!-- STEP 2: 완성된 영수증 카드 & 홈으로 -->
             <div class="archive-step" id="archiveStep2">
                 <h1 class="main-title" style="font-size: 1.8rem; margin-bottom: 30px;">Your Archive Receipt</h1>
@@ -341,18 +339,12 @@
                     </div>
                 </div>
 
-               <p style="color:#555; font-size:0.8rem; margin: 20px 0 15px; letter-spacing: 0.05em;">이 영수증은 당신의 영혼 아카이브에 영구히 저장됩니다.</p>
+                <p style="color:#555; font-size:0.8rem; margin: 20px 0 15px; letter-spacing: 0.05em;">이 영수증은 당신의 영혼 아카이브에 영구히 저장됩니다.</p>
                 
-                <!-- 새로 추가하는 다운로드 버튼 -->
+                <!-- 다운로드 버튼 -->
                 <button class="option-btn" id="downloadBtn" style="background:#fff; color:#000; font-weight:bold; font-family: var(--font-serif); border-radius: 50px; margin-bottom: 10px;">Download Image</button>
 
                 <button class="option-btn" id="returnHomeBtn" style="border-color:#444; background:transparent; font-family: var(--font-serif); border-radius: 50px;">Return to Home</button>
-            </div>
-                
-            
-
-                <p style="color:#555; font-size:0.8rem; margin: 40px 0 15px;">이 기록은 당신의 영혼 아카이브에 영구히 저장됩니다.</p>
-                <button class="option-btn" id="returnHomeBtn" style="border-color:#444; background:transparent;">Return to Home</button>
             </div>
 
         </div>
@@ -362,7 +354,7 @@
         // ==========================================
         // 1. Data: 40여개 완벽 연동 장소 DB
         // ==========================================
-       const placesDB = {
+        const placesDB = {
             introvert: [
                 { title: "Papier Prost", region: "north", category: "study", desc: "사색과 기록의 서재. 나만의 내면으로 침잠하기 좋은 곳.", link: "https://map.naver.com/p/entry/place/1416133236" },
                 { title: "보안여관", region: "north", category: "design", desc: "오래된 여관의 뼈대를 남긴 전시형 북카페.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832" },
@@ -391,7 +383,7 @@
                 { title: "break silence", region: "east", category: "bar", desc: "음악과 패션이 어우러진 느낌좋은 와인바", link: "https://map.naver.com/p/search/break%20silence" },
                 { title: "aviemuah", region: "west", category: "shop", desc: "이탈리아 건축가의 혼이 들어간 쇼룸과 캐주얼웨어", link: "https://map.naver.com/p/entry/place/1932727872" },
                 { title: "museum209", region: "east", category: "design", desc: "잠실에서 만나는 신선하고 감각적인 전시 공간.", link: "https://map.naver.com/p/search/museum%20209" },
-                { title: 'thelif', region: 'south', category: 'stay', desc: '아름다운 객실과 프리미엄 스파로 즐기는 낭만의 시간' , link: 'https://map.naver.com/p/entry/place/1036777083?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011311&locale=ko&svcName=map_pcv5' },
+                { title: 'thelif', region: 'south', category: 'stay', desc: '아름다운 객실과 프리미엄 스파로 즐기는 낭만의 시간' , link: 'https://map.naver.com/p/entry/place/1036777083' },
                 { title: "성수연방", region: "east", category: "shop", desc: "성수의 힙한 브랜드들이 모인 복합문화공간.", link: "https://sites.google.com/view/ssyb" }
             ],
             extrovert: [
@@ -404,7 +396,7 @@
                 { title: "activemode 홍대점", region: "west", category: "design", desc: "액티비티와 자극이 가득한 도심 속 미션 체험 공간.", link: "https://map.naver.com/p/search/%EC%95%A1%ED%8B%B0%EB%B8%8C%EB%AA%A8%EB%93%9C" },
                 { title: "앙투앙 북스", region: "east", category: "study", desc: "성수동의 활기찬 에너지가 깃든 독립서점.", link: "https://map.naver.com/p/search/%EC%95%99%ED%88%AC%EC%95%99" },
                 { title: "Kelley's house", region: "east", category: "cafe", desc: "성수의 팝하고 컬러풀한 감각의 디저트 카페.", link: "https://map.naver.com/p/search/%EC%BC%88%EB%A6%AC%EC%8A%A4" },
-                { title: "스테이희와", region: "north", category: "stay", desc: "자연과 함께하는 프라이빗한 한옥 독채 스테이.", link: "https://map.naver.com/p/entry/place/1095060963" },
+                { title: "스테이희와", region: "west", category: "stay", desc: "자연과 함께하는 프라이빗한 한옥 독채 스테이.", link: "https://map.naver.com/p/entry/place/1095060963" },
                 { title: "DynamicMaze", region: "north", category: "design", desc: "인사동 미로에서 즐기는 역동적인 미션 액티비티.", link: "https://map.naver.com/p/entry/place/36631598" },
                 { title: "더현대 서울", region: "west", category: "shop", desc: "거대한 스케일의 실내 정원과 쇼핑을 탐험해보세요.", link: "https://map.naver.com/" },
                 { title: "TOPS CONNECT SHOP", region: "south", category: "shop", desc: "무신사의 감각적인 브랜드가 함께하는 팝업공간", link: "https://map.naver.com/p/search/tops%20connect%20shop" },
@@ -420,10 +412,10 @@
                 { title: "스테이수리르", region: "west", category: "stay", desc: "홍대 한복판의 머무르기 좋은 깔끔한 공간", link: "https://map.naver.com/p/entry/place/2031922564" },
                 { title: "flowlounge", region: "north", category: "study", desc: "도심 속 감도높은 작업공간, 다양한 소품과 식물 인테리어", link: "https://map.naver.com/p/entry/place/1284099079" },
                 { title: "moviemood", region: "south", category: "stay", desc: "영화 같은 무드로 가득 찬 강남의 트렌디한 숙소.", link: "https://map.naver.com/p/search/%EB%AC%B4%EB%B9%84%EB%AC%B4%EB%93%9C" },
-               { title: 'binbrotherscoffeehouse', region: 'west', category: 'cafe', desc: '통창 한강 뷰 시즈널 커피바, 7층 높이의 낭만', link: 'https://map.naver.com/p/entry/place/1741225396?c=14.24,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011308&locale=ko&svcName=map_pcv5' }
+                { title: 'binbrotherscoffeehouse', region: 'west', category: 'cafe', desc: '통창 한강 뷰 시즈널 커피바, 7층 높이의 낭만', link: 'https://map.naver.com/p/entry/place/1741225396' }
             ]
-            
         };
+
         const questions = [
             { q: "당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
             { q: "가장 편안한 소리 환경은?", options: ["완전한 정적", "잔잔한 배경음", "사람들의 웅성거림", "활기 있는 소음"] },
@@ -466,6 +458,7 @@
         // ==========================================
         let currentQ = 0; let answers = []; let finalType = 'introvert';
         let currentRegion = 'all'; let currentCategory = 'all'; 
+        let globalSoulColor = ''; 
 
         // Scroll
         window.addEventListener('scroll', () => {
@@ -540,8 +533,8 @@
 
         function drawArt(axes) {
             const canvas = document.getElementById('soulArtCanvas'); const ctx = canvas.getContext('2d');
-            const color = axes[0].val < 50 ? 'rgba(100,150,255,0.7)' : 'rgba(255,100,50,0.7)';
-            ctx.clearRect(0,0,400,400); ctx.shadowBlur = 50; ctx.shadowColor = color; ctx.fillStyle = color;
+            globalSoulColor = axes[0].val < 50 ? 'rgba(100,150,255,0.7)' : 'rgba(255,100,50,0.7)';
+            ctx.clearRect(0,0,400,400); ctx.shadowBlur = 50; ctx.shadowColor = globalSoulColor; ctx.fillStyle = globalSoulColor;
             ctx.beginPath();
             for(let i=0; i<6; i++) {
                 let ang = (i/6)*Math.PI*2; let r = 80 + (axes[1].val/2);
@@ -612,11 +605,10 @@
         });
 
         // ==========================================
-        // 4. Enhanced Archive Logic (이미지, 감정, 카드생성)
+        // 4. Enhanced Archive Logic (이미지, 감정, 영수증 생성)
         // ==========================================
         let selectedEmotion = '';
         let uploadedImgUrl = '';
-        const emotionColors = { '평온': '#4facfe', '설렘': '#ff0844', '몰입': '#a18cd1' };
 
         document.getElementById('goArchiveBtn').onclick = () => {
             document.getElementById('placesContainer').classList.remove('active');
@@ -644,7 +636,7 @@
             };
         });
 
-       document.getElementById('generateCardBtn').onclick = () => {
+        document.getElementById('generateCardBtn').onclick = () => {
             const userText = document.getElementById('oneLineRecord').value;
             
             if(!uploadedImgUrl) { alert('공간의 사진을 업로드해주세요!'); return; }
@@ -654,24 +646,21 @@
             document.getElementById('archiveStep1').classList.remove('active');
             document.getElementById('archiveStep2').classList.add('active');
 
-            // 1. 날짜 및 아키타입(유형) 입력
+            // 영수증 헤더 데이터
             const myRes = archetypes[answers.reduce((a,b)=>a+b, 0) % 11]; 
             const today = new Date();
             document.getElementById('rDate').innerText = today.toLocaleDateString();
             document.getElementById('rArchetype').innerText = myRes.name.toUpperCase();
             
-            // 2. 이미지 및 데이터 입력
+            // 유저 데이터 삽입
             document.getElementById('cardImg').style.backgroundImage = `url(${uploadedImgUrl})`;
             document.getElementById('rEmotion').innerText = selectedEmotion;
             
             let vibeText = finalType === 'introvert' ? 'CALM & DEEP' : 'ENERGETIC & CHILL';
             document.getElementById('rVibe').innerText = vibeText;
-            
             document.getElementById('cardUserText').innerText = `"${userText}"`;
 
-            // 3. 영수증 종이 색상 동기화 (레퍼런스의 뉴진스 파란 영수증 느낌 구현)
-            // globalSoulColor(예: rgba(100,150,255,0.7))의 투명도를 확 낮춰서 은은한 영수증 배경지로 만듭니다.
-           // 3. 영수증 스타일 동기화 (종이는 트렌디한 반투명 흑백으로 놔두고, 뒤에 깔리는 그림자에만 영혼 색상 반영)
+            // 영수증 스타일 동기화 (종이는 트렌디한 반투명 흑백으로 놔두고, 뒤에 깔리는 그림자에만 영혼 색상 반영)
             const receiptObj = document.getElementById('receiptCard');
             if (globalSoulColor) {
                 // backgroundColor 덮어씌우는 코드를 지우고 빛 번짐(Glow)만 남깁니다.
@@ -696,5 +685,10 @@
                 btn.innerText = "Download Image"; // 버튼 텍스트 원상복구
             });
         };
+
+        document.getElementById('returnHomeBtn').onclick = () => {
+            location.reload(); 
+        };
+    </script>
 </body>
 </html>
