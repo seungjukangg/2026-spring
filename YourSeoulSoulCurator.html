@@ -293,7 +293,7 @@
         // ==========================================
         // 1. Data: 40여개 완벽 연동 장소 DB
         // ==========================================
-        const placesDB = {
+       const placesDB = {
             introvert: [
                 { title: "Papier Prost", region: "north", category: "study", desc: "사색과 기록의 서재. 나만의 내면으로 침잠하기 좋은 곳.", link: "https://map.naver.com/p/entry/place/1416133236" },
                 { title: "보안여관", region: "north", category: "design", desc: "오래된 여관의 뼈대를 남긴 전시형 북카페.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832" },
@@ -320,11 +320,13 @@
                 { title: "staybodhi", region: "east", category: "stay", desc: "성수 한복판의 한옥 집, 자연 그리고 사람들과의 교류", link: "https://map.naver.com/p/entry/place/1918510788" },
                 { title: "Chill Coffee bar", region: "west", category: "cafe", desc: "다양한 LP음악과 커피, 위스키 그리고 힙한 손님들", link: "https://map.naver.com/p/entry/place/1134528856" },
                 { title: "break silence", region: "east", category: "bar", desc: "음악과 패션이 어우러진 느낌좋은 와인바", link: "https://map.naver.com/p/search/break%20silence" },
-                { title: "aviemuah", region: "west", category: "shop", desc: "이탈리아 건축가의 혼이 들어간 쇼룸과 캐주얼웨어", link: "https://map.naver.com/p/entry/place/1932727872" }
+                { title: "aviemuah", region: "west", category: "shop", desc: "이탈리아 건축가의 혼이 들어간 쇼룸과 캐주얼웨어", link: "https://map.naver.com/p/entry/place/1932727872" },
+                { title: "museum209", region: "east", category: "design", desc: "잠실에서 만나는 신선하고 감각적인 전시 공간.", link: "https://map.naver.com/p/search/museum%20209" },
+                { title: 'thelif', region: 'south', category: 'stay', desc: '아름다운 객실과 프리미엄 스파로 즐기는 낭만의 시간' , link: 'https://map.naver.com/p/entry/place/1036777083?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011311&locale=ko&svcName=map_pcv5' },
+                { title: "성수연방", region: "east", category: "shop", desc: "성수의 힙한 브랜드들이 모인 복합문화공간.", link: "https://sites.google.com/view/ssyb" }
             ],
             extrovert: [
                 { title: "AllThatJazz", region: "north", category: "bar", desc: "이태원의 밤을 채우는 역사적인 라이브 재즈 클럽.", link: "https://map.naver.com/p/search/allthatjazz" },
-                { title: "성수연방", region: "east", category: "shop", desc: "성수의 힙한 브랜드들이 모인 복합문화공간.", link: "https://sites.google.com/view/ssyb" },
                 { title: "BoogieWoogie", region: "north", category: "bar", desc: "사운드에 몸을 맡기는 경리단길의 라이브 바.", link: "https://map.naver.com/p/search/boogiewoogie" },
                 { title: "Graphic", region: "west", category: "study", desc: "해방촌 언덕 위, 힙한 감각의 트렌디한 만화 아지트.", link: "https://map.naver.com/p/entry/place/1867194239" },
                 { title: "NOCT", region: "west", category: "bar", desc: "한강 위 노들섬 선상 바에서 즐기는 도회적 야경.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/1020828516" },
@@ -333,27 +335,26 @@
                 { title: "activemode 홍대점", region: "west", category: "design", desc: "액티비티와 자극이 가득한 도심 속 미션 체험 공간.", link: "https://map.naver.com/p/search/%EC%95%A1%ED%8B%B0%EB%B8%8C%EB%AA%A8%EB%93%9C" },
                 { title: "앙투앙 북스", region: "east", category: "study", desc: "성수동의 활기찬 에너지가 깃든 독립서점.", link: "https://map.naver.com/p/search/%EC%95%99%ED%88%AC%EC%95%99" },
                 { title: "Kelley's house", region: "east", category: "cafe", desc: "성수의 팝하고 컬러풀한 감각의 디저트 카페.", link: "https://map.naver.com/p/search/%EC%BC%88%EB%A6%AC%EC%8A%A4" },
-                { title: "스테이희와", region: "west", category: "stay", desc: "자연과 함께하는 프라이빗한 한옥 독채 스테이.", link: "https://map.naver.com/p/entry/place/1095060963" },
+                { title: "스테이희와", region: "north", category: "stay", desc: "자연과 함께하는 프라이빗한 한옥 독채 스테이.", link: "https://map.naver.com/p/entry/place/1095060963" },
                 { title: "DynamicMaze", region: "north", category: "design", desc: "인사동 미로에서 즐기는 역동적인 미션 액티비티.", link: "https://map.naver.com/p/entry/place/36631598" },
                 { title: "더현대 서울", region: "west", category: "shop", desc: "거대한 스케일의 실내 정원과 쇼핑을 탐험해보세요.", link: "https://map.naver.com/" },
-                { title: "TOPS CONNECT SHOP", region: "east", category: "shop", desc: "무신사의 감각적인 브랜드가 함께하는 팝업공간", link: "https://map.naver.com/p/search/tops%20connect%20shop" },
+                { title: "TOPS CONNECT SHOP", region: "south", category: "shop", desc: "무신사의 감각적인 브랜드가 함께하는 팝업공간", link: "https://map.naver.com/p/search/tops%20connect%20shop" },
                 { title: "HOUSE & GARDEN Xi", region: "east", category: "design", desc: "자연과 공간이 함께 어우러진 영감의 순간", link: "https://map.naver.com/p/entry/place/2098846154" },
                 { title: "winter", region: "south", category: "bar", desc: "엄청난 퀄리티의 다양한 위스키, 시음회가 이루어지는 따뜻한 바", link: "https://map.naver.com/p/entry/place/1925439934" },
-                { title: "제비댁", region: "south", category: "stay", desc: "아름다운 공간에서 낯선 사람들과 꿈같은 밤을", link: "https://map.naver.com/p/search/%EC%A0%9C%EB%B9%84%EB%8C%81" },
+                { title: "제비댁", region: "east", category: "stay", desc: "아름다운 공간에서 낯선 사람들과 꿈같은 밤을", link: "https://map.naver.com/p/search/%EC%A0%9C%EB%B9%84%EB%8C%81" },
                 { title: "theshopgallery", region: "south", category: "design", desc: "트렌디한 예술적 자극을 채울 수 있는 남부의 갤러리.", link: "https://map.naver.com/p/search/%EB%8D%94%EC%83%B5%EA%B0%A4%EB%9F%AC%EB%A6%AC" },
                 { title: "소셜서재", region: "south", category: "study", desc: "사교와 영감이 공존하는 남부의 서재형 모임 공간.", link: "https://map.naver.com/p/search/%EC%86%8C%EC%85%9C%EC%84%9C%EC%9E%AC" },
                 { title: "theriver hay", region: "south", category: "cafe", desc: "시원한 뷰와 함께 활기찬 에너지를 채우는 카페.", link: "https://map.naver.com/p/search/%EB%8D%94%EB%A6%AC%EB%B2%84%20%ED%97%A4%EC%9D%B4" },
-                { title: "museum209", region: "east", category: "design", desc: "동부에서 만나는 신선하고 감각적인 전시 공간.", link: "https://map.naver.com/p/search/museum%20209" },
                 { title: "houseofbrown", region: "east", category: "bar", desc: "성수동의 힙한 분위기가 물씬 풍기는 분위기 있는 바.", link: "https://map.naver.com/p/entry/place/1200794945" },
                 { title: "Fourstones", region: "north", category: "cafe", desc: "도심 속 여유와 활기를 동시에 즐기는 감각적인 카페.", link: "https://map.naver.com/p/search/%ED%8F%AC%EC%8A%A4%ED%86%A4%EC%A6%88" },
                 { title: "takemyyellow", region: "north", category: "shop", desc: "톡톡 튀는 컬러감으로 기분 전환하기 좋은 소품샵.", link: "https://map.naver.com/p/entry/place/1718593227" },
                 { title: "스테이수리르", region: "west", category: "stay", desc: "홍대 한복판의 머무르기 좋은 깔끔한 공간", link: "https://map.naver.com/p/entry/place/2031922564" },
                 { title: "flowlounge", region: "north", category: "study", desc: "도심 속 감도높은 작업공간, 다양한 소품과 식물 인테리어", link: "https://map.naver.com/p/entry/place/1284099079" },
                 { title: "moviemood", region: "south", category: "stay", desc: "영화 같은 무드로 가득 찬 강남의 트렌디한 숙소.", link: "https://map.naver.com/p/search/%EB%AC%B4%EB%B9%84%EB%AC%B4%EB%93%9C" },
-                { title: "binbrotherscoffeehouse", region: "west", category: "cafe", desc: "통창 한강 뷰 시즈널 커피바, 7층 높이의 낭만", link: "https://map.naver.com/p/entry/place/1741225396" }
+               { title: 'binbrotherscoffeehouse', region: 'west', category: 'cafe', desc: '통창 한강 뷰 시즈널 커피바, 7층 높이의 낭만', link: 'https://map.naver.com/p/entry/place/1741225396?c=14.24,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011308&locale=ko&svcName=map_pcv5' }
             ]
+            
         };
-
         const questions = [
             { q: "당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
             { q: "가장 편안한 소리 환경은?", options: ["완전한 정적", "잔잔한 배경음", "사람들의 웅성거림", "활기 있는 소음"] },
