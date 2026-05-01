@@ -174,6 +174,7 @@
         .receipt-divider { width: 100%; border-bottom: 2px dashed #444; margin: 15px 0; }
         .receipt-barcode { width: 100%; height: 50px; margin: 10px 0; background: repeating-linear-gradient(90deg, #111, #111 3px, transparent 3px, transparent 6px, #111 6px, #111 8px, transparent 8px, transparent 10px); opacity: 0.85; }
         .receipt-footer { text-align: center; font-size: 0.75rem; font-weight: bold; margin-top: 10px; letter-spacing: 0.05em; line-height: 1.4; color: #333; }
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     </style>
 </head>
 <body>
@@ -340,17 +341,15 @@
                     </div>
                 </div>
 
-                <p style="color:#555; font-size:0.8rem; margin: 20px 0 15px; letter-spacing: 0.05em;">이 영수증은 당신의 영혼 아카이브에 영구히 저장됩니다.</p>
+               <p style="color:#555; font-size:0.8rem; margin: 20px 0 15px; letter-spacing: 0.05em;">이 영수증은 당신의 영혼 아카이브에 영구히 저장됩니다.</p>
+                
+                <!-- 새로 추가하는 다운로드 버튼 -->
+                <button class="option-btn" id="downloadBtn" style="background:#fff; color:#000; font-weight:bold; font-family: var(--font-serif); border-radius: 50px; margin-bottom: 10px;">Download Image</button>
+
                 <button class="option-btn" id="returnHomeBtn" style="border-color:#444; background:transparent; font-family: var(--font-serif); border-radius: 50px;">Return to Home</button>
             </div>
                 
-                <!-- 생성된 카드 -->
-                <div class="pinterest-card" id="pinterestCard">
-                    <div class="p-card-img" id="cardImg"></div>
-                    <p class="p-card-type" id="cardArchetype">Archetype</p>
-                    <p class="p-card-auto-text" id="cardAutoText">Auto Sentence</p>
-                    <p class="p-card-user-text" id="cardUserText">"User Input"</p>
-                </div>
+            
 
                 <p style="color:#555; font-size:0.8rem; margin: 40px 0 15px;">이 기록은 당신의 영혼 아카이브에 영구히 저장됩니다.</p>
                 <button class="option-btn" id="returnHomeBtn" style="border-color:#444; background:transparent;">Return to Home</button>
@@ -680,9 +679,22 @@
             }
         };
 
-        document.getElementById('returnHomeBtn').onclick = () => {
-            location.reload(); 
+        // 영수증 이미지 다운로드 기능
+        document.getElementById('downloadBtn').onclick = () => {
+            const receiptElement = document.getElementById('receiptCard');
+            // 버튼 텍스트 변경으로 진행 중임을 알림
+            const btn = document.getElementById('downloadBtn');
+            btn.innerText = "Downloading...";
+            
+            // html2canvas로 영수증 영역 캡처
+            html2canvas(receiptElement, { scale: 3, backgroundColor: null }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'My_Seoul_Archive_Receipt.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                btn.innerText = "Download Image"; // 버튼 텍스트 원상복구
+            });
         };
-    </script>
 </body>
 </html>
