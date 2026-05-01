@@ -102,7 +102,7 @@
         .filter-btn:hover:not(.active) { border-color: #888; color: #fff; }
 
         /* --- 6. Places Grid --- */
-        .places-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; z-index: 10; }
+        .places-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; z-index: 10; padding-bottom: 100px; }
         .place-card {
             background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 15px; padding: 30px;
             text-decoration: none; color: #fff; transition: 0.4s; display: flex; flex-direction: column;
@@ -185,11 +185,12 @@
     <!-- 7. Places & Interactive Filters -->
     <div class="places-container" id="placesContainer">
         <img src="https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop" class="places-bg-image">
+        
+        <!-- [추가된 부분] 성향 결과를 반영한 서브타이틀 -->
+        <p id="dynamicArchiveSubtitle" style="font-size: 0.9rem; color: #aaa; letter-spacing: 0.05em; margin-bottom: 5px; font-style: italic;"></p>
         <h1 class="main-title" style="font-size: 2.5rem; margin-bottom: 25px;">Your Seoul Archive</h1>
         
-        <!-- 이중 필터 UI -->
         <div class="filter-wrapper">
-            <!-- Region Filter -->
             <div class="filter-row">
                 <span class="filter-label">Region</span>
                 <div class="filter-buttons" id="regionFilters">
@@ -200,7 +201,6 @@
                     <button class="filter-btn" data-region="west">서부</button>
                 </div>
             </div>
-            <!-- Category Filter (영어로 통일하여 오류 방지) -->
             <div class="filter-row">
                 <span class="filter-label">Category</span>
                 <div class="filter-buttons" id="categoryFilters">
@@ -231,7 +231,7 @@
 
     <script>
         // ==========================================
-        // 1. Data: Places (남부, 동부, 서부, 북부 모든 카테고리 완벽 채움)
+        // 1. Data: 완벽하게 정리된 장소 40여개 데이터베이스
         // ==========================================
         const placesDB = {
             introvert: [
@@ -249,53 +249,51 @@
                 { title: "맨홀커피웨스턴", region: "west", category: "cafe", desc: "영등포 골목 1만 권의 책과 향기로운 커피.", link: "https://map.naver.com/p/entry/place/1471240461" },
                 { title: "Point to Five Seconds", region: "north", category: "cafe", desc: "경복궁 뷰에서 프리미엄 티코스와 시향을 즐기는 시간.", link: "https://map.naver.com/p/entry/place/1125006314" },
                 { title: "로컬스티치 서교", region: "west", category: "study", desc: "크리에이터들을 위한 고요한 영감의 서교동 라운지.", link: "https://localstitch.town/" },
-                // --- 추가된 Introvert 장소들 ---
-                { title: "수도원", region: "north", category: "bar", desc: "고요하고 묵직한 분위기 속에서 홀로 술을 음미하기 좋은 바.", link: "https://map.naver.com/p/search/%EC%88%98%EB%8F%84%EC%9B%90?c=16.02,0,0,0,dh" },
-                { title: "ANTO", region: "north", category: "stay", desc: "북부의 조용한 정취를 오롯이 느낄 수 있는 프라이빗 스테이.", link: "https://map.naver.com/p/search/%EC%95%88%ED%86%A0?c=17.03,0,0,0,dh" },
+                { title: "수도원", region: "north", category: "bar", desc: "고요하고 묵직한 분위기 속에서 홀로 술을 음미하기 좋은 바.", link: "https://map.naver.com/p/search/%EC%88%98%EB%8F%84%EC%9B%90" },
+                { title: "ANTO", region: "north", category: "stay", desc: "북부의 조용한 정취를 오롯이 느낄 수 있는 프라이빗 스테이.", link: "https://map.naver.com/p/search/%EC%95%88%ED%86%A0" },
                 { title: "crash in yongsan", region: "west", category: "stay", desc: "용산 골목에 숨겨진 나만의 아지트 같은 고요한 숙소.", link: "https://map.naver.com/p/search/%ED%81%AC%EB%9E%98%EC%89%AC%EC%9D%B8%EC%9A%A9%EC%82%B0/place/1072275195" },
                 { title: "stay passport", region: "east", category: "stay", desc: "신당동에서 만나는 료칸 감성, 완벽한 휴식과 단절의 스테이.", link: "https://map.naver.com/p/search/%EC%8A%A4%ED%85%8C%EC%9D%B4%20%ED%8C%A8%EC%8A%A4%ED%8F%AC%ED%8A%B8/place/1854164833" },
                 { title: "터방내", region: "south", category: "cafe", desc: "시간이 멈춘 듯 아늑하고 레트로한 남부의 오래된 다방.", link: "https://map.naver.com/p/search/%ED%84%B0%EB%B0%A9%EB%82%B4/place/19885998" },
-                { title: "Ationary", region: "south", category: "shop", desc: "기록의 가치를 아는 사람들을 위한 조용한 소품, 문구점.", link: "https://map.naver.com/p/search/%EC%97%90%EC%9D%B4%EC%85%94%EB%84%88%EB%A6%AC/place/37867605" },
+                { title: "Ationary", region: "south", category: "shop", desc: "기록의 가치를 아는 사람들을 위한 조용한 남부 문구점.", link: "https://map.naver.com/p/search/%EC%97%90%EC%9D%B4%EC%85%94%EB%84%88%EB%A6%AC/place/37867605" },
                 { title: "서울시립남서울미술관", region: "south", category: "design", desc: "클래식한 건축물 속에서 조용히 예술을 감상할 수 있는 공간.", link: "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EC%8B%9C%EB%A6%BD%20%EB%82%A8%EC%84%9C%EC%9A%B8%EB%AF%B8%EC%88%A0%EA%B4%80" },
-                { title: "Little Gallery", region" "south", category: "bar", desc: '아늑한 분위기에서 60여종의 위스키를 맛볼 수 있는 숨겨진 공간' , link: 'https://map.naver.com/p/search/%EB%A6%AC%ED%8B%80%20%EA%B0%A4%EB%9F%AC%EB%A6%AC/place/1766694450?c=15.00,0,0,0,dh&placePath=/home?bk_query=%EB%A6%AC%ED%8B%80%20%EA%B0%A4%EB%9F%AC%EB%A6%AC&entry=bmp&from=map&fromPanelNum=2&timestamp=202605011209&locale=ko&svcName=map_pcv5&searchText=%EB%A6%AC%ED%8B%80%20%EA%B0%A4%EB%9F%AC%EB%A6%AC' },
-                { title: "moviemood", region: "south", category: "stay", desc: "영화 같은 무드로 가득 찬 강남의 트렌디한 숙소.", link: "https://map.naver.com/p/search/%EB%AC%B4%EB%B9%84%EB%AC%B4%EB%93%9C/place/2090765432" },
-                { title: 'TOPS CONNECT SHOP' , region: 'east', category: 'shop' , desc: '무신사의 감각적인 브랜드가 함께하는 팝업공간', link: "https://map.naver.com/p/search/tops%20connect%20shop/place/1189356218?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011220&locale=ko&svcName=map_pcv5&searchText=tops%20connect%20shop' },
-                { title: 'HOUSE & GARDEN Xi' , region: 'east', category: 'design' , desc: '자연과 공간이 함께 어우러지 영감의 순간', link: 'https://map.naver.com/p/entry/place/2098846154?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011222&locale=ko&svcName=map_pcv5' },
-                { title: 'break silence' , region: 'east', category: 'bar' , desc: '음악과 패션이 어우러진 느낌좋은 와인바 ', link: 'https://map.naver.com/p/search/break%20silence/place/1053160252?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011217&locale=ko&svcName=map_pcv5&searchText=break%20silence' },
-                { title: 'aviemuah' , region: 'west', category: 'shop', desc: '이탈리아 건축가의 혼이 들어간 쇼룸과 캐주얼웨어 ', link: 'https://map.naver.com/p/entry/place/1932727872?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011224&locale=ko&svcName=map_pcv5' }
-                
+                { title: "Little Gallery", region: "south", category: "bar", desc: "아늑한 분위기에서 60여종의 위스키를 맛볼 수 있는 숨겨진 공간", link: "https://map.naver.com/p/search/%EB%A6%AC%ED%8B%80%20%EA%B0%A4%EB%9F%AC%EB%A6%AC" },
+                { title: "staybodhi", region: "east", category: "stay", desc: "성수 한복판의 한옥 집, 자연 그리고 사람들과의 교류", link: "https://map.naver.com/p/entry/place/1918510788" },
+                { title: "Chill Coffee bar", region: "west", category: "cafe", desc: "다양한 LP음악과 커피, 위스키 그리고 힙한 손님들", link: "https://map.naver.com/p/entry/place/1134528856" },
+                { title: "break silence", region: "east", category: "bar", desc: "음악과 패션이 어우러진 느낌좋은 와인바", link: "https://map.naver.com/p/search/break%20silence" },
+                { title: "aviemuah", region: "west", category: "shop", desc: "이탈리아 건축가의 혼이 들어간 쇼룸과 캐주얼웨어", link: "https://map.naver.com/p/entry/place/1932727872" },
+                { title: "museum209", region: "east", category: "design", desc: "잠실에서 만나는 신선하고 감각적인 전시 공간.", link: "https://map.naver.com/p/search/museum%20209" },
+                { title: 'thelif', region: 'south', category: 'stay', desc: '아름다운 객실과 프리미엄 스파로 즐기는 낭만의 시간' , link: 'https://map.naver.com/p/entry/place/1036777083?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011311&locale=ko&svcName=map_pcv5' }
+            ],
             extrovert: [
                 { title: "AllThatJazz", region: "north", category: "bar", desc: "이태원의 밤을 채우는 역사적인 라이브 재즈 클럽.", link: "https://map.naver.com/p/search/allthatjazz" },
                 { title: "성수연방", region: "east", category: "shop", desc: "성수의 힙한 브랜드들이 모인 복합문화공간.", link: "https://sites.google.com/view/ssyb" },
-                { title: "BoogieWoogie", region: "north", category: "bar", desc: "사운드에 몸을 맡기는 경리단길의 라이브 바.", link: "https://map.naver.com/p/search/boogiewoogie/place/37921792" },
+                { title: "BoogieWoogie", region: "north", category: "bar", desc: "사운드에 몸을 맡기는 경리단길의 라이브 바.", link: "https://map.naver.com/p/search/boogiewoogie" },
                 { title: "Graphic", region: "west", category: "study", desc: "해방촌 언덕 위, 힙한 감각의 트렌디한 만화 아지트.", link: "https://map.naver.com/p/entry/place/1867194239" },
                 { title: "NOCT", region: "west", category: "bar", desc: "한강 위 노들섬 선상 바에서 즐기는 도회적 야경.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/1020828516" },
                 { title: "indexshop", region: "east", category: "shop", desc: "건대 커먼그라운드의 팝하고 활기찬 디자인 숍.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/1975205745" },
                 { title: "liquid soul", region: "west", category: "bar", desc: "음악과 사람, 대화가 흐르는 서교동의 힙한 라운지.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/1054104154" },
-                { title: "activemode 홍대점", region: "west", category: "design", desc: "액티비티와 자극이 가득한 도심 속 미션 체험 공간.", link: "https://map.naver.com/p/search/%EC%95%A1%ED%8B%B0%EB%B8%8C%EB%AA%A8%EB%93%9C%20%ED%99%8D%EB%8C%80/place/1432884945" },
-                { title: "앙투앙 북스", region: "east", category: "study", desc: "성수동의 활기찬 에너지가 깃든 독립서점.", link: "https://map.naver.com/p/search/%EC%95%99%ED%88%AC%EC%95%99%20%EB%B6%81%EC%8A%A4/place/1776986201" },
-                { title: "Kelley's house", region: "east", category: "cafe", desc: "성수의 팝하고 컬러풀한 감각의 디저트 카페.", link: "https://map.naver.com/p/search/%EC%BC%88%EB%A6%AC%EC%8A%A4%ED%95%98%EC%9A%B0%EC%8A%A4/place/1014077716" },
+                { title: "activemode 홍대점", region: "west", category: "design", desc: "액티비티와 자극이 가득한 도심 속 미션 체험 공간.", link: "https://map.naver.com/p/search/%EC%95%A1%ED%8B%B0%EB%B8%8C%EB%AA%A8%EB%93%9C" },
+                { title: "앙투앙 북스", region: "east", category: "study", desc: "성수동의 활기찬 에너지가 깃든 독립서점.", link: "https://map.naver.com/p/search/%EC%95%99%ED%88%AC%EC%95%99" },
+                { title: "Kelley's house", region: "east", category: "cafe", desc: "성수의 팝하고 컬러풀한 감각의 디저트 카페.", link: "https://map.naver.com/p/search/%EC%BC%88%EB%A6%AC%EC%8A%A4" },
                 { title: "스테이희와", region: "north", category: "stay", desc: "자연과 함께하는 프라이빗한 한옥 독채 스테이.", link: "https://map.naver.com/p/entry/place/1095060963" },
                 { title: "DynamicMaze", region: "north", category: "design", desc: "인사동 미로에서 즐기는 역동적인 미션 액티비티.", link: "https://map.naver.com/p/entry/place/36631598" },
-                { title: "TheHyundaiSeoul", region: "west", category: "shop", desc: "거대한 스케일의 실내 정원과 쇼핑을 탐험해보세요.", link: "https://map.naver.com/p/entry/place/1386302181?c=18.43,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011250&locale=ko&svcName=map_pcv5" },
-                { title:'torhop', region: 'south', category: 'shop' , desc: '핀란드에서 영감을 받은 브랜드, 간접 스파체험 가능한 제품 라인업', link: 'https://map.naver.com/p/entry/place/2056295365?c=13.00,0,0,0,dh&placePath=/home?from=map&from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011241&locale=ko&svcName=map_pcv5&fromPanelNum=1&additionalHeight=76&timestamp=202605011240&locale=ko&svcName=map_pcv5' },
-                { title: 'winter', region: 'south', category: 'bar', desc: '엄청난 퀄리티의 다양한 위스키, 시음회가 이루어지는 따뜻 바', link: 'https://map.naver.com/p/entry/place/1925439934?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011237&locale=ko&svcName=map_pcv5' },
-                { title: 'staybodhi' , region: 'east', category: 'stay', desc: '성수 한복판의 한옥 집, 자연 그리고 사람들과의 교류 ', link: 'https://map.naver.com/p/entry/place/1918510788?c=12.46,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011248&locale=ko&svcName=map_pcv5' },
-                { title: 'Chill Coffee bar', region: 'west', category: 'cafe' , desc: ' 다양한 LP음악과 커피, 위스키 그리고 힙한 손님들', link: 'https://map.naver.com/p/entry/place/1134528856?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011233&locale=ko&svcName=map_pcv5' },
-                // --- 추가된 Extrovert 장소들 ---
-                { title: "제비댁", region: 'south', category: 'stay', desc: '아름다운 공간에서 낯선 사람들과 꿈같은 밤을' , link: 'https://map.naver.com/p/search/%EC%A0%9C%EB%B9%84%EB%8C%81/place/1829812822?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011212&locale=ko&svcName=map_pcv5&searchText=%EC%A0%9C%EB%B9%84%EB%8C%81&businessCategory=guesthouse' },
+                { title: "더현대 서울", region: "west", category: "shop", desc: "거대한 스케일의 실내 정원과 쇼핑을 탐험해보세요.", link: "https://map.naver.com/" },
+                { title: "TOPS CONNECT SHOP", region: "south", category: "shop", desc: "무신사의 감각적인 브랜드가 함께하는 팝업공간", link: "https://map.naver.com/p/search/tops%20connect%20shop" },
+                { title: "HOUSE & GARDEN Xi", region: "east", category: "design", desc: "자연과 공간이 함께 어우러진 영감의 순간", link: "https://map.naver.com/p/entry/place/2098846154" },
+                { title: "winter", region: "south", category: "bar", desc: "엄청난 퀄리티의 다양한 위스키, 시음회가 이루어지는 따뜻한 바", link: "https://map.naver.com/p/entry/place/1925439934" },
+                { title: "제비댁", region: "east", category: "stay", desc: "아름다운 공간에서 낯선 사람들과 꿈같은 밤을", link: "https://map.naver.com/p/search/%EC%A0%9C%EB%B9%84%EB%8C%81" },
                 { title: "theshopgallery", region: "south", category: "design", desc: "트렌디한 예술적 자극을 채울 수 있는 남부의 갤러리.", link: "https://map.naver.com/p/search/%EB%8D%94%EC%83%B5%EA%B0%A4%EB%9F%AC%EB%A6%AC" },
-                { title: "소셜서재", region: "south", category: "study", desc: "사교와 영감이 공존하는 남부의 서재형 모임 공간.", link: "https://map.naver.com/p/search/%EC%86%8C%EC%85%9C%EC%84%9C%EC%9E%AC/place/1716894907" },
-                { title: "theriver hay", region: "south", category: "cafe", desc: "시원한 뷰와 함께 활기찬 에너지를 채우는 카페.", link: "https://map.naver.com/p/search/%EB%8D%94%EB%A6%AC%EB%B2%84%20%ED%97%A4%EC%9D%B4/place/1182907954" },
-                { title: "museum209", region: "east", category: "design", desc: "동부에서 만나는 신선하고 감각적인 전시 공간.", link: "https://map.naver.com/p/search/museum%20209" },
+                { title: "소셜서재", region: "south", category: "study", desc: "사교와 영감이 공존하는 남부의 서재형 모임 공간.", link: "https://map.naver.com/p/search/%EC%86%8C%EC%85%9C%EC%84%9C%EC%9E%AC" },
+                { title: "theriver hay", region: "south", category: "cafe", desc: "시원한 뷰와 함께 활기찬 에너지를 채우는 카페.", link: "https://map.naver.com/p/search/%EB%8D%94%EB%A6%AC%EB%B2%84%20%ED%97%A4%EC%9D%B4" },
                 { title: "houseofbrown", region: "east", category: "bar", desc: "성수동의 힙한 분위기가 물씬 풍기는 분위기 있는 바.", link: "https://map.naver.com/p/entry/place/1200794945" },
                 { title: "Fourstones", region: "north", category: "cafe", desc: "도심 속 여유와 활기를 동시에 즐기는 감각적인 카페.", link: "https://map.naver.com/p/search/%ED%8F%AC%EC%8A%A4%ED%86%A4%EC%A6%88" },
                 { title: "takemyyellow", region: "north", category: "shop", desc: "톡톡 튀는 컬러감으로 기분 전환하기 좋은 소품샵.", link: "https://map.naver.com/p/entry/place/1718593227" },
-                { title: '스테이수리르', region: 'west', category: 'stay', desc: '홍대 한복판의 머무르기 좋은 깔끔한 공간', link: 'https://map.naver.com/p/entry/place/2031922564?c=12.62,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011228&locale=ko&svcName=map_pcv5&businessCategory=guesthouse' },
-                { title: 'flowlounge', region: 'north', category: 'study' , desc: '도심 속 감도높은 작업공간, 다양한 소품과 식물 인테리어' , link: 'https://map.naver.com/p/entry/place/1284099079?c=14.86,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011250&locale=ko&svcName=map_pcv5' }
+                { title: "스테이수리르", region: "west", category: "stay", desc: "홍대 한복판의 머무르기 좋은 깔끔한 공간", link: "https://map.naver.com/p/entry/place/2031922564" },
+                { title: "flowlounge", region: "north", category: "study", desc: "도심 속 감도높은 작업공간, 다양한 소품과 식물 인테리어", link: "https://map.naver.com/p/entry/place/1284099079" },
+                { title: "moviemood", region: "south", category: "stay", desc: "영화 같은 무드로 가득 찬 강남의 트렌디한 숙소.", link: "https://map.naver.com/p/search/%EB%AC%B4%EB%B9%84%EB%AC%B4%EB%93%9C" },
+                { title: 'binbrotherscoffeehouse ', region:' west', category: 'cafe', desc: '통창 한강 뷰 시즈널 커피바, 7층 높이의 낭만', link: 'https://map.naver.com/p/entry/place/1741225396?c=14.24,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605011308&locale=ko&svcName=map_pcv5' }
             ]
         };
-      
 
         const questions = [
             { q: "당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
@@ -335,11 +333,12 @@
         ];
 
         // ==========================================
-        // 2. State & Scroll Logic
+        // 2. Logic Functions
         // ==========================================
         let currentQ = 0; let answers = []; let finalType = 'introvert';
         let currentRegion = 'all'; let currentCategory = 'all'; 
 
+        // Scroll
         window.addEventListener('scroll', () => {
             const ratio = (window.scrollY) / (window.innerHeight * 0.6);
             document.getElementById('introSection').style.opacity = 1 - ratio;
@@ -348,6 +347,7 @@
             else { document.getElementById('actionSection').style.pointerEvents = 'none'; document.getElementById('introSection').style.pointerEvents = 'auto'; }
         });
 
+        // Stars
         function createStars() {
             const container = document.getElementById('starsContainer'); container.innerHTML = '';
             for(let i=0; i<80; i++) {
@@ -358,9 +358,6 @@
             }
         }
 
-        // ==========================================
-        // 3. Survey & Result Functions
-        // ==========================================
         document.getElementById('startSurveyBtn').onclick = () => {
             document.body.style.overflow = 'hidden';
             document.getElementById('surveyContainer').classList.add('active');
@@ -390,6 +387,9 @@
             const resIdx = total % 11; const myRes = archetypes[resIdx];
             finalType = total < 35 ? 'introvert' : 'extrovert';
             
+            // [서브타이틀 동적 적용] 사용자의 검사 결과를 기억해서 화면에 쏴줍니다.
+            document.getElementById('dynamicArchiveSubtitle').innerText = `'${myRes.name}' 유형인 당신의 취향을 반영한 서울의 장소들`;
+
             document.getElementById('archetypeResult').innerHTML = `<h1 class="main-title" style="font-size:3rem; margin-bottom:10px;">${myRes.name}</h1><p class="sub-text" style="color:#aaa;">${myRes.sub}</p><p style="margin:20px 0 30px; font-style:italic; color:#888;">"${myRes.desc}"</p>`;
             
             const axisData = [
@@ -399,7 +399,6 @@
                 { name: "Purpose", left: "몰입", right: "탐험", val: (answers[5]+answers[12]+answers[19]) * 10 },
                 { name: "Routine", left: "안정", right: "새로움", val: (answers[9]+answers[14]+answers[18]) * 10 }
             ];
-            
             let axisHtml = '';
             axisData.forEach(ax => {
                 let p = Math.min(Math.max(ax.val, 5), 95);
@@ -423,7 +422,7 @@
         }
 
         // ==========================================
-        // 4. Searching & Advanced Filtering
+        // 3. Search & Interactive Filtering
         // ==========================================
         document.getElementById('goSearchingBtn').onclick = () => {
             document.getElementById('resultContainer').style.display = 'none';
@@ -440,7 +439,6 @@
             const grid = document.getElementById('placesGrid'); grid.innerHTML = '';
             const group = placesDB[finalType];
             
-            // Region & Category 이중 필터링 로직
             const filtered = group.filter(p => {
                 const regionMatch = (currentRegion === 'all' || p.region === currentRegion);
                 const categoryMatch = (currentCategory === 'all' || p.category === currentCategory);
@@ -454,7 +452,6 @@
 
             filtered.forEach(p => {
                 const card = document.createElement('a'); card.className = 'place-card'; card.href = p.link; card.target = "_blank";
-                
                 const regionMap = { north: '북부', south: '남부', east: '동부', west: '서부' };
                 const regionKR = regionMap[p.region];
                 
@@ -471,28 +468,22 @@
             });
         }
 
-        // Region Filter Buttons
         document.querySelectorAll('#regionFilters .filter-btn').forEach(btn => {
             btn.onclick = () => {
                 document.querySelectorAll('#regionFilters .filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active'); 
-                currentRegion = btn.dataset.region; 
-                renderPlaces();
+                btn.classList.add('active'); currentRegion = btn.dataset.region; renderPlaces();
             };
         });
 
-        // Category Filter Buttons
         document.querySelectorAll('#categoryFilters .filter-btn').forEach(btn => {
             btn.onclick = () => {
                 document.querySelectorAll('#categoryFilters .filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active'); 
-                currentCategory = btn.dataset.category; 
-                renderPlaces();
+                btn.classList.add('active'); currentCategory = btn.dataset.category; renderPlaces();
             };
         });
 
         // ==========================================
-        // 5. Final Archive Logic
+        // 4. Archive Final Section
         // ==========================================
         document.getElementById('goArchiveBtn').onclick = () => {
             document.getElementById('placesContainer').classList.remove('active');
