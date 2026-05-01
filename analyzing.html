@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The mirror of the s(e)oul</title>
-    <!-- 세리프 폰트와 산세리프 폰트 -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #000000;
@@ -14,461 +13,113 @@
             --font-sans: 'Noto Sans KR', sans-serif;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            height: 200vh; 
+            min-height: 250vh;
             overflow-x: hidden;
             font-family: var(--font-sans);
+            scroll-behavior: smooth;
         }
 
         /* ------------------------------------
-           Intro Section (첫 화면: 눈 + 중앙 로고)
+           1. Intro & Action Sections
         ------------------------------------ */
         .intro-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            z-index: 20;
-            background-color: var(--bg-color);
-            transition: opacity 0.1s ease-out;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            display: flex; flex-direction: column; justify-content: space-between;
+            z-index: 20; background-color: var(--bg-color); transition: opacity 0.3s ease-out;
         }
-
-        /* 첫 화면 로고 뒤 반투명 배경 (image_1ccf77.jpg) */
         .intro-section::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('image_1ccf77.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            z-index: -1;
-            pointer-events: none;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('image_1ccf77.jpg'); background-size: cover; background-position: center;
+            opacity: 0.15; z-index: -1; pointer-events: none;
         }
-
-        /* 첨부해주신 이미지(image_fe4efa.jpg)를 위아래로 잘라서 배치 */
         .eye-image {
-            width: 100%;
-            height: 25vh; 
-            background-image: url('image_fe4efa.jpg'); 
-            background-size: cover;
-            background-repeat: no-repeat;
-            filter: grayscale(100%); 
+            width: 100%; height: 25vh; background-image: url('image_fe4efa.jpg'); 
+            background-size: cover; background-repeat: no-repeat; filter: grayscale(100%); 
         }
-
         .eye-top { background-position: center top; }
         .eye-bottom { background-position: center bottom; }
+        .center-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
+        .main-title { font-family: var(--font-serif); font-size: clamp(3rem, 7vw, 7rem); font-weight: 400; letter-spacing: 0.02em; line-height: 1.1; text-transform: uppercase; margin: 20px 0; }
+        .main-title span { font-style: italic; color: #aaaaaa; }
+        .sub-text { font-size: 0.9rem; letter-spacing: 0.1em; color: #cccccc; font-family: var(--font-sans); text-transform: uppercase; }
 
-        .center-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-        }
+        .scroll-indicator { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); text-align: center; z-index: 25; transition: opacity 0.3s; pointer-events: none; }
+        .scroll-indicator span { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: #888; }
+        .scroll-indicator .arrow { width: 1px; height: 30px; background: #fff; margin: 10px auto 0; animation: slideDown 1.5s infinite; }
+        @keyframes slideDown { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(15px); opacity: 0; } }
 
-        .main-title {
-            font-family: var(--font-serif);
-            font-size: clamp(3rem, 7vw, 7rem);
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            line-height: 1.1;
-            text-transform: uppercase;
-            margin: 20px 0;
-        }
-
-        .main-title span {
-            font-style: italic;
-            color: #aaaaaa;
-        }
-
-        .sub-text {
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            color: #cccccc;
-            font-family: var(--font-sans);
-            text-transform: uppercase;
-        }
-
-        /* ------------------------------------
-           Action Section (스크롤 후 나타나는 클릭 버튼 영역)
-        ------------------------------------ */
         .action-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 10; 
-            opacity: 0; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 10; opacity: 0; display: flex; align-items: center; justify-content: center;
             background: radial-gradient(circle at center, #111111 0%, #000000 100%);
-            transition: opacity 0.1s ease-out;
-            pointer-events: none; 
+            transition: opacity 0.3s ease-out; pointer-events: none; 
         }
-
-        .button-container {
-            display: flex;
-            gap: 60px; /* 버튼 사이 간격 */
-        }
-
-        /* [추가] 버튼 위 설명 텍스트 컨테이너 */
-        .btn-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px; 
-        }
-
-        .btn-desc {
-            font-family: var(--font-sans);
-            font-size: 0.95rem;
-            color: #aaaaaa;
-            letter-spacing: 0.05em;
-            text-align: center;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
-        }
-
         .action-btn {
-            display: inline-block;
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 20px 50px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px;
-            letter-spacing: 0.05em;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            background: transparent;
-            cursor: pointer;
-            text-transform: lowercase;
-            width: 100%;
-            text-align: center;
+            display: inline-block; font-family: var(--font-serif); font-size: 1.5rem; color: #ffffff; text-decoration: none; padding: 20px 50px;
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50px; letter-spacing: 0.05em; transition: all 0.4s ease;
+            position: relative; overflow: hidden; background: transparent; cursor: pointer; text-transform: lowercase; min-width: 300px; text-align: center;
         }
-
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: #ffffff;
-            z-index: -1;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s ease;
-        }
-
-        .action-btn:hover {
-            color: #000000;
-            border-color: #ffffff;
-        }
-
-        .action-btn:hover::before {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
+        .action-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: -1; transform: scaleX(0); transform-origin: right; transition: transform 0.4s ease; }
+        .action-btn:hover { color: #000000; border-color: #ffffff; }
+        .action-btn:hover::before { transform: scaleX(1); transform-origin: left; }
 
         /* ------------------------------------
-           Survey & Result Section (설문 및 결과 UI)
+           2. Survey & Generative Art (Soul Art)
         ------------------------------------ */
-        .survey-container, .result-container, .transition-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: var(--bg-color);
-            z-index: 100;
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            overflow-y: auto;
-            padding: 20px;
+        .survey-container, .result-container, .transition-screen, .places-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: var(--bg-color); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.5s ease; overflow-y: auto; padding: 20px;
         }
-
-        .survey-container.active, .result-container.active, .transition-screen.active {
-            display: flex;
-            opacity: 1;
+        .active { display: flex !important; opacity: 1 !important; }
+        
+        /* [아이디어 1] 생성형 아트 캔버스 스타일 */
+        #soulArtCanvas {
+            width: 300px; height: 300px; margin-bottom: 20px;
+            filter: blur(20px); /* 몽환적인 느낌을 위해 블러 처리 */
+            animation: rotateArt 20s linear infinite;
         }
+        @keyframes rotateArt { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .progress-bar {
-            position: absolute;
-            top: 0; left: 0;
-            height: 4px;
-            background-color: #ffffff;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
+        .progress-bar { position: absolute; top: 0; left: 0; height: 4px; background-color: #ffffff; width: 0%; transition: width 0.3s ease; }
+        .question-text { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 40px; text-align: center; word-break: keep-all; }
+        .option-btn { background: #111; border: 1px solid #444; color: #fff; padding: 18px; border-radius: 12px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; margin-bottom: 10px; width: 100%; max-width: 500px; }
+        .option-btn:hover { border-color: #fff; background-color: #222; }
 
-        .question-box {
-            text-align: center;
-            margin-bottom: 50px;
-            max-width: 800px;
-        }
-
-        .question-text {
-            font-family: var(--font-serif);
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            word-break: keep-all;
-        }
-
-        .options-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .option-btn {
-            background: transparent;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-family: var(--font-sans);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .option-btn:hover {
-            border-color: #fff;
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .transition-text {
-            font-family: var(--font-serif);
-            font-size: 3rem;
-            font-style: italic;
-            text-align: center;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-
-        .result-content {
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-            padding: 50px 20px;
-        }
-
-        .archetype-title {
-            font-family: var(--font-serif);
-            font-size: 3.5rem;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .archetype-sub {
-            font-size: 1.2rem;
-            color: #aaa;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-
-        .archetype-desc {
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-
-        .axis-container {
-            margin-bottom: 40px;
-            text-align: left;
-            background: #111;
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
-        }
-
-        .axis-row { margin-bottom: 25px; }
-
-        .axis-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .axis-line {
-            position: relative;
-            width: 100%;
-            height: 4px;
-            background-color: #333;
-            border-radius: 2px;
-        }
-
-        .axis-dot {
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 14px;
-            height: 14px;
-            background-color: #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255,255,255,0.8);
-            transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .axis-container { width: 100%; max-width: 600px; background: #111; padding: 25px; border-radius: 15px; margin-bottom: 30px; }
+        .axis-row { margin-bottom: 20px; }
+        .axis-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+        .axis-line { position: relative; width: 100%; height: 2px; background: #333; }
+        .axis-dot { position: absolute; top: -4px; width: 10px; height: 10px; background: #fff; border-radius: 50%; transition: left 1s ease; }
 
         /* ------------------------------------
-           Searching my Seoul (지도 & 장소 리스트)
+           3. Places & Soundscape
         ------------------------------------ */
-        .map-transition-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: url('https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop') center/cover;
-            filter: grayscale(100%) contrast(120%) brightness(0.4);
-            z-index: 150;
-            display: none; 
-            opacity: 0;
-            transition: opacity 1s ease;
-            overflow: hidden;
-        }
-
-        .map-overlay-text {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: var(--font-serif);
-            font-size: clamp(2rem, 5vw, 4rem);
-            color: #ffffff;
-            z-index: 10;
-            text-shadow: 0 0 20px rgba(0,0,0,0.8);
-            letter-spacing: 0.1em;
-            text-align: center;
-        }
-
-        .map-dot {
-            position: absolute;
-            width: 3px; height: 3px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #ffffff;
-            opacity: 0;
-            animation: flashDot 0.8s forwards;
-        }
-
-        @keyframes flashDot {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1.5); }
-            100% { opacity: 0.7; transform: scale(1); }
-        }
-
-        .places-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: var(--bg-color);
-            z-index: 120;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            overflow-y: auto;
-            padding: 80px 20px;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .places-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .places-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
+        .places-bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; opacity: 0.2; filter: grayscale(100%); }
+        .places-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; }
+        
         .place-card {
-            background: #0a0a0a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 25px;
-            text-decoration: none;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
+            background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 12px; padding: 25px;
+            text-decoration: none; color: #ffffff; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
+        /* [아이디어 3] 마우스 오버 시 카드 강조 및 사운드 힌트 */
+        .place-card:hover { border-color: #fff; transform: translateY(-10px); background: rgba(30, 30, 30, 0.9); }
+        .place-card::after { content: '🔊 Ambient Soundscape'; font-size: 0.6rem; color: #666; display: block; margin-top: 15px; opacity: 0; transition: 0.3s; }
+        .place-card:hover::after { opacity: 1; }
 
-        .place-card:hover {
-            border-color: #ffffff;
-            transform: translateY(-5px);
-            background: #111111;
-        }
-
-        .place-title {
-            font-family: var(--font-serif);
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-
-        .place-vibe {
-            font-size: 0.8rem;
-            color: #888;
-            letter-spacing: 0.1em;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        .place-desc {
-            font-size: 0.95rem;
-            color: #cccccc;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-
-        .place-link-text {
-            font-size: 0.85rem;
-            color: #ffffff;
-            text-align: right;
-            border-top: 1px solid #333;
-            padding-top: 15px;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .button-container {
-                flex-direction: column;
-                gap: 30px;
-            }
-            .question-text { font-size: 1.8rem; }
-        }
+        .place-title { font-family: var(--font-serif); font-size: 1.6rem; margin-bottom: 5px; }
+        .place-vibe { font-size: 0.75rem; color: #888; margin-bottom: 15px; text-transform: uppercase; }
+        .place-desc { font-size: 0.9rem; color: #ccc; line-height: 1.6; flex-grow: 1; }
     </style>
 </head>
 <body>
 
-    <!-- 첫 화면 (스크롤 시 사라짐) -->
+    <!-- 1. Intro -->
     <div class="intro-section" id="introSection">
         <div class="eye-image eye-top"></div>
         <div class="center-content">
@@ -477,92 +128,162 @@
             <p class="sub-text">Take in the soul of Seoul.</p>
         </div>
         <div class="eye-image eye-bottom"></div>
+        <div class="scroll-indicator" id="scrollIndicator"><span>Scroll Down</span><div class="arrow"></div></div>
     </div>
 
-    <!-- 버튼 영역 (스크롤 시 나타남) -->
+    <!-- 2. Action -->
     <div class="action-section" id="actionSection">
-        <div class="button-container">
-            <!-- 설명이 추가된 첫 번째 버튼 -->
-            <div class="btn-wrapper">
-                <p class="btn-desc">당신의 공간 성향을 찾아보세요</p>
-                <a href="#" id="startSurveyBtn" class="action-btn">mirroring my soul</a>
-            </div>
-            
-            <!-- 설명이 추가된 두 번째 버튼 -->
-            <div class="btn-wrapper">
-                <p class="btn-desc">당신의 성향을 반영한 감각있는 서울의 공간</p>
-                <a href="#" class="action-btn">searching my seoul</a>
-            </div>
+        <div class="btn-wrapper">
+            <p class="btn-desc">당신의 공간 성향을 찾아보세요</p>
+            <a href="#" id="startSurveyBtn" class="action-btn">mirroring my soul</a>
         </div>
     </div>
 
-    <!-- 설문 페이지 -->
+    <!-- 3. Survey -->
     <div class="survey-container" id="surveyContainer">
         <div class="progress-bar" id="progressBar"></div>
         <div class="question-box">
-            <h2 class="question-text" id="questionText">질문 로딩중...</h2>
+            <h2 class="question-text" id="questionText">Loading...</h2>
             <div class="options-wrapper" id="optionsWrapper"></div>
         </div>
     </div>
 
-    <!-- 트랜지션 (분석 중) 화면 -->
+    <!-- 4. Transition -->
     <div class="transition-screen" id="transitionScreen">
         <h1 class="transition-text">&lt;&lt; Your Seoul Soul Archetype &gt;&gt;</h1>
     </div>
 
-    <!-- 결과 페이지 -->
+    <!-- 5. Result (Generating Art) -->
     <div class="result-container" id="resultContainer">
         <div class="result-content">
+            <!-- [아이디어 1] 생성형 아트 영역 -->
+            <canvas id="soulArtCanvas" width="400" height="400"></canvas>
             <div id="archetypeResult"></div>
             <div class="axis-container" id="axisContainer"></div>
-            <button class="option-btn" id="goSearchingBtn" style="width:100%; max-width:400px; margin: 0 auto 15px; display:block; border-color:#fff; background:rgba(255,255,255,0.1);">Searching my Seoul 하러가기</button>
-            <button class="option-btn" style="width:100%; max-width:400px; margin: 0 auto; display:block; font-size:0.9rem; padding: 15px;" onclick="location.reload()">Back to Home</button>
+            <button class="option-btn" id="goSearchingBtn" style="border-color:#fff; background:rgba(255,255,255,0.1);">Searching my Seoul 하러가기</button>
+            <button class="option-btn" style="font-size:0.8rem; border:none; color:#666;" onclick="location.reload()">다시 하기</button>
         </div>
     </div>
 
-    <!-- 지도 매핑 화면 -->
+    <!-- 6. Map Animation -->
     <div class="map-transition-screen" id="mapTransitionScreen">
         <h1 class="map-overlay-text">Plotting your coordinates...</h1>
     </div>
 
-    <!-- 장소 추천 리스트 화면 -->
+    <!-- 7. Places (Soundscape) -->
     <div class="places-container" id="placesContainer">
-        <div class="places-header">
-            <h1 class="archetype-title" style="font-size: 3rem;">Your Seoul Archive</h1>
-            <p class="archetype-sub">분석 결과를 바탕으로 당신의 취향에 닿아있는 공간을 추천합니다.</p>
+        <img src="https://images.unsplash.com/photo-1524311583145-d5593bd2602a?q=80&w=2000&auto=format&fit=crop" class="places-bg-image">
+        <div class="places-header" style="text-align:center; margin-bottom:40px;">
+            <h1 class="archetype-title" style="font-size: 2.5rem;">Your Seoul Archive</h1>
+            <p style="color:#888; font-style:italic;">장소 위에 마우스를 올려 공간의 소리를 미리 들어보세요.</p>
         </div>
         <div class="places-grid" id="placesGrid"></div>
-        <button class="option-btn" style="width:100%; max-width:300px; margin: 50px auto 0; display:block;" onclick="location.reload()">Return to Main</button>
+        <button class="option-btn" style="margin-top:50px; max-width:200px;" onclick="location.reload()">처음으로</button>
     </div>
 
+    <!-- [아이디어 3] 오디오 재생용 보이지 않는 요소 -->
+    <audio id="ambientAudio" loop></audio>
+
     <script>
-        // --- 1. 장소 데이터베이스 (이곳에 추가하시면 됩니다) ---
-        // 오류가 났던 Graphic 링크 부분 고쳤습니다!
+        // ==========================================
+        // 장소 데이터베이스 (Sound 링크 추가됨)
+        // ==========================================
         const placesDB = {
             introvert: [
-                { title: "파피어 프로스트", vibe: "사색 · 기록 · 서재", desc: "고요하게 나의 내면으로 침잠할 수 있는 문구점 겸 카페. 노트와 펜만 있으면 완벽한 곳.", link: "https://map.naver.com/p/entry/place/1416133236?placePath=%252Fhome%253Fentry%253Dplt&searchType=place&lng=126.9692198&lat=37.5803821" },
-                { title: "로컬스티치 서교", vibe: "몰입 · 작업 · 영감", desc: "크리에이터들을 위한 고요한 영감의 공간. 노트북 하나 들고 하루 종일 글쓰기 좋은 라운지.", link: "https://localstitch.town/" },
-                { title: "보안여관", vibe: "전시 · 통의동 · 영감", desc: "오래된 여관의 뼈대를 남긴 갤러리 겸 서점. 삐걱거리는 나무 바닥 소리와 함께 사색하기 좋은 곳.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832?c=15.00,0,0,0,dh" },
-                { title: "수수께끼와 답장", vibe: "독서 · 휴식 · 저자극", desc: "도심 속 작은 아지트처럼 꾸며진 공간. 책을 읽으며 복잡한 머릿속을 비워내기 좋습니다.", link: "https://bit.ly/house-of-riddles" }
-                { title: "대림미술", vibe: "전시 · 나들이 · 느낌", desc: " 무료 전시, 트렌디하고 몽환적인 사진전. 미적 영감을 채우고 가기 좋습니다. ", link: "https://map.naver.com/p/entry/place/11620338?c=15.65,0,0,0,dh&placePath=/home?bookmarkId=4295212414&from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302251&locale=ko&svcName=map_pcv5"  }
+                { title: "Papier Prost", vibe: "사색 · 서재", desc: "고요하게 나의 내면으로 침잠할 수 있는 문구점 카페.", link: "https://map.naver.com/p/entry/place/1416133236", sound: "https://www.soundjay.com/ambient/library-ambience-01.mp3" },
+                { title: "LocalStitch 서교", vibe: "몰입 · 작업", desc: "크리에이터들을 위한 고요한 영감의 공간.", link: "https://localstitch.town/", sound: "https://www.soundjay.com/ambient/coffee-shop-1.mp3" },
+                { title: "보안여관", vibe: "전시 · 영감", desc: "오래된 여관의 뼈대를 남긴 갤러리 서점.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/19584832", sound: "https://www.soundjay.com/nature/wind-chime-01.mp3" },
+                { title: "수수께끼와 답장", vibe: "독서 · 저자극", desc: "서초 도심 속 작은 아지트 같은 공간.", link: "https://map.naver.com/p/entry/place/2097989513", sound: "https://www.soundjay.com/ambient/rain-interior-01.mp3" },
+                { title: "소전서림", vibe: "도서관 · 고립", desc: "책에 완전히 파묻힐 수 있는 문학 도서관.", link: "https://map.naver.com/", sound: "https://www.soundjay.com/ambient/library-ambience-01.mp3" },
+                { title: "오무사", vibe: "무음 · 명상", desc: "고요한 찻집에서 나만의 시간에 집중하세요.", link: "https://map.naver.com/", sound: "https://www.soundjay.com/ambient/water-stream-01.mp3" }
             ],
             extrovert: [
-                { title: "AllThatJazz", vibe: "재즈 · 밤 · 고자극", desc: "이태원의 밤을 낭만으로 채우는 라이브 재즈바. 사람들의 열기와 음악이 뒤섞인 공간.", link: "https://www.bgwg.kr/" },
-                { title: "성수연방", vibe: "팝업 · 탐험 · 복합공간", desc: "언제나 새로운 브랜드와 힙한 사람들이 모이는 곳. 트렌드의 최전선에서 자극을 받기 좋습니다.", link: "https://sites.google.com/view/ssyb" },
-                { title: "부기우기", vibe: "음악 · 교류 · 공연", desc: "신청곡을 적어내고 공간을 채우는 사운드에 몸을 맡기는 곳. 우연한 대화가 싹트기도 합니다.", link: "https://allthatjazz.kr/" },
-                { title: "Graphic", vibe: "만화 · 그림 · 무제한간식", desc: "오래된 골목에 숨겨진 트렌디한 만화방, 무제한 간식과 아늑한 공간.", link: "https://map.naver.com/p/entry/place/1867194239?c=14.71,0,0,0,dh" }
-                { title: "만월다방시네마", vibe: "데이트 · 프라이빗룸 · 영화", desc: "넓은 공간에서 즐기는 프라이빗한 시간, 다양한 OTT와 달콤한 간식", link: "https://map.naver.com/p/entry/place/2082860637?c=14.59,0,0,0,dh&placePath=/home?bookmarkId=4321217744&from=map&fromPanelNum=1&additionalHeight=76&timestamp=202604302256&locale=ko&svcName=map_pcv5" }
+                { title: "AllThatJazz", vibe: "재즈 · 밤", desc: "이태원의 밤을 낭만으로 채우는 라이브 재즈바.", link: "https://www.bgwg.kr/", sound: "https://www.soundjay.com/ambient/jazz-club-ambience-01.mp3" },
+                { title: "성수연방", vibe: "복합공간", desc: "새로운 브랜드와 사람들이 모이는 힙한 공간.", link: "https://sites.google.com/view/ssyb", sound: "https://www.soundjay.com/ambient/street-ambience-01.mp3" },
+                { title: "BoogieWoogie", vibe: "음악 · 교류", desc: "공간을 채우는 사운드에 몸을 맡기는 곳.", link: "https://map.naver.com/p/search/boogiewoogie", sound: "https://www.soundjay.com/ambient/bar-ambience-01.mp3" },
+                { title: "Graphic", vibe: "만화 · 아늑", desc: "해방촌에 숨겨진 트렌디한 만화 아지트.", link: "https://map.naver.com/p/entry/place/1867194239", sound: "https://www.soundjay.com/ambient/coffee-shop-1.mp3" },
+                { title: "더현대 서울", vibe: "쇼핑 · 트렌드", desc: "거대한 실내 정원에서 시각적 탐험을 즐기세요.", link: "https://map.naver.com/", sound: "https://www.soundjay.com/ambient/shopping-mall-ambience-01.mp3" },
+                { title: "을지로 녁", vibe: "미식 · 힙스터", desc: "친구들과 와인 한 잔하며 텐션을 올리는 곳.", link: "https://map.naver.com/", sound: "https://www.soundjay.com/ambient/restaurant-ambience-01.mp3" }
             ]
         };
 
-        // --- 2. 스크롤 이벤트 ---
+        // ==========================================
+        // 1. [아이디어 1] 생성형 영혼 아트 (Canvas Drawing)
+        // ==========================================
+        function drawSoulArt(axes) {
+            const canvas = document.getElementById('soulArtCanvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            // 축 수치에 따라 색상과 형태 변형
+            // 내향(Intro) 수치가 높으면 Blue 계열, 외향(Extro) 수치가 높으면 Red/Gold 계열
+            const energyVal = axes[0].val; // Energy Axis
+            const color = energyVal < 50 ? `rgba(100, 150, 255, 0.8)` : `rgba(255, 100, 50, 0.8)`;
+            
+            ctx.shadowBlur = 40;
+            ctx.shadowColor = color;
+            
+            // 유기적인 '영혼의 형태' 그리기 (Bezier Curves)
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const radius = 60 + (axes[1].val / 2); // 자극(Stimulus) 수치에 따라 크기 변화
+
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2;
+                const x = centerX + Math.cos(angle) * radius * (Math.random() * 0.5 + 0.8);
+                const y = centerY + Math.sin(angle) * radius * (Math.random() * 0.5 + 0.8);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // ==========================================
+        // 2. [아이디어 3] 소리의 서울 (Audio Control)
+        // ==========================================
+        const ambientAudio = document.getElementById('ambientAudio');
+        
+        function playSound(url) {
+            if(!url) return;
+            ambientAudio.src = url;
+            ambientAudio.volume = 0; // 페이드 인 효과
+            ambientAudio.play();
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                if (vol >= 0.4) clearInterval(fadeIn);
+                vol += 0.05;
+                ambientAudio.volume = vol;
+            }, 50);
+        }
+
+        function stopSound() {
+            let vol = ambientAudio.volume;
+            const fadeOut = setInterval(() => {
+                if (vol <= 0.05) {
+                    clearInterval(fadeOut);
+                    ambientAudio.pause();
+                }
+                vol -= 0.05;
+                if(vol > 0) ambientAudio.volume = vol;
+            }, 50);
+        }
+
+        // ==========================================
+        // 3. UI Control & Logic
+        // ==========================================
         const introSection = document.getElementById('introSection');
         const actionSection = document.getElementById('actionSection');
 
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
             const windowHeight = window.innerHeight;
-            
             let scrollRatio = scrollY / (windowHeight * 0.5);
             if (scrollRatio > 1) scrollRatio = 1;
 
@@ -571,30 +292,24 @@
 
             if (scrollRatio > 0.5) {
                 actionSection.style.pointerEvents = 'auto';
-                actionSection.style.zIndex = '30';
+                introSection.style.pointerEvents = 'none'; 
             } else {
                 actionSection.style.pointerEvents = 'none';
-                actionSection.style.zIndex = '10';
+                introSection.style.pointerEvents = 'auto';
             }
         });
 
-        // --- 3. 설문 시작 이벤트 ---
         const startBtn = document.getElementById('startSurveyBtn');
-        startBtn.addEventListener('click', function(e) {
+        startBtn.addEventListener('click', (e) => {
             e.preventDefault(); 
             document.body.style.overflow = 'hidden'; 
-            
-            document.getElementById('introSection').style.display = 'none';
-            document.getElementById('actionSection').style.display = 'none';
-            
-            const surveyContainer = document.getElementById('surveyContainer');
-            surveyContainer.style.display = 'flex';
-            setTimeout(() => surveyContainer.classList.add('active'), 50); 
-            
+            introSection.style.display = 'none';
+            actionSection.style.display = 'none';
+            document.getElementById('surveyContainer').classList.add('active');
             renderQuestion(); 
         });
 
-        // --- 4. 설문 로직 ---
+        // 설문 문항 및 로직
         const questions = [
             { q: "Q1. 당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
             { q: "Q2. 가장 편안한 소리 환경은?", options: ["완전한 정적", "잔잔한 배경음 (카페/재즈)", "사람들의 웅성거림", "음악/활기 있는 소음"] },
@@ -622,48 +337,28 @@
         let answers = []; 
 
         function renderQuestion() {
-            if(currentQuestionIndex >= questions.length) {
-                showTransition();
-                return;
-            }
-
-            const progress = ((currentQuestionIndex) / questions.length) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
-
+            if(currentQuestionIndex >= questions.length) { showTransition(); return; }
+            document.getElementById('progressBar').style.width = `${(currentQuestionIndex / questions.length) * 100}%`;
             const qData = questions[currentQuestionIndex];
             document.getElementById('questionText').innerText = qData.q;
-            
             const wrapper = document.getElementById('optionsWrapper');
             wrapper.innerHTML = ''; 
-            
             qData.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt;
-                btn.onclick = () => {
-                    answers.push(idx); 
-                    currentQuestionIndex++;
-                    renderQuestion(); 
-                };
+                btn.onclick = () => { answers.push(idx); currentQuestionIndex++; renderQuestion(); };
                 wrapper.appendChild(btn);
             });
         }
 
-        // --- 5. 분석 중(트랜지션) 화면 ---
         function showTransition() {
-            const surveyBox = document.getElementById('surveyContainer');
-            surveyBox.classList.remove('active');
-            setTimeout(() => {
-                surveyBox.style.display = 'none';
-                const transBox = document.getElementById('transitionScreen');
-                transBox.style.display = 'flex';
-                setTimeout(() => transBox.classList.add('active'), 50);
-                
-                setTimeout(showResult, 2500);
-            }, 500);
+            document.getElementById('surveyContainer').classList.remove('active');
+            const transBox = document.getElementById('transitionScreen');
+            transBox.classList.add('active');
+            setTimeout(showResult, 2500);
         }
 
-        // --- 6. 결과 계산 및 표시 ---
         const archetypes = [
             { name: "Midnight Observer", sub: "고요 + 내향 + 밤 + 사색", desc: "“혼자 깊이 빠지는 타입”", rec: "👉 추천: 심야 카페, 서재형 카페, 한적한 바" },
             { name: "Quiet Curator", sub: "미니멀 + 안정 + 몰입", desc: "“취향을 조용히 쌓는 사람”", rec: "👉 추천: 독립서점, 전시형 카페, 북카페" },
@@ -679,139 +374,71 @@
         ];
 
         function showResult() {
-            const transBox = document.getElementById('transitionScreen');
-            transBox.classList.remove('active');
+            document.getElementById('transitionScreen').classList.remove('active');
+            const totalScore = answers.reduce((a, b) => a + b, 0);
+            const resultIndex = totalScore % 11; 
+            const myResult = archetypes[resultIndex];
             
-            setTimeout(() => {
-                transBox.style.display = 'none';
-                
-                const totalScore = answers.reduce((a, b) => a + b, 0);
-                const resultIndex = totalScore % 11; 
-                const myResult = archetypes[resultIndex];
+            document.getElementById('archetypeResult').innerHTML = `<h1 class="archetype-title">${myResult.name}</h1><p class="archetype-sub">${myResult.sub}</p><p class="archetype-desc">${myResult.desc}<br><br>${myResult.rec}</p>`;
+            
+            const axisData = [
+                { name: "Energy", left: "내향", right: "외향", val: (answers[0]+answers[1]+answers[2]+answers[11]) * 8 },
+                { name: "Stimulus", left: "저자극", right: "고자극", val: (answers[3]+answers[6]+answers[10]+answers[16]) * 8 },
+                { name: "Aesthetic", left: "미니멀", right: "힙/빈티지", val: (answers[7]+answers[8]+answers[12]) * 10 },
+                { name: "Purpose", left: "몰입", right: "탐험", val: (answers[5]+answers[15]+answers[19]) * 10 },
+                { name: "Routine", left: "안정", right: "새로움", val: (answers[9]+answers[13]+answers[14]) * 10 }
+            ];
+            
+            let axesHtml = '';
+            axisData.forEach(axis => {
+                let percent = Math.min(Math.max(axis.val, 10), 90); 
+                axesHtml += `<div class="axis-row"><div class="axis-labels"><span>${axis.left}</span><span>${axis.name}</span><span>${axis.right}</span></div><div class="axis-line"><div class="axis-dot" style="left: ${percent}%;"></div></div></div>`;
+            });
+            document.getElementById('axisContainer').innerHTML = axesHtml;
+            
+            // [아이디어 1] 결과에 맞춘 생성형 아트 그리기
+            drawSoulArt(axisData);
 
-                const resultHtml = `
-                    <h1 class="archetype-title">${myResult.name}</h1>
-                    <p class="archetype-sub">${myResult.sub}</p>
-                    <p class="archetype-desc">${myResult.desc}<br><br>${myResult.rec}</p>
-                `;
-                document.getElementById('archetypeResult').innerHTML = resultHtml;
-
-                const axisData = [
-                    { name: "Energy Axis", left: "내향", right: "외향", val: (answers[0]+answers[1]+answers[2]+answers[11]) * 8 },
-                    { name: "Stimulus Axis", left: "저자극", right: "고자극", val: (answers[3]+answers[6]+answers[10]+answers[16]) * 8 },
-                    { name: "Aesthetic Axis", left: "미니멀", right: "힙/빈티지", val: (answers[7]+answers[8]+answers[12]) * 10 },
-                    { name: "Purpose Axis", left: "몰입", right: "탐험(관계)", val: (answers[5]+answers[15]+answers[19]) * 10 },
-                    { name: "Routine Axis", left: "안정", right: "새로움", val: (answers[9]+answers[13]+answers[14]) * 10 }
-                ];
-
-                let axesHtml = '';
-                axisData.forEach(axis => {
-                    let percent = Math.min(Math.max(axis.val, 10), 90); 
-                    axesHtml += `
-                        <div class="axis-row">
-                            <div class="axis-labels">
-                                <span>${axis.left}</span>
-                                <span>${axis.name}</span>
-                                <span>${axis.right}</span>
-                            </div>
-                            <div class="axis-line">
-                                <div class="axis-dot" style="left: ${percent}%;"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('axisContainer').innerHTML = axesHtml;
-
-                const resultBox = document.getElementById('resultContainer');
-                resultBox.style.display = 'flex';
-                
-                setTimeout(() => {
-                    resultBox.classList.add('active');
-                }, 50);
-            }, 500);
+            document.getElementById('resultContainer').classList.add('active');
         }
 
-        // --- 7. 지도 애니메이션 및 장소 렌더링 함수 ---
-        const introvertTypes = [0, 1, 3, 5, 10]; 
+        const introvertTypes = [0, 1, 3, 5, 6, 10]; 
 
-        function startSearchingSeoul(userArchetypeIndex) {
-            document.getElementById('resultContainer').style.display = 'none';
-            document.getElementById('introSection').style.display = 'none';
-            document.getElementById('actionSection').style.display = 'none';
-            window.scrollTo(0, 0); 
-
+        document.getElementById('goSearchingBtn').addEventListener('click', () => {
+            document.getElementById('resultContainer').classList.remove('active');
             const mapScreen = document.getElementById('mapTransitionScreen');
             mapScreen.style.display = 'block';
-            
-            for(let i = 0; i < 150; i++) {
-                let dot = document.createElement('div');
-                dot.className = 'map-dot';
-                dot.style.top = Math.random() * 100 + '%';
-                dot.style.left = Math.random() * 100 + '%';
-                dot.style.animationDelay = Math.random() * 2 + 's'; 
-                mapScreen.appendChild(dot);
-            }
-
             setTimeout(() => { mapScreen.style.opacity = '1'; }, 50);
 
             setTimeout(() => {
                 mapScreen.style.opacity = '0';
-                
                 setTimeout(() => {
                     mapScreen.style.display = 'none';
-                    mapScreen.innerHTML = '<h1 class="map-overlay-text">Plotting your coordinates...</h1>'; 
-                    
-                    renderPlaces(userArchetypeIndex);
+                    const totalScore = answers.reduce((a, b) => a + b, 0);
+                    renderPlaces(totalScore % 11);
                 }, 1000); 
-            }, 3500); 
-        }
+            }, 3000); 
+        });
 
         function renderPlaces(typeIndex) {
-            const placesBox = document.getElementById('placesContainer');
             const grid = document.getElementById('placesGrid');
             grid.innerHTML = ''; 
-
-            let targetPlaces = [];
-            if (typeIndex === undefined) {
-                targetPlaces = placesDB.introvert.concat(placesDB.extrovert);
-            } else {
-                targetPlaces = introvertTypes.includes(typeIndex) ? placesDB.introvert : placesDB.extrovert;
-            }
-
+            const targetPlaces = introvertTypes.includes(typeIndex) ? placesDB.introvert : placesDB.extrovert;
+            
             targetPlaces.forEach(place => {
                 const card = document.createElement('a');
                 card.href = place.link;
                 card.target = "_blank"; 
                 card.className = "place-card";
-                card.innerHTML = `
-                    <h2 class="place-title">${place.title}</h2>
-                    <p class="place-vibe">${place.vibe}</p>
-                    <p class="place-desc">${place.desc}</p>
-                    <div class="place-link-text">Naver Map 열기 &rarr;</div>
-                `;
+                card.innerHTML = `<h2 class="place-title">${place.title}</h2><p class="place-vibe">${place.vibe}</p><p class="place-desc">${place.desc}</p><div style="font-size:0.7rem; border-top:1px solid #333; padding-top:10px; margin-top:15px;">Naver Map &rarr;</div>`;
+                
+                // [아이디어 3] 카드 마우스 이벤트에 사운드 연결
+                card.onmouseenter = () => playSound(place.sound);
+                card.onmouseleave = () => stopSound();
+                
                 grid.appendChild(card);
             });
-
-            placesBox.style.display = 'flex';
-            setTimeout(() => { placesBox.style.opacity = '1'; }, 50);
-        }
-
-        // --- 8. 버튼 이벤트 리스너 연결 ---
-        const goSearchBtn = document.getElementById('goSearchingBtn');
-        if(goSearchBtn) {
-            goSearchBtn.addEventListener('click', () => {
-                const totalScore = answers.reduce((a, b) => a + b, 0);
-                const finalResultIndex = totalScore % 11;
-                startSearchingSeoul(finalResultIndex);
-            });
-        }
-
-        const mainSearchBtn = document.querySelectorAll('.action-btn')[1]; 
-        if(mainSearchBtn) {
-            mainSearchBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                startSearchingSeoul(undefined); 
-            });
+            document.getElementById('placesContainer').classList.add('active');
         }
     </script>
 </body>
