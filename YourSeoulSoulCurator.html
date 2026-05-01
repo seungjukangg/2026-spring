@@ -231,7 +231,7 @@
 
     <script>
         // ==========================================
-        // 1. Database (Category는 반드시 영어 소문자로 통일!)
+        // 1. Data: Places (남부, 동부, 서부, 북부 모든 카테고리 완벽 채움)
         // ==========================================
         const placesDB = {
             introvert: [
@@ -248,7 +248,15 @@
                 { title: "책방고즈넉", region: "north", category: "study", desc: "고즈넉한 한옥 골목 사이, 사색과 탐구가 깃든 책방.", link: "https://map.naver.com/p/search/%EB%B3%B4%EC%95%88%EC%97%AC%EA%B4%80/place/1484276089" },
                 { title: "맨홀커피웨스턴", region: "west", category: "cafe", desc: "영등포 골목 1만 권의 책과 향기로운 커피.", link: "https://map.naver.com/p/entry/place/1471240461" },
                 { title: "Point to Five Seconds", region: "north", category: "cafe", desc: "경복궁 뷰에서 프리미엄 티코스와 시향을 즐기는 시간.", link: "https://map.naver.com/p/entry/place/1125006314" },
-                { title: "로컬스티치 서교", region: "west", category: "study", desc: "크리에이터들을 위한 고요한 영감의 서교동 라운지.", link: "https://localstitch.town/" }
+                { title: "로컬스티치 서교", region: "west", category: "study", desc: "크리에이터들을 위한 고요한 영감의 서교동 라운지.", link: "https://localstitch.town/" },
+                // --- 추가된 Introvert 장소들 ---
+                { title: "수도원", region: "north", category: "bar", desc: "고요하고 묵직한 분위기 속에서 홀로 술을 음미하기 좋은 바.", link: "https://map.naver.com/p/search/%EC%88%98%EB%8F%84%EC%9B%90?c=16.02,0,0,0,dh" },
+                { title: "ANTO", region: "north", category: "stay", desc: "북부의 조용한 정취를 오롯이 느낄 수 있는 프라이빗 스테이.", link: "https://map.naver.com/p/search/%EC%95%88%ED%86%A0?c=17.03,0,0,0,dh" },
+                { title: "crash in yongsan", region: "west", category: "stay", desc: "용산 골목에 숨겨진 나만의 아지트 같은 고요한 숙소.", link: "https://map.naver.com/p/search/%ED%81%AC%EB%9E%98%EC%89%AC%EC%9D%B8%EC%9A%A9%EC%82%B0/place/1072275195" },
+                { title: "stay passport", region: "east", category: "stay", desc: "신당동에서 만나는 료칸 감성, 완벽한 휴식과 단절의 스테이.", link: "https://map.naver.com/p/search/%EC%8A%A4%ED%85%8C%EC%9D%B4%20%ED%8C%A8%EC%8A%A4%ED%8F%AC%ED%8A%B8/place/1854164833" },
+                { title: "터방내", region: "south", category: "cafe", desc: "시간이 멈춘 듯 아늑하고 레트로한 남부의 오래된 다방.", link: "https://map.naver.com/p/search/%ED%84%B0%EB%B0%A9%EB%82%B4/place/19885998" },
+                { title: "Ationary", region: "south", category: "shop", desc: "기록의 가치를 아는 사람들을 위한 조용한 남부 문구점.", link: "https://map.naver.com/p/search/%EC%97%90%EC%9D%B4%EC%85%94%EB%84%88%EB%A6%AC/place/37867605" },
+                { title: "서울시립남서울미술관", region: "south", category: "design", desc: "클래식한 건축물 속에서 조용히 예술을 감상할 수 있는 공간.", link: "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%EC%8B%9C%EB%A6%BD%20%EB%82%A8%EC%84%9C%EC%9A%B8%EB%AF%B8%EC%88%A0%EA%B4%80" }
             ],
             extrovert: [
                 { title: "AllThatJazz", region: "north", category: "bar", desc: "이태원의 밤을 채우는 역사적인 라이브 재즈 클럽.", link: "https://map.naver.com/p/search/allthatjazz" },
@@ -261,11 +269,22 @@
                 { title: "activemode 홍대점", region: "west", category: "design", desc: "액티비티와 자극이 가득한 도심 속 미션 체험 공간.", link: "https://map.naver.com/p/search/%EC%95%A1%ED%8B%B0%EB%B8%8C%EB%AA%A8%EB%93%9C%20%ED%99%8D%EB%8C%80/place/1432884945" },
                 { title: "앙투앙 북스", region: "east", category: "study", desc: "성수동의 활기찬 에너지가 깃든 독립서점.", link: "https://map.naver.com/p/search/%EC%95%99%ED%88%AC%EC%95%99%20%EB%B6%81%EC%8A%A4/place/1776986201" },
                 { title: "Kelley's house", region: "east", category: "cafe", desc: "성수의 팝하고 컬러풀한 감각의 디저트 카페.", link: "https://map.naver.com/p/search/%EC%BC%88%EB%A6%AC%EC%8A%A4%ED%95%98%EC%9A%B0%EC%8A%A4/place/1014077716" },
-                { title: "스테이희와", region: "north", category: "stay", desc: "혜화동 산자락 끝자락에 위치한 프라이빗한 한옥 독채.", link: "https://map.naver.com/p/entry/place/1095060963" },
+                // 스테이희와 서부(west)로 이동 완료
+                { title: "스테이희와", region: "west", category: "stay", desc: "자연과 함께하는 프라이빗한 한옥 독채 스테이.", link: "https://map.naver.com/p/entry/place/1095060963" },
                 { title: "DynamicMaze", region: "north", category: "design", desc: "인사동 미로에서 즐기는 역동적인 미션 액티비티.", link: "https://map.naver.com/p/entry/place/36631598" },
-                { title: "더현대 서울", region: "west", category: "shop", desc: "거대한 스케일의 실내 정원과 쇼핑을 탐험해보세요.", link: "https://map.naver.com/" }
+                { title: "더현대 서울", region: "west", category: "shop", desc: "거대한 스케일의 실내 정원과 쇼핑을 탐험해보세요.", link: "https://map.naver.com/" },
+                // --- 추가된 Extrovert 장소들 ---
+                { title: "moviemood", region: "south", category: "stay", desc: "영화 같은 무드로 가득 찬 강남의 감각적인 숙소.", link: "https://map.naver.com/p/search/%EB%AC%B4%EB%B9%84%EB%AC%B4%EB%93%9C/place/2090765432" },
+                { title: "theshopgallery", region: "south", category: "design", desc: "트렌디한 예술적 자극을 채울 수 있는 남부의 갤러리.", link: "https://map.naver.com/p/search/%EB%8D%94%EC%83%B5%EA%B0%A4%EB%9F%AC%EB%A6%AC" },
+                { title: "소셜서재", region: "south", category: "study", desc: "사교와 영감이 공존하는 남부의 서재형 모임 공간.", link: "https://map.naver.com/p/search/%EC%86%8C%EC%85%9C%EC%84%9C%EC%9E%AC/place/1716894907" },
+                { title: "theriver hay", region: "south", category: "cafe", desc: "시원한 뷰와 함께 활기찬 에너지를 채우는 카페.", link: "https://map.naver.com/p/search/%EB%8D%94%EB%A6%AC%EB%B2%84%20%ED%97%A4%EC%9D%B4/place/1182907954" },
+                { title: "museum209", region: "east", category: "design", desc: "동부에서 만나는 신선하고 감각적인 전시 공간.", link: "https://map.naver.com/p/search/museum%20209" },
+                { title: "houseofbrown", region: "east", category: "bar", desc: "성수동의 힙한 분위기가 물씬 풍기는 분위기 있는 바.", link: "https://map.naver.com/p/entry/place/1200794945" },
+                { title: "Fourstones", region: "north", category: "cafe", desc: "도심 속 여유와 활기를 동시에 즐기는 감각적인 카페.", link: "https://map.naver.com/p/search/%ED%8F%AC%EC%8A%A4%ED%86%A4%EC%A6%88" },
+                { title: "takemyyellow", region: "north", category: "shop", desc: "톡톡 튀는 컬러감으로 기분 전환하기 좋은 소품샵.", link: "https://map.naver.com/p/entry/place/1718593227" }
             ]
         };
+      
 
         const questions = [
             { q: "당신은 에너지를 어디서 회복하나요?", options: ["완전히 혼자", "조용한 소수", "적당한 사람들", "활기찬 사람들 속"] },
