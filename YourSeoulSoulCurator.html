@@ -136,42 +136,44 @@
         .upload-area { width: 100%; height: 250px; border: 2px dashed #444; border-radius: 15px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: #888; margin: 20px 0; background-size: cover; background-position: center; transition: 0.3s; }
         .upload-area:hover { border-color: #fff; color: #fff; }
         
-        .emotion-group { display: flex; gap: 15px; margin: 20px 0; width: 100%; justify-content: center; flex-wrap: wrap; }
-        .emotion-btn { background: #111; border: 1px solid #333; color: #aaa; padding: 12px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
-        
-        /* 감정별 색상 변화 */
-        .emotion-btn[data-emo="평온"].active { border-color: #4facfe; color: #4facfe; box-shadow: 0 0 15px rgba(79,172,254,0.3); }
-        .emotion-btn[data-emo="설렘"].active { border-color: #ff0844; color: #ff0844; box-shadow: 0 0 15px rgba(255,8,68,0.3); }
-        .emotion-btn[data-emo="몰입"].active { border-color: #a18cd1; color: #a18cd1; box-shadow: 0 0 15px rgba(161,140,209,0.3); }
-        
-        .archive-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #444; color: #fff; font-size: 1.1rem; padding: 15px 0; margin-bottom: 30px; outline: none; text-align: center; }
-        .archive-input::placeholder { color: #555; }
-        
-        /* 핀터레스트 스타일 카드 */
-       /* --- 영수증(Receipt) 스타일 카드 --- */
-        .receipt-card { 
-            width: 100%; max-width: 320px; background: #eeeeee; color: #111; border-radius: 2px; padding: 30px 20px; 
-            display: flex; flex-direction: column; align-items: stretch; text-align: left; 
-            font-family: 'Courier New', Courier, monospace; /* 영수증 폰트 */
-            transition: all 0.5s ease; margin-bottom: 30px; position: relative;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+       /* --- 감정 버튼 (블랙 앤 화이트 시크 컨셉 적용) --- */
+        .emotion-group { display: flex; gap: 10px; margin: 20px 0; width: 100%; justify-content: center; flex-wrap: wrap; }
+        .emotion-btn { 
+            background: transparent; border: 1px solid #333; color: #888; padding: 10px 22px; 
+            border-radius: 50px; cursor: pointer; transition: 0.3s; font-size: 0.85rem; letter-spacing: 0.05em; 
         }
-        /* 영수증 헤더 */
-        .receipt-header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 15px; margin-bottom: 20px; }
+        .emotion-btn:hover:not(.active) { border-color: #666; color: #fff; }
+        /* 8개 모든 버튼이 선택되었을 때 깔끔한 화이트 반전 적용 */
+        .emotion-btn.active { border-color: #fff; color: #000; background: #fff; font-weight: bold; } 
+        
+        .archive-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #444; color: #fff; font-size: 1.1rem; padding: 15px 0; margin-bottom: 30px; outline: none; text-align: center; transition: 0.3s; }
+        .archive-input:focus { border-bottom-color: #888; }
+        .archive-input::placeholder { color: #555; font-style: italic; font-family: var(--font-serif); }
+        
+        /* --- 영수증(Receipt) 스타일 카드 (반투명 흑백 무드 적용) --- */
+        .receipt-card { 
+            width: 100%; max-width: 320px; 
+            background: rgba(230, 230, 230, 0.85); /* 트렌디한 반투명 */
+            backdrop-filter: blur(12px); /* 뒤에 있는 검정 배경이 은은하게 비치는 효과 */
+            color: #111; border-radius: 2px; padding: 30px 20px; 
+            display: flex; flex-direction: column; align-items: stretch; text-align: left; 
+            font-family: 'Courier New', Courier, monospace; 
+            transition: all 0.5s ease; margin-bottom: 30px; position: relative;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .receipt-header { text-align: center; border-bottom: 2px dashed #444; padding-bottom: 15px; margin-bottom: 20px; }
         .receipt-title { font-size: 1.8rem; font-weight: bold; font-family: var(--font-serif); margin-bottom: 10px; letter-spacing: -1px; }
-        .receipt-info { font-size: 0.75rem; text-align: left; line-height: 1.6; font-weight: bold; }
-        .receipt-info span { font-weight: normal; }
+        .receipt-info { font-size: 0.75rem; text-align: left; line-height: 1.6; font-weight: bold; color: #333; }
+        .receipt-info span { font-weight: normal; color: #111; }
         
-        /* 사진 및 내용 */
-        .r-card-img { width: 100%; height: 200px; background-color: #222; background-size: cover; background-position: center; filter: grayscale(40%); margin-bottom: 20px; border: 1px solid #333; }
-        .r-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px; font-weight: bold; text-transform: uppercase; }
-        .r-item-value { text-align: right; max-width: 65%; word-break: keep-all; font-weight: normal; }
-        .r-note-box { font-size: 0.9rem; line-height: 1.4; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 5px; font-style: italic; }
+        .r-card-img { width: 100%; height: 200px; background-color: #222; background-size: cover; background-position: center; filter: grayscale(50%); margin-bottom: 20px; border: 1px solid #666; border-radius: 2px; }
+        .r-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px; font-weight: bold; text-transform: uppercase; color: #222; }
+        .r-item-value { text-align: right; max-width: 65%; word-break: keep-all; font-weight: normal; color: #000; }
+        .r-note-box { font-size: 0.95rem; line-height: 1.5; border-top: 1px solid #aaa; padding-top: 15px; margin-top: 5px; font-style: italic; color: #111; font-family: var(--font-sans); font-weight: 500;}
         
-        /* 바코드 및 푸터 */
-        .receipt-divider { width: 100%; border-bottom: 2px dashed #333; margin: 15px 0; }
+        .receipt-divider { width: 100%; border-bottom: 2px dashed #444; margin: 15px 0; }
         .receipt-barcode { width: 100%; height: 50px; margin: 10px 0; background: repeating-linear-gradient(90deg, #111, #111 3px, transparent 3px, transparent 6px, #111 6px, #111 8px, transparent 8px, transparent 10px); opacity: 0.85; }
-        .receipt-footer { text-align: center; font-size: 0.75rem; font-weight: bold; margin-top: 10px; letter-spacing: 0.05em; line-height: 1.4; }
+        .receipt-footer { text-align: center; font-size: 0.75rem; font-weight: bold; margin-top: 10px; letter-spacing: 0.05em; line-height: 1.4; color: #333; }
     </style>
 </head>
 <body>
@@ -670,10 +672,11 @@
 
             // 3. 영수증 종이 색상 동기화 (레퍼런스의 뉴진스 파란 영수증 느낌 구현)
             // globalSoulColor(예: rgba(100,150,255,0.7))의 투명도를 확 낮춰서 은은한 영수증 배경지로 만듭니다.
+           // 3. 영수증 스타일 동기화 (종이는 트렌디한 반투명 흑백으로 놔두고, 뒤에 깔리는 그림자에만 영혼 색상 반영)
             const receiptObj = document.getElementById('receiptCard');
             if (globalSoulColor) {
-                receiptObj.style.backgroundColor = globalSoulColor.replace('0.7', '0.15');
-                receiptObj.style.boxShadow = `0 15px 40px ${globalSoulColor.replace('0.7', '0.4')}`; 
+                // backgroundColor 덮어씌우는 코드를 지우고 빛 번짐(Glow)만 남깁니다.
+                receiptObj.style.boxShadow = `0 15px 50px ${globalSoulColor.replace('0.7', '0.3')}`; 
             }
         };
 
