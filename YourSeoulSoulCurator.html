@@ -148,11 +148,30 @@
         .archive-input::placeholder { color: #555; }
         
         /* 핀터레스트 스타일 카드 */
-        .pinterest-card { width: 100%; max-width: 320px; background: #111; border-radius: 15px; padding: 20px; display: flex; flex-direction: column; align-items: flex-start; text-align: left; border: 2px solid #333; transition: all 0.5s ease; }
-        .p-card-img { width: 100%; height: 220px; border-radius: 10px; background-color: #222; background-size: cover; background-position: center; margin-bottom: 15px; }
-        .p-card-type { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 5px; width: 100%; }
-        .p-card-auto-text { font-family: var(--font-serif); font-size: 1.15rem; color: #fff; margin-bottom: 15px; line-height: 1.4; word-break: keep-all; }
-        .p-card-user-text { font-size: 0.9rem; color: #aaa; font-style: italic; }
+       /* --- 영수증(Receipt) 스타일 카드 --- */
+        .receipt-card { 
+            width: 100%; max-width: 320px; background: #eeeeee; color: #111; border-radius: 2px; padding: 30px 20px; 
+            display: flex; flex-direction: column; align-items: stretch; text-align: left; 
+            font-family: 'Courier New', Courier, monospace; /* 영수증 폰트 */
+            transition: all 0.5s ease; margin-bottom: 30px; position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+        }
+        /* 영수증 헤더 */
+        .receipt-header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 15px; margin-bottom: 20px; }
+        .receipt-title { font-size: 1.8rem; font-weight: bold; font-family: var(--font-serif); margin-bottom: 10px; letter-spacing: -1px; }
+        .receipt-info { font-size: 0.75rem; text-align: left; line-height: 1.6; font-weight: bold; }
+        .receipt-info span { font-weight: normal; }
+        
+        /* 사진 및 내용 */
+        .r-card-img { width: 100%; height: 200px; background-color: #222; background-size: cover; background-position: center; filter: grayscale(40%); margin-bottom: 20px; border: 1px solid #333; }
+        .r-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px; font-weight: bold; text-transform: uppercase; }
+        .r-item-value { text-align: right; max-width: 65%; word-break: keep-all; font-weight: normal; }
+        .r-note-box { font-size: 0.9rem; line-height: 1.4; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 5px; font-style: italic; }
+        
+        /* 바코드 및 푸터 */
+        .receipt-divider { width: 100%; border-bottom: 2px dashed #333; margin: 15px 0; }
+        .receipt-barcode { width: 100%; height: 50px; margin: 10px 0; background: repeating-linear-gradient(90deg, #111, #111 3px, transparent 3px, transparent 6px, #111 6px, #111 8px, transparent 8px, transparent 10px); opacity: 0.85; }
+        .receipt-footer { text-align: center; font-size: 0.75rem; font-weight: bold; margin-top: 10px; letter-spacing: 0.05em; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -271,8 +290,51 @@
             </div>
 
             <!-- STEP 2: 완성된 핀터레스트 카드 & 홈으로 -->
+            <!-- STEP 2: 완성된 영수증 카드 & 홈으로 -->
             <div class="archive-step" id="archiveStep2">
-                <h1 class="main-title" style="font-size: 1.8rem; margin-bottom: 30px;">Your Archive Card</h1>
+                <h1 class="main-title" style="font-size: 1.8rem; margin-bottom: 30px;">Your Archive Receipt</h1>
+                
+                <!-- 생성된 영수증 디자인 -->
+                <div class="receipt-card" id="receiptCard">
+                    <div class="receipt-header">
+                        <div class="receipt-title">SEOUL ARCHIVE</div>
+                        <div class="receipt-info">
+                            DATE: <span id="rDate">YYYY.MM.DD</span><br>
+                            TYPE: <span id="rArchetype">ARCHETYPE</span><br>
+                            SERVED BY: THE MIRROR
+                        </div>
+                    </div>
+                    
+                    <div class="r-card-img" id="cardImg"></div>
+                    
+                    <div class="r-item-row">
+                        <span>EMOTION</span>
+                        <span class="r-item-value" id="rEmotion">선택 감정</span>
+                    </div>
+                    <div class="r-item-row">
+                        <span>VIBE</span>
+                        <span class="r-item-value" id="rVibe">분위기</span>
+                    </div>
+                    
+                    <div class="r-note-box" id="cardUserText">"User Input Note"</div>
+                    
+                    <div class="receipt-divider"></div>
+                    
+                    <div class="r-item-row">
+                        <span>TOTAL SOUL</span>
+                        <span class="r-item-value">100%</span>
+                    </div>
+
+                    <!-- 바코드 -->
+                    <div class="receipt-barcode"></div>
+                    <div class="receipt-footer">
+                        *** THANK YOU ***<br>HAVE A NICE DAY
+                    </div>
+                </div>
+
+                <p style="color:#555; font-size:0.8rem; margin: 20px 0 15px; letter-spacing: 0.05em;">이 영수증은 당신의 영혼 아카이브에 영구히 저장됩니다.</p>
+                <button class="option-btn" id="returnHomeBtn" style="border-color:#444; background:transparent; font-family: var(--font-serif); border-radius: 50px;">Return to Home</button>
+            </div>
                 
                 <!-- 생성된 카드 -->
                 <div class="pinterest-card" id="pinterestCard">
@@ -575,7 +637,7 @@
             };
         });
 
-        document.getElementById('generateCardBtn').onclick = () => {
+       document.getElementById('generateCardBtn').onclick = () => {
             const userText = document.getElementById('oneLineRecord').value;
             
             if(!uploadedImgUrl) { alert('공간의 사진을 업로드해주세요!'); return; }
@@ -585,19 +647,28 @@
             document.getElementById('archiveStep1').classList.remove('active');
             document.getElementById('archiveStep2').classList.add('active');
 
+            // 1. 날짜 및 아키타입(유형) 입력
             const myRes = archetypes[answers.reduce((a,b)=>a+b, 0) % 11]; 
-            document.getElementById('cardArchetype').innerText = `${myRes.name}의 기록`;
+            const today = new Date();
+            document.getElementById('rDate').innerText = today.toLocaleDateString();
+            document.getElementById('rArchetype').innerText = myRes.name.toUpperCase();
             
+            // 2. 이미지 및 데이터 입력
             document.getElementById('cardImg').style.backgroundImage = `url(${uploadedImgUrl})`;
+            document.getElementById('rEmotion').innerText = selectedEmotion;
             
-            let vibeText = finalType === 'introvert' ? '고요한' : '에너지 넘치는';
-            document.getElementById('cardAutoText').innerText = `당신은 오늘, ${vibeText} 공간에서 온전한 '${selectedEmotion}'을(를) 느꼈습니다.`;
+            let vibeText = finalType === 'introvert' ? 'CALM & DEEP' : 'ENERGETIC & CHILL';
+            document.getElementById('rVibe').innerText = vibeText;
             
             document.getElementById('cardUserText').innerText = `"${userText}"`;
 
-            const cardObj = document.getElementById('pinterestCard');
-            cardObj.style.borderColor = emotionColors[selectedEmotion];
-            cardObj.style.boxShadow = `0 10px 30px ${emotionColors[selectedEmotion]}44`;
+            // 3. 영수증 종이 색상 동기화 (레퍼런스의 뉴진스 파란 영수증 느낌 구현)
+            // globalSoulColor(예: rgba(100,150,255,0.7))의 투명도를 확 낮춰서 은은한 영수증 배경지로 만듭니다.
+            const receiptObj = document.getElementById('receiptCard');
+            if (globalSoulColor) {
+                receiptObj.style.backgroundColor = globalSoulColor.replace('0.7', '0.15');
+                receiptObj.style.boxShadow = `0 15px 40px ${globalSoulColor.replace('0.7', '0.4')}`; 
+            }
         };
 
         document.getElementById('returnHomeBtn').onclick = () => {
