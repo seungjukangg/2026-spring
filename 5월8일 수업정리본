@@ -1,0 +1,62 @@
+[강의 정리] 음성학 및 음향학의 이해 (Phonetics & Acoustics)
+
+Ⅰ. 언어 소리-추상적 단위와 물리적 실체라는 두 가지 층위
+
+* 음소 (Phoneme): 머릿속에 저장된 추상적이고 불연속적인(discrete) 소리 단위.
+    * 분야: 음운론 (Phonology) / 인지적(cognitive) 관점
+* 음성 (Phone): 입 밖으로 나오는 구체적이고 물리적인 실체.
+    * 분야: **음성학 (Phonetics)** / 물리적(physical) 관점
+
+---
+
+Ⅱ. 음성학의 세 가지 하위 분야
+소리가 생성되어 전달되고 인지되는 과정에 따른 구분
+
+1.  조음 음성학 (Articulatory Phonetics): 발성 기관을 통해 소리를 만드는 과정 (from mouth).
+2.  음향 음성학 (Acoustic Phonetics): 소리가 공기의 압력 변화를 통해 전달되는 과정 (through air).
+3.  청각 음성학 (Auditory Phonetics):* 귀와 고막을 통해 소리를 인지하는 과정 (to ear).
+
+---
+
+Ⅲ. 조음 기관의 구조와 역할 (Articulation)
+
+1. 주요 기관
+* 후두(Larynx)와 성대(Vocal Cords): 초당 진동 횟수가 소리의 높낮이(Pitch)를 결정.
+* 후두개(Epiglottis): 기도와 식도의 갈림길에서 뚜껑 역할을 수행.
+* 비강(Nasal cavity): 콧길을 열면 비음(Nasal)이 발생.
+
+2. 조음체 (Articulators)
+* 입술(Lips), 혀끝(Tongue tip), 혀 몸통(Tongue body) 등이 수축(Constriction)을 만들어 소리를 변형시킴 
+
+---
+
+Ⅳ. 소스-필터 이론 (Source-Filter Theory)
+
+[Image of Source-Filter Theory of speech production]
+
+ 1. Source (성대 진동)
+* 성대에서 만들어진 기초 소리. 
+* 수많은 순음(Pure tone/Sine wave)이 합쳐진 복합음 형태.
+
+ 2. Filter (조음 관의 공명)
+* 성도(Vocal tract)를 지나며 특정 주파수 대역이 강화되거나 약화됨 (공명)
+
+3. 포먼트 (Formants)
+스펙트로그램상에서 에너지가 집중된 주파수 띠로, 모음을 구분하는 핵심 지표
+* F1 (제1 포먼트): 혀의 높낮이(Height). 높을수록 F1은 낮아짐.
+* F2 (제2 포먼트): 혀의 앞뒤 위치(Backness). 앞(Front)일수록 F2는 높아짐.
+
+[Image of Vowel Formant Chart F1 vs F2]
+
+---
+
+Ⅴ. 슈와(Schwa, [ə])의 물리적 계산
+가장 중립적인 모음인 '슈와'는 조음 기관이 균일한 관(Tube) 형태일 때 발생
+
+오늘 수업을 통해 우리가 무심코 내뱉는 언어 소리가 사실은 굉장히 정교한 물리적 법칙과 계산 위에 있다는 점이 인상 깊었습니다. 
+
+특히 '슈와' 소리가 왜 500Hz와 1500Hz라는 구체적인 수치로 나타나는지 정상파 원리를 통해 계산해보는 과정이 가장 신기했습니다. 막연하게만 느껴졌던 소리라는 개념을 수학적, 물리적으로 확인해볼 수 있어 유익했습니다. 
+
+특히 Praat 같은 프로그램을 활용해 눈으로 소리를 분석하는 음향학 분야에 흥미가 생겼고 앞으로 더 공부해보고 싶다는 생각이 들었습니다.
+
+* **정상파(
