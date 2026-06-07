@@ -719,27 +719,135 @@
             }
         };
 
-        // 영수증 이미지 다운로드 기능
-        document.getElementById('downloadBtn').onclick = () => {
-            const receiptElement = document.getElementById('receiptCard');
-            // 버튼 텍스트 변경으로 진행 중임을 알림
-            const btn = document.getElementById('downloadBtn');
-            btn.innerText = "Downloading...";
-            
-            // html2canvas로 영수증 영역 캡처
-            html2canvas(receiptElement, { scale: 3, backgroundColor: null }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'My_Seoul_Archive_Receipt.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                
-                btn.innerText = "Download Image"; // 버튼 텍스트 원상복구
-            });
-        };
+       document.getElementById('downloadBtn').onclick = () => {
+    const receiptElement = document.getElementById('receiptCard');
+    const btn = document.getElementById('downloadBtn');
+    btn.innerText = "Downloading...";
+    html2canvas(receiptElement, { scale: 3, backgroundColor: null }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'My_Seoul_Archive_Receipt.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.innerText = "Download Image";
+
+        // 다운로드 후 1초 뒤 게시판으로 이동
+        setTimeout(() => {
+            showBoard(canvas.toDataURL('image/png'));
+        }, 1000);
+    });
+};
 
         document.getElementById('returnHomeBtn').onclick = () => {
             location.reload(); 
         };
+    </script>
+    <!-- 9. Community Archive Board -->
+    <div class="archive-final-container" id="boardContainer" style="background:#050505;">
+        <p class="sub-text" style="margin-bottom:10px; letter-spacing:0.2em;">SEOUL SOUL ARCHIVE</p>
+        <h1 class="main-title" style="font-size:2.2rem; margin-bottom:5px;">Community Board</h1>
+        <p style="color:#555; font-size:0.85rem; margin-bottom:40px; font-style:italic;">당신의 영수증이 서울의 아카이브에 기록되었습니다.</p>
+
+        <div id="boardGrid" style="
+            width:100%; max-width:900px;
+            display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap:15px; margin-bottom:40px;
+        "></div>
+
+        <button class="option-btn" id="returnHomeBtn2" style="border-color:#333; background:transparent; font-family:var(--font-serif); border-radius:50px;">
+            Return to Home
+        </button>
+    </div>
+
+    <script>
+        // 게시판 더미 데이터 (기존 유저들의 영수증 흉내)
+        const dummyReceipts = [
+            { type: 'Midnight Observer', emo: '사색', color: '#1a1a2e' },
+            { type: 'Quiet Curator',     emo: '몰입', color: '#0d1b2a' },
+            { type: 'Urban Pulse',       emo: '활기', color: '#1a0a00' },
+            { type: 'Romantic Escapist', emo: '설렘', color: '#1a0d1a' },
+            { type: 'Soft Retreator',    emo: '평온', color: '#0a1a0a' },
+            { type: 'Deep Diver',        emo: '몰입', color: '#0a0a1a' },
+            { type: 'Sensory Drifter',   emo: '영감', color: '#1a1500' },
+            { type: 'Social Flow Seeker',emo: '해방감', color: '#001a1a' },
+            { type: 'Aesthetic Explorer',emo: '영감', color: '#1a0a10' },
+            { type: 'Momentum Chaser',   emo: '활기', color: '#0f0f0f' },
+            { type: 'Midnight Observer', emo: '위로', color: '#0d0d1f' },
+            { type: 'Slow Ritualist',    emo: '평온', color: '#0a120a' },
+        ];
+
+        function showBoard(myReceiptCanvas) {
+            document.getElementById('archiveFinalContainer').classList.remove('active');
+            document.getElementById('boardContainer').classList.add('active');
+
+            const grid = document.getElementById('boardGrid');
+            grid.innerHTML = '';
+
+            // 더미 카드 먼저
+            dummyReceipts.forEach(r => {
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    background:${r.color}; border:1px solid #222; border-radius:6px;
+                    padding:15px 10px; font-family:'Courier New',monospace;
+                    display:flex; flex-direction:column; align-items:center; gap:6px;
+                    opacity:0; animation: fadeInCard 0.5s forwards;
+                `;
+                card.innerHTML = `
+                    <div style="width:100%;height:80px;background:#111;border-radius:3px;margin-bottom:4px;"></div>
+                    <div style="font-size:0.6rem;color:#666;text-align:center;line-height:1.4;">
+                        SEOUL ARCHIVE<br>
+                        <span style="color:#444;">${r.type.toUpperCase()}</span>
+                    </div>
+                    <div style="font-size:0.65rem;color:#555;border-top:1px dashed #333;width:100%;text-align:center;padding-top:6px;">${r.emo}</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // 내 영수증 카드 (맨 마지막, 강조)
+            setTimeout(() => {
+                const myCard = document.createElement('div');
+                myCard.style.cssText = `
+                    background:#111; border:1px solid #fff; border-radius:6px;
+                    padding:15px 10px; font-family:'Courier New',monospace;
+                    display:flex; flex-direction:column; align-items:center; gap:6px;
+                    box-shadow: 0 0 30px rgba(255,255,255,0.15);
+                    animation: fadeInCard 0.8s forwards;
+                `;
+
+                if (myReceiptCanvas) {
+                    const img = document.createElement('img');
+                    img.src = myReceiptCanvas;
+                    img.style.cssText = 'width:100%;border-radius:3px;margin-bottom:4px;';
+                    myCard.appendChild(img);
+                } else {
+                    const placeholder = document.createElement('div');
+                    placeholder.style.cssText = 'width:100%;height:80px;background:#222;border-radius:3px;margin-bottom:4px;';
+                    myCard.appendChild(placeholder);
+                }
+
+                myCard.innerHTML += `
+                    <div style="font-size:0.6rem;color:#ccc;text-align:center;line-height:1.4;">
+                        SEOUL ARCHIVE<br>
+                        <span style="color:#aaa;">JUST ADDED ✦</span>
+                    </div>
+                    <div style="font-size:0.65rem;color:#888;border-top:1px dashed #444;width:100%;text-align:center;padding-top:6px;">방금 전</div>
+                `;
+                grid.appendChild(myCard);
+                myCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 800);
+        }
+
+        // fadeInCard 애니메이션 추가
+        const styleEl = document.createElement('style');
+        styleEl.textContent = `
+            @keyframes fadeInCard {
+                from { opacity:0; transform:translateY(10px); }
+                to   { opacity:1; transform:translateY(0); }
+            }
+            #boardGrid > div { animation-delay: calc(var(--i, 0) * 0.05s); }
+        `;
+        document.head.appendChild(styleEl);
+
+        document.getElementById('returnHomeBtn2').onclick = () => location.reload();
     </script>
 </body>
 </html>
